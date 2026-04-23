@@ -2756,6 +2756,7 @@ async function doAuth() {
 
 async function doLogout() {
   await _supabase.auth.signOut();
+  _showLogin();
 }
 
 // ─── Admin UID — Susazón portal access ───
