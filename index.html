@@ -3107,10 +3107,15 @@ function getAvgFC(multipliers={}){
 }
 
 // Price history tracking
-function recordPriceChange(item, oldCost, newCost) {
-  const pct=((newCost-oldCost)/oldCost)*100;
-  DB[currentTenant].priceHistory.unshift({itemId:item.id,itemName:item.name,oldCost,newCost,pct,date:new Date().toISOString().split('T')[0]});
-  if (pct>=(TENANTS[currentTenant].fcMeta||10)) {
+async function recordPriceChange(item, oldCost, newCost) {
+  const pct = ((newCost - oldCost) / oldCost) * 100;
+  const date = new Date().toISOString().split('T')[0];
+  DB[currentTenant].priceHistory.unshift({ itemId: item.id, itemName: item.name, oldCost, newCost, pct, date });
+  await _supabase.from('price_history').insert({
+    restaurant_id: currentTenant, inventory_id: item.id,
+    item_name: item.name, old_cost: oldCost, new_cost: newCost, pct, date
+  });
+  if (pct >= (TENANTS[currentTenant].fcMeta || 10)) {
     showToast(`⚠️ ${item.name} subió ${pct.toFixed(1)}% — revisando impacto en recetas...`, 'warn');
   }
 }
@@ -3316,7 +3321,7 @@ function onStockKey(e, id) {
   }
 }
 
-function saveStock(id) {
+async function saveStock(id) {
   const input = document.getElementById(`inv-stock-input-${id}`);
   if (!input) return;
   const newVal = parseFloat(input.value);
@@ -3329,15 +3334,12 @@ function saveStock(id) {
   if (!item || newVal === item.stock) return;
   item.stock = newVal;
 
-  // Flash saved ✓
+  await _supabase.from('inventory').update({ stock: newVal }).eq('id', id);
+
   const savedEl = document.getElementById(`inv-stock-saved-${id}`);
   if (savedEl) { savedEl.classList.add('visible'); setTimeout(()=>savedEl.classList.remove('visible'),1800); }
-
-  // Update bar + badge inline
   _updateInvRowVisuals(item);
   showToast(`✓ Stock de "${item.name}" → ${newVal} ${item.unit}`);
-
-  // Refresh alert count
   document.getElementById('alert-badge').textContent = getAlerts().length;
   szNotifyChange();
 }
@@ -3365,7 +3367,7 @@ function onMinStockKey(e, id) {
   }
 }
 
-function saveMinStock(id) {
+async function saveMinStock(id) {
   const input = document.getElementById(`inv-min-input-${id}`);
   if (!input) return;
   const newVal = parseFloat(input.value);
@@ -3378,9 +3380,10 @@ function saveMinStock(id) {
   if (!item || newVal === item.minStock) return;
   item.minStock = newVal;
 
+  await _supabase.from('inventory').update({ min_stock: newVal }).eq('id', id);
+
   const savedEl = document.getElementById(`inv-min-saved-${id}`);
   if (savedEl) { savedEl.classList.add('visible'); setTimeout(()=>savedEl.classList.remove('visible'),1800); }
-
   _updateInvRowVisuals(item);
   document.getElementById('alert-badge').textContent = getAlerts().length;
   showToast(`✓ Stock mínimo de "${item.name}" → ${newVal} ${item.unit}`);
@@ -4045,15 +4048,16 @@ function filterCat(cat,el){
   renderInventario();
 }
 
-function editIngCost(id){
-  const item=DB[currentTenant].inventory.find(i=>i.id===id);
+async function editIngCost(id) {
+  const item = DB[currentTenant].inventory.find(i => i.id === id);
   if (!item) return;
-  const newCost=prompt(`Nuevo costo para "${item.name}" (actual: $${item.cost}/${item.unit}):`,item.cost);
-  if (newCost!==null && !isNaN(+newCost) && +newCost>0 && +newCost!==item.cost) {
-    recordPriceChange(item, item.cost, +newCost);
-    item.cost=+newCost;
-    renderInventario();renderFoodCost();renderDashboard();renderAnalytics();
-    showToast(`✓ Costo actualizado · Food cost recalculado automáticamente`,'success');
+  const newCost = prompt(`Nuevo costo para "${item.name}" (actual: $${item.cost}/${item.unit}):`, item.cost);
+  if (newCost !== null && !isNaN(+newCost) && +newCost > 0 && +newCost !== item.cost) {
+    await recordPriceChange(item, item.cost, +newCost);
+    item.cost = +newCost;
+    await _supabase.from('inventory').update({ cost: +newCost }).eq('id', id);
+    renderInventario(); renderFoodCost(); renderDashboard(); renderAnalytics();
+    showToast(`✓ Costo actualizado · Food cost recalculado automáticamente`, 'success');
   }
 }
 
@@ -4606,7 +4610,7 @@ function toggleFCCard(id) {
 
 function recalcAll() { renderFoodCost(); renderDashboard(); renderAnalytics(); showToast('↺ Todo recalculado con precios actuales'); }
 
-function saveFCConfig() {
+async function saveFCConfig() {
   const meta   = +document.getElementById('fc-meta').value;
   const alert  = +document.getElementById('fc-alert').value;
   const crit   = +document.getElementById('fc-crit').value;
@@ -4618,27 +4622,22 @@ function saveFCConfig() {
   }
 
   DB[currentTenant].fcConfig = { meta, alert, crit, margin };
-
-  // Keep tenant shorthand in sync
   const t = TENANTS[currentTenant];
-  t.fcMeta  = meta;
-  t.fcAlert = alert;
-  t.fcMax   = crit;
+  t.fcMeta = meta; t.fcAlert = alert; t.fcMax = crit;
 
-  // Sync the settings tab inputs so they reflect the change
-  const cfgMetaEl   = document.getElementById('cfg-fc-meta');
-  const cfgAlertEl  = document.getElementById('cfg-fc-alert');
-  const cfgCritEl   = document.getElementById('cfg-fc-crit');
+  await _supabase.from('restaurants').update({ fc_meta: meta, fc_alert: alert, fc_crit: crit, margin }).eq('id', currentTenant);
+
+  const cfgMetaEl = document.getElementById('cfg-fc-meta');
+  const cfgAlertEl = document.getElementById('cfg-fc-alert');
+  const cfgCritEl = document.getElementById('cfg-fc-crit');
   const cfgMarginEl = document.getElementById('cfg-margin');
-  if (cfgMetaEl)   cfgMetaEl.value   = meta;
-  if (cfgAlertEl)  cfgAlertEl.value  = alert;
-  if (cfgCritEl)   cfgCritEl.value   = crit;
+  if (cfgMetaEl) cfgMetaEl.value = meta;
+  if (cfgAlertEl) cfgAlertEl.value = alert;
+  if (cfgCritEl) cfgCritEl.value = crit;
   if (cfgMarginEl) cfgMarginEl.value = margin;
 
   closeModal('fc-config-modal');
-  renderFoodCost();
-  renderDashboard();
-  renderAnalytics();
+  renderFoodCost(); renderDashboard(); renderAnalytics();
   showToast('✓ Metas actualizadas · Food cost recalculado');
   szNotifyChange();
 }
@@ -5587,20 +5586,8 @@ function printOC(id) {
 
 function filterOC(s,el){currentOCFilter=s;document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderOrdenes();}
 
-function changeOCStatus(id,ns){
-  const o=DB[currentTenant].orders.find(x=>x.id===id);
-  if(o){o.status=ns;if(ns==='recibida')showToast('✓ Orden recibida · Inventario actualizado automáticamente');else showToast(`✓ OC ${id} 2192 ${ns}`);renderOrdenes();renderDashboard();szNotifyChange();}
-}
 
-function generateAutoOC(){
-  const {inventory}=DB[currentTenant];
-  const low=inventory.filter(i=>i.stock<=i.minStock*1.2);
-  if(!low.length){showToast('✓ No hay ingredientes bajo mínimo');return;}
-  const newId='OC-'+String(DB[currentTenant].orders.length+42).padStart(4,'0');
-  const total=low.reduce((a,i)=>a+i.cost*(i.minStock*3-i.stock),0);
-  DB[currentTenant].orders.unshift({id:newId,date:new Date().toISOString().split('T')[0],supplier:'SusaRest Supply',status:'pendiente',items:low.length,total:+total.toFixed(0),delivery:new Date(Date.now()+2*86400000).toISOString().split('T')[0]});
-  renderOrdenes();showToast(`✓ OC automática: ${low.length} ingredientes · $${total.toFixed(0)} MXN`);
-}
+
 
 function addOCRow(){
   const inv=DB[currentTenant].inventory;
@@ -5622,17 +5609,50 @@ function calcOCTotal(){
   document.getElementById('oc-total').textContent=t.toFixed(2);
 }
 
-function saveOC(){
-  const supplier=document.getElementById('oc-supplier').value;
-  const date=document.getElementById('oc-date').value||new Date().toISOString().split('T')[0];
-  const total=+document.getElementById('oc-total').textContent;
-  let items=0;document.querySelectorAll('#oc-rows > div').forEach(()=>items++);
-  if(!items){showToast('Agrega al menos un ítem','danger');return;}
-  const orders=DB[currentTenant].orders;
-  const newId='OC-'+String(orders.length+42).padStart(4,'0');
-  orders.unshift({id:newId,date,supplier,status:'pendiente',items,total,delivery:date});
-  closeModal('add-oc-modal');document.getElementById('oc-rows').innerHTML='';document.getElementById('oc-total').textContent='0.00';ocRowCount=0;
-  renderOrdenes();renderDashboard();showToast(`✓ OC ${newId} creada`);
+async function changeOCStatus(id, ns) {
+  const o = DB[currentTenant].orders.find(x => x.id === id);
+  if (!o) return;
+  o.status = ns;
+  await _supabase.from('orders').update({ status: ns }).eq('id', id);
+  if (ns === 'recibida') showToast('✓ Orden recibida · Inventario actualizado automáticamente');
+  else showToast(`✓ OC ${id} → ${ns}`);
+  renderOrdenes(); renderDashboard(); szNotifyChange();
+}
+
+async function generateAutoOC() {
+  const { inventory } = DB[currentTenant];
+  const low = inventory.filter(i => i.stock <= i.minStock * 1.2);
+  if (!low.length) { showToast('✓ No hay ingredientes bajo mínimo'); return; }
+  const newId = 'OC-' + String(DB[currentTenant].orders.length + 42).padStart(4, '0');
+  const total = low.reduce((a, i) => a + i.cost * (i.minStock * 3 - i.stock), 0);
+  const date = new Date().toISOString().split('T')[0];
+  const delivery = new Date(Date.now() + 2 * 86400000).toISOString().split('T')[0];
+  const order = { id: newId, date, supplier: 'SusaRest Supply', status: 'pendiente', items: low.length, total: +total.toFixed(0), delivery };
+  DB[currentTenant].orders.unshift(order);
+  await _supabase.from('orders').insert({ ...order, restaurant_id: currentTenant });
+  renderOrdenes();
+  showToast(`✓ OC automática: ${low.length} ingredientes · $${total.toFixed(0)} MXN`);
+}
+
+async function saveOC() {
+  const supplier = document.getElementById('oc-supplier').value;
+  const date = document.getElementById('oc-date').value || new Date().toISOString().split('T')[0];
+  const total = +document.getElementById('oc-total').textContent;
+  let items = 0;
+  document.querySelectorAll('#oc-rows > div').forEach(() => items++);
+  if (!items) { showToast('Agrega al menos un ítem', 'danger'); return; }
+  const orders = DB[currentTenant].orders;
+  const newId = 'OC-' + String(orders.length + 42).padStart(4, '0');
+  const delivery = date;
+  const order = { id: newId, date, supplier, status: 'pendiente', items, total, delivery };
+  orders.unshift(order);
+  await _supabase.from('orders').insert({ ...order, restaurant_id: currentTenant });
+  closeModal('add-oc-modal');
+  document.getElementById('oc-rows').innerHTML = '';
+  document.getElementById('oc-total').textContent = '0.00';
+  ocRowCount = 0;
+  renderOrdenes(); renderDashboard();
+  showToast(`✓ OC ${newId} creada`);
   szNotifyChange();
 }
 
@@ -5711,50 +5731,43 @@ function loadConfig(){
   document.getElementById('cfg-margin').value   = fc.margin || 68;
 }
 
-function saveConfig(){
+async function saveConfig() {
   const t = TENANTS[currentTenant];
 
-  // Identity
   t.name  = document.getElementById('cfg-name').value.trim() || t.name;
   t.phone = document.getElementById('cfg-phone').value;
   t.email = document.getElementById('cfg-email').value;
 
-  // FC config — read from the settings tab inputs and persist to DB
   const meta   = +document.getElementById('cfg-fc-meta').value;
   const alert  = +document.getElementById('cfg-fc-alert').value;
   const crit   = +document.getElementById('cfg-fc-crit').value;
   const margin = +document.getElementById('cfg-margin').value;
 
-  // Validate: meta < alert < crit
   if (meta >= alert || alert >= crit) {
-    showToast('⚠ Las metas deben cumplir: Meta < Alerta < Crítico', 'danger');
-    return;
+    showToast('⚠ Las metas deben cumplir: Meta < Alerta < Crítico', 'danger'); return;
   }
   if (margin <= 0 || margin >= 100) {
-    showToast('⚠ El margen objetivo debe estar entre 1% y 99%', 'danger');
-    return;
+    showToast('⚠ El margen objetivo debe estar entre 1% y 99%', 'danger'); return;
   }
 
   DB[currentTenant].fcConfig = { meta, alert, crit, margin };
-  // Keep tenant shorthand in sync too
-  t.fcMeta  = meta;
-  t.fcAlert = alert;
-  t.fcMax   = crit;
+  t.fcMeta = meta; t.fcAlert = alert; t.fcMax = crit;
 
-  // Also sync the quick-modal inputs so they stay consistent
-  const metaEl   = document.getElementById('fc-meta');
-  const alertEl  = document.getElementById('fc-alert');
-  const critEl   = document.getElementById('fc-crit');
+  await _supabase.from('restaurants').update({
+    name: t.name, phone: t.phone, email: t.email,
+    fc_meta: meta, fc_alert: alert, fc_crit: crit, margin
+  }).eq('id', currentTenant);
+
+  const metaEl = document.getElementById('fc-meta');
+  const alertEl = document.getElementById('fc-alert');
+  const critEl = document.getElementById('fc-crit');
   const marginEl = document.getElementById('fc-margin');
-  if (metaEl)   metaEl.value   = meta;
-  if (alertEl)  alertEl.value  = alert;
-  if (critEl)   critEl.value   = crit;
+  if (metaEl) metaEl.value = meta;
+  if (alertEl) alertEl.value = alert;
+  if (critEl) critEl.value = crit;
   if (marginEl) marginEl.value = margin;
 
-  updateTopbar();
-  renderFoodCost();
-  renderDashboard();
-  renderAnalytics();
+  updateTopbar(); renderFoodCost(); renderDashboard(); renderAnalytics();
   showToast('✓ Configuración guardada · Food cost recalculado');
   szNotifyChange();
 }
