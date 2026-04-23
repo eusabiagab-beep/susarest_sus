@@ -2617,7 +2617,7 @@ function convertQty(qty, fromUnit, toUnit) {
 // ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
-let currentTenant = 'steakhouse1';
+let currentTenant = null; // Set by _loadRestaurantData after Supabase auth
 let currentFilter = 'todos';
 let currentRecFilter = 'todos';
 let currentOCFilter = 'todas';
@@ -2712,14 +2712,24 @@ async function _showApp(user) {
   const { data: restaurants, error } = await _supabase
     .from('restaurants').select('*').eq('user_id', user.id).limit(1);
 
-  if (error) { console.error(error); _showLogin(); return; }
+  console.log('[SusaRest] restaurants query →', { restaurants, error });
 
-  if (!restaurants || restaurants.length === 0) {
+  if (error) {
+    console.error('[SusaRest] Error cargando restaurante:', error);
+    // Muestra onboarding de todas formas — no bloquear al usuario
     _hideAllScreens();
     document.getElementById('onboarding-screen').style.display = 'flex';
     return;
   }
 
+  if (!restaurants || restaurants.length === 0) {
+    console.log('[SusaRest] Sin restaurante → onboarding');
+    _hideAllScreens();
+    document.getElementById('onboarding-screen').style.display = 'flex';
+    return;
+  }
+
+  console.log('[SusaRest] Restaurante encontrado:', restaurants[0].name);
   await _loadRestaurantData(restaurants[0]);
   _hideAllScreens();
   document.getElementById('app').style.display = 'block';
@@ -2796,6 +2806,8 @@ function _showLogin() {
 }
 
 // ─── Session init ───
+let _appInitialized = false;
+
 (async () => {
   const { data: { session } } = await _supabase.auth.getSession();
   if (session?.user) {
@@ -2803,13 +2815,18 @@ function _showLogin() {
   } else {
     _showLogin();
   }
-  _supabase.auth.onAuthStateChange(async (_event, session) => {
+
+  _supabase.auth.onAuthStateChange(async (event, session) => {
+    // SIGNED_IN después del getSession inicial ya fue manejado arriba — ignorar
+    if (_appInitialized && event === 'SIGNED_IN') return;
     if (session?.user) {
       await _showApp(session.user);
     } else {
       _showLogin();
     }
   });
+
+  _appInitialized = true;
 })();
 
 // ─── Onboarding logic ───
