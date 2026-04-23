@@ -537,6 +537,21 @@ tbody tr:hover td{background:var(--surface2)}
 .sz-client-banner.visible { display:flex; }
 @keyframes sz-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
+/* ── ONBOARDING ── */
+#onboarding-screen{min-height:100vh;display:none;align-items:center;justify-content:center;background:linear-gradient(145deg,#071c2e 0%,#0d2b45 40%,#122f1c 80%,#0d2b45 100%)}
+#onboarding-screen::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.ob-card{background:rgba(255,255,255,.98);border-radius:20px;padding:40px 36px;width:460px;max-width:95vw;box-shadow:0 32px 80px rgba(0,0,0,.35);position:relative;z-index:2}
+.ob-step{display:none}.ob-step.active{display:block}
+.ob-title{font-size:20px;font-weight:700;letter-spacing:-.4px;margin-bottom:6px}
+.ob-sub{font-size:13.5px;color:var(--text-muted);margin-bottom:24px;line-height:1.6}
+.ob-emoji-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px}
+.ob-emoji-btn{border:2px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;font-size:22px;transition:all .15s;background:var(--surface)}
+.ob-emoji-btn:hover{border-color:var(--border-strong);background:var(--surface2)}
+.ob-emoji-btn.selected{border-color:var(--brand);background:var(--brand-light)}
+.ob-progress{display:flex;gap:6px;margin-bottom:28px}
+.ob-dot{height:4px;border-radius:2px;flex:1;background:var(--border);transition:background .2s}
+.ob-dot.done{background:var(--brand)}
+
 /* ── AUTH MODE TOGGLE ── */
 .auth-toggle{display:flex;gap:4px;background:var(--surface2);border-radius:9px;padding:3px;margin-bottom:20px}
 .auth-tab{flex:1;padding:7px 10px;border:none;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:var(--text-muted);transition:all .15s;font-family:var(--font)}
@@ -605,6 +620,87 @@ tbody tr:hover td{background:var(--surface2)}
       </button>
       <div class="login-err" id="login-error"></div>
       <div class="login-hint" id="auth-hint">¿Problemas? Contacta a tu administrador.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ONBOARDING ═══════════════ -->
+<div id="onboarding-screen" style="position:relative">
+  <div class="ob-card">
+    <div class="lc-brand" style="margin-bottom:20px">
+      <div class="lc-brand-logo">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M7 7h2v8H7V7z" fill="#c8832a"/>
+          <path d="M10 5h2v10h-2V5z" fill="white"/>
+          <path d="M13 9h2v6h-2V9z" fill="rgba(255,255,255,.6)"/>
+          <circle cx="17" cy="5" r="2.5" fill="#c8832a"/>
+          <path d="M16 5h2M17 4v2" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div><div class="lc-brand-text">SusaRest</div></div>
+    </div>
+
+    <div class="ob-progress">
+      <div class="ob-dot done" id="ob-dot-1"></div>
+      <div class="ob-dot" id="ob-dot-2"></div>
+      <div class="ob-dot" id="ob-dot-3"></div>
+    </div>
+
+    <!-- Step 1: nombre -->
+    <div class="ob-step active" id="ob-step-1">
+      <div class="ob-title">¡Bienvenido! 👋</div>
+      <div class="ob-sub">Primero, ¿cómo se llama tu restaurante?</div>
+      <div class="form-grp">
+        <label class="form-lbl">Nombre del restaurante</label>
+        <input type="text" class="form-inp" id="ob-name" placeholder="Ej: La Fogata" oninput="obValidateStep1()">
+      </div>
+      <div class="form-grp">
+        <label class="form-lbl">Teléfono (opcional)</label>
+        <input type="text" class="form-inp" id="ob-phone" placeholder="(461) 123-4567">
+      </div>
+      <button class="btn-login" id="ob-btn-1" onclick="obNextStep(2)" disabled style="opacity:.5">Siguiente →</button>
+    </div>
+
+    <!-- Step 2: emoji -->
+    <div class="ob-step" id="ob-step-2">
+      <div class="ob-title">¿Qué tipo de cocina?</div>
+      <div class="ob-sub">Elige un ícono que represente tu restaurante.</div>
+      <div class="ob-emoji-grid" id="ob-emoji-grid">
+        <div class="ob-emoji-btn selected" onclick="obSelectEmoji(this,'🍽️')">🍽️</div>
+        <div class="ob-emoji-btn" onclick="obSelectEmoji(this,'🥩')">🥩</div>
+        <div class="ob-emoji-btn" onclick="obSelectEmoji(this,'🍣')">🍣</div>
+        <div class="ob-emoji-btn" onclick="obSelectEmoji(this,'🌮')">🌮</div>
+        <div class="ob-emoji-btn" onclick="obSelectEmoji(this,'🍕')">🍕</div>
+        <div class="ob-emoji-btn" onclick="obSelectEmoji(this,'🍜')">🍜</div>
+        <div class="ob-emoji-btn" onclick="obSelectEmoji(this,'🥗')">🥗</div>
+        <div class="ob-emoji-btn" onclick="obSelectEmoji(this,'🍔')">🍔</div>
+        <div class="ob-emoji-btn" onclick="obSelectEmoji(this,'🥘')">🥘</div>
+        <div class="ob-emoji-btn" onclick="obSelectEmoji(this,'☕')">☕</div>
+      </div>
+      <button class="btn-login" onclick="obNextStep(3)">Siguiente →</button>
+    </div>
+
+    <!-- Step 3: metas FC -->
+    <div class="ob-step" id="ob-step-3">
+      <div class="ob-title">Metas de food cost</div>
+      <div class="ob-sub">Puedes cambiar esto después. Valores típicos para México:</div>
+      <div class="form-grp">
+        <label class="form-lbl">Meta ideal de food cost (%)</label>
+        <input type="number" class="form-inp" id="ob-fc-meta" value="28" min="10" max="50">
+      </div>
+      <div class="form-grp">
+        <label class="form-lbl">Alerta (%)</label>
+        <input type="number" class="form-inp" id="ob-fc-alert" value="32" min="10" max="60">
+      </div>
+      <div class="form-grp">
+        <label class="form-lbl">Crítico (%)</label>
+        <input type="number" class="form-inp" id="ob-fc-crit" value="35" min="10" max="70">
+      </div>
+      <button class="btn-login" id="ob-btn-3" onclick="obFinish()">
+        <span id="ob-btn-3-text">Crear mi restaurante →</span>
+        <div class="btn-login-loader" id="ob-loader" style="display:none"></div>
+      </button>
+      <div class="login-err" id="ob-error"></div>
     </div>
   </div>
 </div>
@@ -2600,43 +2696,179 @@ async function doLogout() {
   await _supabase.auth.signOut();
 }
 
-function _showApp(user) {
-  currentUser = user;
+// ─── Screen helpers ───
+function _hideAllScreens() {
   document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  // Show user email in topbar
+  document.getElementById('onboarding-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'none';
+}
+
+async function _showApp(user) {
+  currentUser = user;
   const email = user.email || '';
   document.getElementById('topbar-user-email').textContent = email;
-  const initials = email.slice(0,2).toUpperCase();
-  document.getElementById('topbar-av').textContent = initials;
+  document.getElementById('topbar-av').textContent = email.slice(0,2).toUpperCase();
+
+  const { data: restaurants, error } = await _supabase
+    .from('restaurants').select('*').eq('user_id', user.id).limit(1);
+
+  if (error) { console.error(error); _showLogin(); return; }
+
+  if (!restaurants || restaurants.length === 0) {
+    _hideAllScreens();
+    document.getElementById('onboarding-screen').style.display = 'flex';
+    return;
+  }
+
+  await _loadRestaurantData(restaurants[0]);
+  _hideAllScreens();
+  document.getElementById('app').style.display = 'block';
   initApp();
+}
+
+async function _loadRestaurantData(restaurant) {
+  currentTenant = restaurant.id;
+  TENANTS[currentTenant] = {
+    name: restaurant.name,
+    emoji: restaurant.emoji || '🍽️',
+    initials: restaurant.initials || restaurant.name.slice(0,2).toUpperCase(),
+    phone: restaurant.phone || '',
+    email: restaurant.email || '',
+    address: restaurant.address || '',
+    currency: restaurant.currency || 'MXN',
+    tax: restaurant.tax || 16,
+    plan: restaurant.plan || 'free',
+    primaryColor: restaurant.primary_color || '#1a472a',
+    primaryLight: restaurant.primary_light || '#e8f0ea',
+    fcMeta: restaurant.fc_meta || 28,
+    fcAlert: restaurant.fc_alert || 32,
+    fcCrit: restaurant.fc_crit || 35,
+    margin: restaurant.margin || 68,
+  };
+
+  const [{ data: inv }, { data: recs }, { data: ords }, { data: ph }] = await Promise.all([
+    _supabase.from('inventory').select('*').eq('restaurant_id', currentTenant),
+    _supabase.from('recipes').select('*, recipe_ingredients(*)').eq('restaurant_id', currentTenant),
+    _supabase.from('orders').select('*').eq('restaurant_id', currentTenant).order('date', { ascending: false }),
+    _supabase.from('price_history').select('*').eq('restaurant_id', currentTenant).order('date', { ascending: false }),
+  ]);
+
+  const inventory = (inv || []).map(i => ({
+    id: i.id, name: i.name, cat: i.cat, unit: i.unit,
+    stock: i.stock, minStock: i.min_stock, cost: i.cost, buyUnit: i.buy_unit
+  }));
+
+  const recipes = (recs || []).map(r => ({
+    id: r.id, name: r.name, cat: r.cat, portions: r.portions, price: r.price,
+    ingredients: (r.recipe_ingredients || []).map(ri => ({
+      ingId: ri.inventory_id, qty: ri.qty, unit: ri.unit
+    }))
+  }));
+
+  const orders = (ords || []).map(o => ({
+    id: o.id, date: o.date, supplier: o.supplier,
+    status: o.status, items: o.items, total: o.total, delivery: o.delivery
+  }));
+
+  const priceHistory = (ph || []).map(p => ({
+    itemId: p.inventory_id, itemName: p.item_name,
+    oldCost: p.old_cost, newCost: p.new_cost, pct: p.pct, date: p.date
+  }));
+
+  DB[currentTenant] = {
+    inventory, recipes, orders, priceHistory,
+    fcConfig: {
+      meta: restaurant.fc_meta || 28,
+      alert: restaurant.fc_alert || 32,
+      crit: restaurant.fc_crit || 35,
+      margin: restaurant.margin || 68
+    },
+    opCosts: { period: 'mes', ventas: 0, items: [] }
+  };
 }
 
 function _showLogin() {
   currentUser = null;
-  document.getElementById('app').style.display = 'none';
+  _hideAllScreens();
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('auth-pass').value = '';
   _setLoginLoading(false);
 }
 
-// Check session on load + subscribe to changes
+// ─── Session init ───
 (async () => {
   const { data: { session } } = await _supabase.auth.getSession();
   if (session?.user) {
-    _showApp(session.user);
+    await _showApp(session.user);
   } else {
     _showLogin();
   }
-
-  _supabase.auth.onAuthStateChange((_event, session) => {
+  _supabase.auth.onAuthStateChange(async (_event, session) => {
     if (session?.user) {
-      _showApp(session.user);
+      await _showApp(session.user);
     } else {
       _showLogin();
     }
   });
 })();
+
+// ─── Onboarding logic ───
+let _obEmoji = '🍽️';
+
+function obValidateStep1() {
+  const val = document.getElementById('ob-name').value.trim();
+  const btn = document.getElementById('ob-btn-1');
+  btn.disabled = !val;
+  btn.style.opacity = val ? '1' : '.5';
+}
+
+function obSelectEmoji(el, emoji) {
+  document.querySelectorAll('.ob-emoji-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  _obEmoji = emoji;
+}
+
+function obNextStep(step) {
+  document.querySelectorAll('.ob-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`ob-step-${step}`).classList.add('active');
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById(`ob-dot-${i}`).classList.toggle('done', i <= step);
+  }
+}
+
+async function obFinish() {
+  const name     = document.getElementById('ob-name').value.trim();
+  const phone    = document.getElementById('ob-phone').value.trim();
+  const fc_meta  = parseFloat(document.getElementById('ob-fc-meta').value) || 28;
+  const fc_alert = parseFloat(document.getElementById('ob-fc-alert').value) || 32;
+  const fc_crit  = parseFloat(document.getElementById('ob-fc-crit').value) || 35;
+
+  document.getElementById('ob-btn-3-text').style.display = 'none';
+  document.getElementById('ob-loader').style.display = 'block';
+  document.getElementById('ob-error').style.display = 'none';
+
+  const { data, error } = await _supabase.from('restaurants').insert({
+    user_id: currentUser.id,
+    name, emoji: _obEmoji,
+    initials: name.slice(0,2).toUpperCase(),
+    phone, plan: 'free',
+    fc_meta, fc_alert, fc_crit, margin: 68
+  }).select().single();
+
+  if (error) {
+    document.getElementById('ob-btn-3-text').style.display = 'block';
+    document.getElementById('ob-loader').style.display = 'none';
+    const err = document.getElementById('ob-error');
+    err.textContent = error.message;
+    err.style.display = 'block';
+    return;
+  }
+
+  await _loadRestaurantData(data);
+  _hideAllScreens();
+  document.getElementById('app').style.display = 'block';
+  initApp();
+}
 
 // ═══════════════════════════════════════════════
 // INIT
@@ -3682,7 +3914,7 @@ function showPriceHistory(id){
   openModal('price-history-modal');
 }
 
-function saveIngredient(){
+async function saveIngredient(){
   const name=document.getElementById('ni-name').value.trim();
   const cat=document.getElementById('ni-cat').value;
   const unit=document.getElementById('ni-unit').value;
@@ -3690,20 +3922,28 @@ function saveIngredient(){
   const minStock=+document.getElementById('ni-min').value||0;
   const cost=+document.getElementById('ni-cost').value;
   if (!name||isNaN(cost)||cost<=0){showToast('Completa nombre y costo','danger');return;}
-  const inv=DB[currentTenant].inventory;
-  inv.push({id:Math.max(...inv.map(i=>i.id),0)+1,name,cat,unit,stock,minStock,cost,buyUnit:unit});
+
+  const { data, error } = await _supabase.from('inventory').insert({
+    restaurant_id: currentTenant,
+    name, cat, unit, stock, min_stock: minStock, cost, buy_unit: unit
+  }).select().single();
+
+  if (error) { showToast('Error al guardar: ' + error.message, 'danger'); return; }
+
+  DB[currentTenant].inventory.push({
+    id: data.id, name, cat, unit, stock, minStock, cost, buyUnit: unit
+  });
   closeModal('add-ing-modal');
-  renderInventario();renderDashboard();
+  renderInventario(); renderDashboard();
   showToast(`✓ ${name} agregado al inventario`);
   szNotifyChange();
 }
 
-function deleteIngredient(id) {
+async function deleteIngredient(id) {
   const inv = DB[currentTenant].inventory;
   const item = inv.find(i => i.id === id);
   if (!item) return;
 
-  // Check if used in any recipe
   const usedIn = DB[currentTenant].recipes.filter(r =>
     r.ingredients.some(ing => ing.ingId === id)
   );
@@ -3712,23 +3952,21 @@ function deleteIngredient(id) {
   if (usedIn.length) {
     msg += `\n\n⚠️ Este ingrediente está en ${usedIn.length} receta(s): ${usedIn.map(r=>r.name).join(', ')}.\nSe eliminará de esas recetas también.`;
   }
-
   if (!confirm(msg)) return;
 
-  // Remove from inventory
-  DB[currentTenant].inventory = inv.filter(i => i.id !== id);
+  const { error } = await _supabase.from('inventory').delete().eq('id', id);
+  if (error) { showToast('Error al eliminar: ' + error.message, 'danger'); return; }
 
-  // Remove from any recipes that use it
+  DB[currentTenant].inventory = inv.filter(i => i.id !== id);
   if (usedIn.length) {
     DB[currentTenant].recipes.forEach(r => {
       r.ingredients = r.ingredients.filter(ing => ing.ingId !== id);
     });
   }
 
-  renderInventario();
-  renderFoodCost();
-  renderDashboard();
-  const _delSuffix = usedIn.length ? ` · removido de ${usedIn.length} receta(s)` : ""; showToast(`🗑 "${item.name}" eliminado del inventario${_delSuffix}`);
+  renderInventario(); renderFoodCost(); renderDashboard();
+  const _delSuffix = usedIn.length ? ` · removido de ${usedIn.length} receta(s)` : '';
+  showToast(`🗑 "${item.name}" eliminado${_delSuffix}`);
   szNotifyChange();
 }
 
@@ -3851,11 +4089,15 @@ function editRecipe(id) {
   calcRecipePreview();
 }
 
-function deleteRecipe(id) {
+async function deleteRecipe(id) {
   const recipes = DB[currentTenant].recipes;
   const r = recipes.find(x => x.id === id);
   if (!r) return;
   if (!confirm(`¿Eliminar la receta "${r.name}"?\n\nSe eliminará del inventario de recetas y del food cost.`)) return;
+
+  const { error } = await _supabase.from('recipes').delete().eq('id', id);
+  if (error) { showToast('Error al eliminar: ' + error.message, 'danger'); return; }
+
   DB[currentTenant].recipes = recipes.filter(x => x.id !== id);
   renderRecetas(); renderFoodCost(); renderDashboard();
   showToast(`🗑 Receta "${r.name}" eliminada`);
@@ -3908,7 +4150,7 @@ function calcRecipePreview(){
   } else prev.style.display='none';
 }
 
-function saveRecipe(){
+async function saveRecipe(){
   const name=document.getElementById('nr-name').value.trim();
   const cat=document.getElementById('nr-cat').value;
   const portions=+document.getElementById('nr-portions').value||1;
@@ -3923,26 +4165,42 @@ function saveRecipe(){
   const recipes=DB[currentTenant].recipes;
 
   if (recipeEditId !== null) {
-    // EDIT MODE — update existing recipe
-    const r = recipes.find(x => x.id === recipeEditId);
-    if (r) {
-      r.name = name; r.cat = cat; r.portions = portions;
-      r.price = price; r.ingredients = ingredients;
+    // EDIT MODE
+    const { error } = await _supabase.from('recipes').update({ name, cat, portions, price })
+      .eq('id', recipeEditId);
+    if (error) { showToast('Error: ' + error.message, 'danger'); return; }
+    // Replace ingredients: delete old, insert new
+    await _supabase.from('recipe_ingredients').delete().eq('recipe_id', recipeEditId);
+    if (ingredients.length) {
+      await _supabase.from('recipe_ingredients').insert(
+        ingredients.map(i => ({ recipe_id: recipeEditId, inventory_id: i.ingId, qty: i.qty, unit: i.unit }))
+      );
     }
+    const r = recipes.find(x => x.id === recipeEditId);
+    if (r) { r.name=name; r.cat=cat; r.portions=portions; r.price=price; r.ingredients=ingredients; }
     closeModal('add-recipe-modal');
     document.getElementById('recipe-ing-list').innerHTML='';
     ingRowCount=0; ingRows=[]; recipeEditId=null;
     const modalTitle = document.querySelector('#add-recipe-modal .modal-title');
     if (modalTitle) modalTitle.textContent = 'Nueva Receta';
-    renderRecetas();renderFoodCost();renderDashboard();
+    renderRecetas(); renderFoodCost(); renderDashboard();
     showToast(`✓ Receta "${name}" actualizada`);
     szNotifyChange();
   } else {
-    // CREATE MODE — push new recipe
-    recipes.push({id:Math.max(...recipes.map(r=>r.id),0)+1,name,cat,portions,price,ingredients});
+    // CREATE MODE
+    const { data: newRec, error } = await _supabase.from('recipes').insert({
+      restaurant_id: currentTenant, name, cat, portions, price
+    }).select().single();
+    if (error) { showToast('Error: ' + error.message, 'danger'); return; }
+    if (ingredients.length) {
+      await _supabase.from('recipe_ingredients').insert(
+        ingredients.map(i => ({ recipe_id: newRec.id, inventory_id: i.ingId, qty: i.qty, unit: i.unit }))
+      );
+    }
+    recipes.push({ id: newRec.id, name, cat, portions, price, ingredients });
     closeModal('add-recipe-modal');
-    document.getElementById('recipe-ing-list').innerHTML='';ingRowCount=0;ingRows=[];
-    renderRecetas();renderFoodCost();renderDashboard();
+    document.getElementById('recipe-ing-list').innerHTML=''; ingRowCount=0; ingRows=[];
+    renderRecetas(); renderFoodCost(); renderDashboard();
     showToast(`✓ Receta "${name}" guardada`);
     szNotifyChange();
   }
