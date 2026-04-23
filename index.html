@@ -537,6 +537,11 @@ tbody tr:hover td{background:var(--surface2)}
 .sz-client-banner.visible { display:flex; }
 @keyframes sz-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
+/* ── LOADING SCREEN ── */
+#loading-screen{min-height:100vh;display:none;align-items:center;justify-content:center;background:linear-gradient(145deg,#071c2e 0%,#0d2b45 40%,#122f1c 80%,#0d2b45 100%);flex-direction:column;gap:16px}
+.loading-spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,.15);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
+.loading-msg{color:rgba(255,255,255,.7);font-size:13.5px;font-family:var(--font)}
+
 /* ── PLAN SELECTOR ── */
 .ob-plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
 .ob-plan-card{border:2px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .15s;background:var(--surface);text-align:left}
@@ -637,6 +642,12 @@ tbody tr:hover td{background:var(--surface2)}
       <div class="login-hint" id="auth-hint">¿Problemas? Contacta a tu administrador.</div>
     </div>
   </div>
+</div>
+
+<!-- ═══════════════ LOADING ═══════════════ -->
+<div id="loading-screen">
+  <div class="loading-spinner"></div>
+  <div class="loading-msg" id="loading-msg">Cargando...</div>
 </div>
 
 <!-- ═══════════════ ONBOARDING ═══════════════ -->
@@ -2753,8 +2764,15 @@ const SUSAZON_ADMIN_UID = 'a9a703ca-a28b-422e-af24-b0a44077f4ec';
 // ─── Screen helpers ───
 function _hideAllScreens() {
   document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('loading-screen').style.display = 'none';
   document.getElementById('onboarding-screen').style.display = 'none';
   document.getElementById('app').style.display = 'none';
+}
+
+function _showLoading(msg = 'Cargando...') {
+  _hideAllScreens();
+  document.getElementById('loading-msg').textContent = msg;
+  document.getElementById('loading-screen').style.display = 'flex';
 }
 
 const ADMIN_UID = 'a9a703ca-a28b-422e-af24-b0a44077f4ec';
@@ -2767,15 +2785,12 @@ async function _showApp(user) {
 
   // Admin → Susazón portal
   if (user.id === ADMIN_UID) {
+    _showLoading('Cargando portal Susazón...');
     await doLoginSzAdmin();
     return;
   }
 
-  // ── Admin → Susazón Portal ──
-  if (user.id === SUSAZON_ADMIN_UID) {
-    await doLoginSzAdmin();
-    return;
-  }
+  _showLoading('Verificando cuenta...');
 
   const { data: restaurants, error } = await _supabase
     .from('restaurants').select('*').eq('user_id', user.id).limit(1);
@@ -2783,21 +2798,19 @@ async function _showApp(user) {
   console.log('[SusaRest] restaurants query →', { restaurants, error });
 
   if (error) {
-    console.error('[SusaRest] Error cargando restaurante:', error);
-    // Muestra onboarding de todas formas — no bloquear al usuario
+    console.error('[SusaRest] Error:', error);
     _hideAllScreens();
     document.getElementById('onboarding-screen').style.display = 'flex';
     return;
   }
 
   if (!restaurants || restaurants.length === 0) {
-    console.log('[SusaRest] Sin restaurante → onboarding');
     _hideAllScreens();
     document.getElementById('onboarding-screen').style.display = 'flex';
     return;
   }
 
-  console.log('[SusaRest] Restaurante encontrado:', restaurants[0].name);
+  _showLoading(`Bienvenido, ${restaurants[0].name}...`);
   await _loadRestaurantData(restaurants[0]);
   _hideAllScreens();
   document.getElementById('app').style.display = 'block';
@@ -6274,15 +6287,16 @@ async function doLoginSzAdmin() {
   }));
 
   console.log(`[SusaRest Admin] ${allRestaurants?.length || 0} restaurantes cargados`);
+  _hideAllScreens();
+  document.getElementById('sz-portal').style.display = 'block';
+  document.getElementById('sz-date').textContent = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   szBuildDropdown();
   szRenderAll();
 }
 
 function closeSzPortal() {
-  document.getElementById('sz-portal').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('auth-pass').value = '';
   szSelectedClient = null;
+  _showLogin();
 }
 
 async function szRefreshAll() {
