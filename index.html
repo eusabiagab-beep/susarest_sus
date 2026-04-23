@@ -537,6 +537,21 @@ tbody tr:hover td{background:var(--surface2)}
 .sz-client-banner.visible { display:flex; }
 @keyframes sz-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
+/* ── PLAN SELECTOR ── */
+.ob-plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.ob-plan-card{border:2px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .15s;background:var(--surface);text-align:left}
+.ob-plan-card:hover{border-color:var(--border-strong);background:var(--surface2)}
+.ob-plan-card.selected{border-color:var(--brand);background:var(--brand-light)}
+.ob-plan-card.pro-card.selected{border-color:var(--brand-accent);background:#fff8f0}
+.ob-plan-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.ob-plan-price{font-size:13px;color:var(--text-muted);margin-bottom:10px}
+.ob-plan-feature{font-size:12px;color:var(--text-muted);margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.ob-plan-feature::before{content:'✓';color:var(--success);font-weight:700;flex-shrink:0}
+/* Pro lock */
+.nav-pro-lock{margin-left:auto;font-size:10px;background:var(--brand-accent);color:white;padding:2px 6px;border-radius:4px;font-weight:700}
+.nav-item.locked{opacity:.5;cursor:not-allowed}
+.nav-item.locked:hover{background:transparent;color:var(--text-muted)}
+
 /* ── ONBOARDING ── */
 #onboarding-screen{min-height:100vh;display:none;align-items:center;justify-content:center;background:linear-gradient(145deg,#071c2e 0%,#0d2b45 40%,#122f1c 80%,#0d2b45 100%)}
 #onboarding-screen::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
@@ -680,23 +695,59 @@ tbody tr:hover td{background:var(--surface2)}
       <button class="btn-login" onclick="obNextStep(3)">Siguiente →</button>
     </div>
 
-    <!-- Step 3: metas FC -->
+    <!-- Step 3: plan + metas FC -->
     <div class="ob-step" id="ob-step-3">
-      <div class="ob-title">Metas de food cost</div>
-      <div class="ob-sub">Puedes cambiar esto después. Valores típicos para México:</div>
-      <div class="form-grp">
-        <label class="form-lbl">Meta ideal de food cost (%)</label>
-        <input type="number" class="form-inp" id="ob-fc-meta" value="28" min="10" max="50">
+      <div class="ob-title">Elige tu plan</div>
+      <div class="ob-sub">Puedes cambiar después. El plan Pro requiere activación manual.</div>
+
+      <div class="ob-plan-grid">
+        <div class="ob-plan-card selected" id="ob-plan-free" onclick="obSelectPlan('free')">
+          <div class="ob-plan-name">🆓 Free</div>
+          <div class="ob-plan-price">Sin costo</div>
+          <div class="ob-plan-feature">Dashboard</div>
+          <div class="ob-plan-feature">Inventario</div>
+          <div class="ob-plan-feature">Recetas</div>
+          <div class="ob-plan-feature">Food Cost</div>
+          <div class="ob-plan-feature">Órdenes de compra</div>
+        </div>
+        <div class="ob-plan-card pro-card" id="ob-plan-pro" onclick="obSelectPlan('pro')">
+          <div class="ob-plan-name" style="color:var(--brand-accent)">⭐ Pro</div>
+          <div class="ob-plan-price">Contactar a Susazón</div>
+          <div class="ob-plan-feature">Todo lo de Free</div>
+          <div class="ob-plan-feature">Rentabilidad</div>
+          <div class="ob-plan-feature">Analytics</div>
+          <div class="ob-plan-feature">Análisis de Clientes</div>
+          <div class="ob-plan-feature">Simulador FC</div>
+          <div class="ob-plan-feature">Alertas avanzadas</div>
+          <div class="ob-plan-feature">Importar datos</div>
+          <div class="ob-plan-feature">Configuración</div>
+        </div>
       </div>
-      <div class="form-grp">
-        <label class="form-lbl">Alerta (%)</label>
-        <input type="number" class="form-inp" id="ob-fc-alert" value="32" min="10" max="60">
+
+      <div id="ob-fc-config">
+        <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Metas de food cost</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          <div class="form-grp" style="margin:0">
+            <label class="form-lbl">Meta ideal (%)</label>
+            <input type="number" class="form-inp" id="ob-fc-meta" value="28" min="10" max="50">
+          </div>
+          <div class="form-grp" style="margin:0">
+            <label class="form-lbl">Alerta (%)</label>
+            <input type="number" class="form-inp" id="ob-fc-alert" value="32" min="10" max="60">
+          </div>
+          <div class="form-grp" style="margin:0">
+            <label class="form-lbl">Crítico (%)</label>
+            <input type="number" class="form-inp" id="ob-fc-crit" value="35" min="10" max="70">
+          </div>
+        </div>
       </div>
-      <div class="form-grp">
-        <label class="form-lbl">Crítico (%)</label>
-        <input type="number" class="form-inp" id="ob-fc-crit" value="35" min="10" max="70">
+
+      <div id="ob-pro-msg" style="display:none;background:#fff8f0;border:1.5px solid var(--brand-accent);border-radius:10px;padding:14px;margin-top:12px;font-size:13px;color:var(--text-muted);line-height:1.6">
+        Al hacer clic en <strong>"Solicitar Plan Pro"</strong> te crearemos la cuenta y te contactaremos en menos de 24 horas para activarla.<br><br>
+        <strong style="color:var(--brand-accent)">📧 eusabiagab@susazon.com.mx</strong>
       </div>
-      <button class="btn-login" id="ob-btn-3" onclick="obFinish()">
+
+      <button class="btn-login" id="ob-btn-3" onclick="obFinish()" style="margin-top:16px">
         <span id="ob-btn-3-text">Crear mi restaurante →</span>
         <div class="btn-login-loader" id="ob-loader" style="display:none"></div>
       </button>
@@ -731,7 +782,7 @@ tbody tr:hover td{background:var(--surface2)}
     <div class="sb-section">
       <div class="sb-label">Principal</div>
       <button class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</button>
-      <button class="nav-item" onclick="showPage('rentabilidad',this)"><span class="nav-icon">🏦</span> Rentabilidad</button>
+      <button class="nav-item pro-only" id="nav-rentabilidad" onclick="showPage('rentabilidad',this)"><span class="nav-icon">🏦</span> Rentabilidad<span class="nav-pro-lock">PRO</span></button>
       <button class="nav-item" onclick="showPage('inventario',this)"><span class="nav-icon">📦</span> Inventario</button>
       <button class="nav-item" onclick="showPage('recetas',this)"><span class="nav-icon">📋</span> Recetas</button>
       <button class="nav-item" onclick="showPage('foodcost',this)"><span class="nav-icon">💰</span> Food Cost</button>
@@ -744,20 +795,20 @@ tbody tr:hover td{background:var(--surface2)}
 
     <div class="sb-section">
       <div class="sb-label">Analítica</div>
-      <button class="nav-item" onclick="showPage('analytics',this)"><span class="nav-icon">📈</span> Analytics<span class="nav-new">NUEVO</span></button>
-      <button class="nav-item" onclick="showPage('clientes',this)"><span class="nav-icon">👥</span> Análisis de Clientes<span class="nav-new">PRO</span></button>
-      <button class="nav-item" onclick="showPage('simulador',this)"><span class="nav-icon">🔮</span> Simulador FC</button>
+      <button class="nav-item pro-only" id="nav-analytics" onclick="showPage('analytics',this)"><span class="nav-icon">📈</span> Analytics<span class="nav-pro-lock">PRO</span></button>
+      <button class="nav-item pro-only" id="nav-clientes" onclick="showPage('clientes',this)"><span class="nav-icon">👥</span> Análisis de Clientes<span class="nav-pro-lock">PRO</span></button>
+      <button class="nav-item pro-only" id="nav-simulador" onclick="showPage('simulador',this)"><span class="nav-icon">🔮</span> Simulador FC<span class="nav-pro-lock">PRO</span></button>
     </div>
 
     <div class="sb-section">
       <div class="sb-label">Sistema</div>
-      <button class="nav-item" onclick="showPage('alertas',this)"><span class="nav-icon">🔔</span> Alertas<span class="nav-badge" id="alert-badge">3</span></button>
-      <button class="nav-item" onclick="showPage('configuracion',this)"><span class="nav-icon">⚙️</span> Configuración</button>
-      <button class="nav-item" onclick="showPage('importar',this)"><span class="nav-icon">⬆️</span> Importar Datos</button>
+      <button class="nav-item pro-only" id="nav-alertas" onclick="showPage('alertas',this)"><span class="nav-icon">🔔</span> Alertas<span class="nav-pro-lock">PRO</span></button>
+      <button class="nav-item pro-only" id="nav-configuracion" onclick="showPage('configuracion',this)"><span class="nav-icon">⚙️</span> Configuración<span class="nav-pro-lock">PRO</span></button>
+      <button class="nav-item pro-only" id="nav-importar" onclick="showPage('importar',this)"><span class="nav-icon">⬆️</span> Importar Datos<span class="nav-pro-lock">PRO</span></button>
     </div>
 
     <div class="sb-plan">
-      <div class="plan-pill"><span>🏆</span><strong>Plan Pro</strong><span>· Susazón</span></div>
+      <div class="plan-pill" id="sb-plan-pill"><span>🆓</span><strong>Plan Free</strong></div>
     </div>
 
     <div class="sb-bottom">
@@ -775,10 +826,10 @@ tbody tr:hover td{background:var(--surface2)}
         <div class="topbar-title" id="topbar-title">Dashboard</div>
       </div>
       <div class="topbar-right">
-        <button class="tb-btn" onclick="showPage('importar',null)">⬆ Importar</button>
-        <button class="tb-btn" onclick="showPage('simulador',null)">🔮 Simular</button>
+        <button class="tb-btn pro-only" id="tb-importar" onclick="showPage('importar',null)">⬆ Importar</button>
+        <button class="tb-btn pro-only" id="tb-simular" onclick="showPage('simulador',null)">🔮 Simular</button>
         <button class="tb-btn" onclick="exportCurrentModule()" style="color:var(--tenant-primary);font-weight:500" id="export-btn">📄 Exportar</button>
-        <button class="alert-btn" onclick="showPage('alertas',null)">🔔<div class="alert-dot"></div></button>
+        <button class="alert-btn pro-only" id="tb-alertas" onclick="showPage('alertas',null)">🔔<div class="alert-dot"></div></button>
         <div class="tb-user-pill" id="user-pill">
           <div class="tb-user-dot" id="topbar-av">LF</div>
           <span id="topbar-user-email" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">–</span>
@@ -2696,6 +2747,9 @@ async function doLogout() {
   await _supabase.auth.signOut();
 }
 
+// ─── Admin UID — Susazón portal access ───
+const SUSAZON_ADMIN_UID = 'a9a703ca-a28b-422e-af24-b0a44077f4ec';
+
 // ─── Screen helpers ───
 function _hideAllScreens() {
   document.getElementById('login-screen').style.display = 'none';
@@ -2703,11 +2757,25 @@ function _hideAllScreens() {
   document.getElementById('app').style.display = 'none';
 }
 
+const ADMIN_UID = 'a9a703ca-a28b-422e-af24-b0a44077f4ec';
+
 async function _showApp(user) {
   currentUser = user;
   const email = user.email || '';
   document.getElementById('topbar-user-email').textContent = email;
   document.getElementById('topbar-av').textContent = email.slice(0,2).toUpperCase();
+
+  // Admin → Susazón portal
+  if (user.id === ADMIN_UID) {
+    await doLoginSzAdmin();
+    return;
+  }
+
+  // ── Admin → Susazón Portal ──
+  if (user.id === SUSAZON_ADMIN_UID) {
+    await doLoginSzAdmin();
+    return;
+  }
 
   const { data: restaurants, error } = await _supabase
     .from('restaurants').select('*').eq('user_id', user.id).limit(1);
@@ -2831,6 +2899,7 @@ let _appInitialized = false;
 
 // ─── Onboarding logic ───
 let _obEmoji = '🍽️';
+let _obPlan = 'free';
 
 function obValidateStep1() {
   const val = document.getElementById('ob-name').value.trim();
@@ -2843,6 +2912,16 @@ function obSelectEmoji(el, emoji) {
   document.querySelectorAll('.ob-emoji-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
   _obEmoji = emoji;
+}
+
+function obSelectPlan(plan) {
+  _obPlan = plan;
+  document.getElementById('ob-plan-free').classList.toggle('selected', plan === 'free');
+  document.getElementById('ob-plan-pro').classList.toggle('selected', plan === 'pro');
+  document.getElementById('ob-fc-config').style.display = plan === 'free' ? 'block' : 'none';
+  document.getElementById('ob-pro-msg').style.display = plan === 'pro' ? 'block' : 'none';
+  document.getElementById('ob-btn-3-text').textContent =
+    plan === 'free' ? 'Crear mi restaurante →' : 'Solicitar Plan Pro →';
 }
 
 function obNextStep(step) {
@@ -2864,11 +2943,12 @@ async function obFinish() {
   document.getElementById('ob-loader').style.display = 'block';
   document.getElementById('ob-error').style.display = 'none';
 
+  // Save restaurant with plan = free always (Pro requires manual activation)
   const { data, error } = await _supabase.from('restaurants').insert({
     user_id: currentUser.id,
     name, emoji: _obEmoji,
     initials: name.slice(0,2).toUpperCase(),
-    phone, plan: 'free',
+    phone, plan: 'free', // Pro activated manually by you
     fc_meta, fc_alert, fc_crit, margin: 68
   }).select().single();
 
@@ -2881,10 +2961,51 @@ async function obFinish() {
     return;
   }
 
+  // If Pro requested → send email via mailto
+  if (_obPlan === 'pro') {
+    const subject = encodeURIComponent(`Solicitud Plan Pro — ${name}`);
+    const body = encodeURIComponent(
+      `Hola,\n\nEl restaurante "${name}" solicita activación del Plan Pro.\n\nCorreo de cuenta: ${currentUser.email}\nTeléfono: ${phone || 'No proporcionado'}\n\nFavor de activar.\n\nSusaRest`
+    );
+    window.open(`mailto:eusabiagab@susazon.com.mx?subject=${subject}&body=${body}`);
+  }
+
   await _loadRestaurantData(data);
   _hideAllScreens();
   document.getElementById('app').style.display = 'block';
   initApp();
+}
+
+// ─── Apply plan restrictions ───
+function applyPlanRestrictions() {
+  const plan = TENANTS[currentTenant]?.plan || 'free';
+  const isPro = plan === 'pro' || plan === 'enterprise';
+
+  // Sidebar nav items
+  document.querySelectorAll('.nav-item.pro-only').forEach(btn => {
+    btn.classList.toggle('locked', !isPro);
+    if (!isPro) {
+      btn.onclick = (e) => { e.stopPropagation(); showProUpgradeToast(); };
+    }
+  });
+
+  // Topbar Pro buttons
+  document.querySelectorAll('.tb-btn.pro-only, .alert-btn.pro-only').forEach(btn => {
+    btn.style.opacity = isPro ? '1' : '.4';
+    btn.style.pointerEvents = isPro ? '' : 'none';
+  });
+
+  // Plan pill
+  const pill = document.getElementById('sb-plan-pill');
+  if (pill) {
+    pill.innerHTML = isPro
+      ? '<span>⭐</span><strong style="color:var(--brand-accent)">Plan Pro</strong>'
+      : '<span>🆓</span><strong>Plan Free</strong> <span style="font-size:11px;color:var(--brand-accent);cursor:pointer" onclick="showProUpgradeToast()">· Subir a Pro</span>';
+  }
+}
+
+function showProUpgradeToast() {
+  showToast('⭐ Esta función es exclusiva del Plan Pro · Contáctanos: eusabiagab@susazon.com.mx', 'warn');
 }
 
 // ═══════════════════════════════════════════════
@@ -2893,6 +3014,7 @@ async function obFinish() {
 function initApp(){
   applyTenantTheme();
   updateTopbar();
+  applyPlanRestrictions();
   initSimulator();
   renderDashboard();
   renderInventario();
@@ -2915,7 +3037,7 @@ function applyTenantTheme(){
 function updateTopbar(){
   const t=TENANTS[currentTenant];
   document.getElementById('sidebar-name').textContent=t.name;
-  document.getElementById('sidebar-tenant').textContent=currentTenant;
+  document.getElementById('sidebar-tenant').textContent=t.plan?.toUpperCase()||'FREE';
   document.getElementById('dash-welcome').textContent=`Buen día, ${t.name} ${t.emoji}`;
 }
 
@@ -6107,12 +6229,51 @@ function shareEmail() {
 // SUSAZÓN PORTAL
 // ═══════════════════════════════════════════════
 
-let szSelectedClient = null; // null = all, 'steakhouse1' = specific tenant
+let szSelectedClient = null;
 
-function doLoginSz() {
-  document.getElementById('login-screen').style.display = 'none';
+// ── Admin login: load ALL restaurants from Supabase ──
+async function doLoginSzAdmin() {
+  _hideAllScreens();
   document.getElementById('sz-portal').style.display = 'block';
   document.getElementById('sz-date').textContent = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+  const overviewEl = document.getElementById('sz-overview-kpis');
+  if (overviewEl) overviewEl.innerHTML = '<div style="padding:24px;color:var(--text-muted);font-size:13px">⏳ Cargando datos de clientes...</div>';
+
+  const { data: allRestaurants, error } = await _supabase
+    .from('restaurants').select('*').order('created_at', { ascending: false });
+
+  if (error) { console.error('[SusaRest Admin]', error); return; }
+
+  // Clear demo data, load real data
+  Object.keys(DB).forEach(k => { if (!['steakhouse1','sushi1','mexicano1'].includes(k)) return; delete DB[k]; delete TENANTS[k]; });
+
+  await Promise.all((allRestaurants || []).map(async r => {
+    const [{ data: inv }, { data: recs }, { data: ords }, { data: ph }] = await Promise.all([
+      _supabase.from('inventory').select('*').eq('restaurant_id', r.id),
+      _supabase.from('recipes').select('*, recipe_ingredients(*)').eq('restaurant_id', r.id),
+      _supabase.from('orders').select('*').eq('restaurant_id', r.id).order('date', { ascending: false }),
+      _supabase.from('price_history').select('*').eq('restaurant_id', r.id).order('date', { ascending: false }),
+    ]);
+    TENANTS[r.id] = {
+      name: r.name, emoji: r.emoji || '🍽️',
+      initials: r.initials || r.name.slice(0,2).toUpperCase(),
+      plan: r.plan || 'free',
+      primaryColor: r.primary_color || '#1a472a',
+      primaryLight: r.primary_light || '#e8f0ea',
+      fcMeta: r.fc_meta||28, fcAlert: r.fc_alert||32, fcCrit: r.fc_crit||35, margin: r.margin||68,
+    };
+    DB[r.id] = {
+      inventory: (inv||[]).map(i=>({ id:i.id, name:i.name, cat:i.cat, unit:i.unit, stock:i.stock, minStock:i.min_stock, cost:i.cost, buyUnit:i.buy_unit })),
+      recipes: (recs||[]).map(rec=>({ id:rec.id, name:rec.name, cat:rec.cat, portions:rec.portions, price:rec.price, ingredients:(rec.recipe_ingredients||[]).map(ri=>({ ingId:ri.inventory_id, qty:ri.qty, unit:ri.unit })) })),
+      orders: (ords||[]).map(o=>({ id:o.id, date:o.date, supplier:o.supplier, status:o.status, items:o.items, total:o.total, delivery:o.delivery })),
+      priceHistory: (ph||[]).map(p=>({ itemId:p.inventory_id, itemName:p.item_name, oldCost:p.old_cost, newCost:p.new_cost, pct:p.pct, date:p.date })),
+      fcConfig: { meta:r.fc_meta||28, alert:r.fc_alert||32, crit:r.fc_crit||35, margin:r.margin||68 },
+      opCosts: { period:'mes', ventas:0, items:[] }
+    };
+  }));
+
+  console.log(`[SusaRest Admin] ${allRestaurants?.length || 0} restaurantes cargados`);
   szBuildDropdown();
   szRenderAll();
 }
@@ -6124,20 +6285,21 @@ function closeSzPortal() {
   szSelectedClient = null;
 }
 
-function szRefreshAll() {
-  // Flash sync badge to signal live refresh
+async function szRefreshAll() {
   const badge = document.getElementById('sz-sync-badge');
   if (badge) { badge.style.animation = 'sz-pulse .4s 3'; setTimeout(()=>badge.style.animation='',1200); }
-  szRenderAll();
+  await doLoginSzAdmin();
   showToast('↺ Portal Susazón actualizado con datos en vivo');
 }
 
-// ── Build dropdown options from TENANTS ──
+// ── Build dropdown from real TENANTS ──
 function szBuildDropdown() {
   const opts = document.getElementById('sz-dd-options');
   if (!opts) return;
-  opts.innerHTML = Object.keys(DB).map(key => {
+  const keys = Object.keys(DB);
+  opts.innerHTML = keys.map(key => {
     const t = TENANTS[key];
+    if (!t) return '';
     const lowS = DB[key].inventory.filter(i=>i.stock<=i.minStock).length;
     const pendOC = DB[key].orders.filter(o=>o.status==='pendiente').length;
     const alert = lowS > 0 || pendOC > 0;
@@ -6146,11 +6308,14 @@ function szBuildDropdown() {
       <span style="font-size:18px">${t.emoji}</span>
       <div style="flex:1">
         <div style="font-size:13.5px;font-weight:500;color:var(--text)">${t.name}</div>
-        <div style="font-size:11px;color:var(--text-faint)">${key} · ${alert?'⚠ requiere atención':'✓ OK'}</div>
+        <div style="font-size:11px;color:var(--text-faint)">${(t.plan||'free').toUpperCase()} · ${alert?'⚠ requiere atención':'✓ OK'}</div>
       </div>
       <span id="sz-dd-check-${key}" style="color:var(--brand);font-size:14px;display:none">✓</span>
     </div>`;
   }).join('');
+
+  const allSub = document.querySelector('#sz-dd-opt-all div div:last-child');
+  if (allSub) allSub.textContent = `Vista consolidada · ${keys.length} restaurantes`;
 }
 
 // ── Toggle dropdown visibility ──
