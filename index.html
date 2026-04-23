@@ -3341,7 +3341,7 @@ async function saveStock(id) {
   if (savedEl) { savedEl.classList.add('visible'); setTimeout(()=>savedEl.classList.remove('visible'),1800); }
   _updateInvRowVisuals(item);
   showToast(`✓ Stock de "${item.name}" → ${newVal} ${item.unit}`);
-  document.getElementById('alert-badge').textContent = getAlerts().length;
+  const _ab = document.getElementById('alert-badge'); if(_ab) _ab.textContent = getAlerts().length;
   szNotifyChange();
 }
 
@@ -3386,7 +3386,7 @@ async function saveMinStock(id) {
   const savedEl = document.getElementById(`inv-min-saved-${id}`);
   if (savedEl) { savedEl.classList.add('visible'); setTimeout(()=>savedEl.classList.remove('visible'),1800); }
   _updateInvRowVisuals(item);
-  document.getElementById('alert-badge').textContent = getAlerts().length;
+  const _ab = document.getElementById('alert-badge'); if(_ab) _ab.textContent = getAlerts().length;
   showToast(`✓ Stock mínimo de "${item.name}" → ${newVal} ${item.unit}`);
   szNotifyChange();
 }
@@ -5374,7 +5374,7 @@ function renderOrdenes(){
       </td>
     </tr>`;
   }).join('');
-  document.getElementById('oc-badge').textContent=pend;
+  const _ob = document.getElementById('oc-badge'); if(_ob) _ob.textContent = pend;
 }
 
 // ── OC detail viewer ──
@@ -5703,7 +5703,8 @@ function renderAlertas(){
     ${a.cat==='rentabilidad'?`<button class="btn btn-sm" onclick="showPage('foodcost',null)">Ver FC</button>`:''}
   </div>`).join(''):`<div style="padding:28px;text-align:center;color:var(--text-faint)">✓ Sin alertas en esta categoría</div>`;
 
-  document.getElementById('alert-badge').textContent=alerts.length;
+  const alertBadge = document.getElementById('alert-badge');
+  if (alertBadge) alertBadge.textContent = alerts.length;
 }
 
 function filterAlerts(cat,el){currentAlertFilter=cat;document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderAlertas();}
