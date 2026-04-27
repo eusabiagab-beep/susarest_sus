@@ -1539,7 +1539,7 @@ body.sr-cursor-hover #sr-cursor-inner {
 </div>
 
 <!-- ═══════════════ ONBOARDING ═══════════════ -->
-<div id="onboarding-screen" style="position:relative">
+<div id="onboarding-screen" style="position:relative;display:none">
   <div class="ob-card">
     <div class="lc-brand" style="margin-bottom:20px">
       <div class="lc-brand-logo" style="background:linear-gradient(135deg,#fff4ed,#ffedd5)">
@@ -3668,6 +3668,7 @@ async function doAuth() {
 }
 
 async function doLogout() {
+  _hideAllScreens();
   await _supabase.auth.signOut();
   _showLogin();
 }
@@ -3833,6 +3834,7 @@ _showLoading('Iniciando...');
     if (session?.user) {
       await _showApp(session.user);
     } else {
+      _hideAllScreens();
       _showLogin();
     }
   });
@@ -7243,6 +7245,7 @@ async function doLoginSzAdmin() {
 
 function closeSzPortal() {
   szSelectedClient = null;
+  _hideAllScreens();
   _showLogin();
 }
 
