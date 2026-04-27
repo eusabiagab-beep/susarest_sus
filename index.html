@@ -1196,6 +1196,193 @@ body.sr-cursor-hover #sr-cursor-inner {
   border-color: #3d4260;
 }
 
+
+/* ── NUEVO — Pricing Modal ── */
+#pricing-modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: sr-fadeIn 0.2s ease both;
+}
+#pricing-modal-bg.show { display: flex; }
+.pricing-modal {
+  background: var(--surface);
+  border-radius: 22px;
+  padding: 36px 32px 28px;
+  width: 100%;
+  max-width: 720px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+  animation: sr-scaleIn 0.25s cubic-bezier(0.16,1,0.3,1) both;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.pricing-close {
+  position: absolute;
+  top: 16px; right: 18px;
+  background: var(--surface2);
+  border: none;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: none;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+.pricing-close:hover { background: var(--border); color: var(--text); }
+.pricing-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+  font-family: 'Inter', var(--font);
+}
+.pricing-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+@media(max-width:640px) { .pricing-grid { grid-template-columns: 1fr; } }
+.pricing-card {
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 18px 20px;
+  position: relative;
+  transition: all 0.2s ease;
+  background: var(--surface);
+}
+.pricing-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+}
+.pricing-card.featured {
+  border-color: var(--brand);
+  background: linear-gradient(135deg, var(--brand-light) 0%, var(--surface) 100%);
+  box-shadow: 0 4px 20px rgba(13,43,69,0.12);
+}
+.pricing-card.special {
+  border-color: var(--brand-accent);
+  background: linear-gradient(135deg, #fff8f0 0%, var(--surface) 100%);
+}
+[data-theme="dark"] .pricing-card.special { background: linear-gradient(135deg, #2a1f0a 0%, var(--surface) 100%); }
+.pricing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.pricing-badge-free { background: var(--surface2); color: var(--text-muted); }
+.pricing-badge-pro  { background: var(--brand); color: white; }
+.pricing-badge-sus  { background: #EA580C; color: white; }
+.pricing-plan-name {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+.pricing-price {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 2px;
+  font-family: 'Inter', var(--font);
+}
+.pricing-price span {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+.pricing-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  line-height: 1.5;
+  min-height: 32px;
+}
+.pricing-features { list-style: none; margin-bottom: 20px; }
+.pricing-features li {
+  font-size: 12.5px;
+  color: var(--text-secondary, var(--text-muted));
+  padding: 4px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  border-bottom: 1px solid var(--border);
+}
+.pricing-features li:last-child { border-bottom: none; }
+.pricing-features li::before {
+  content: '✓';
+  color: var(--success);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.pricing-features li.no::before { content: '✕'; color: var(--text-faint); }
+.pricing-cta {
+  width: 100%;
+  padding: 11px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: none;
+  transition: all 0.2s ease;
+  letter-spacing: 0.2px;
+}
+.pricing-cta-free {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.pricing-cta-free:hover { background: var(--border); }
+.pricing-cta-pro {
+  background: linear-gradient(135deg, #0d2b45 0%, #1a4a6b 100%);
+  color: white;
+  box-shadow: 0 4px 16px rgba(13,43,69,0.35);
+}
+.pricing-cta-pro:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,43,69,0.45); }
+.pricing-cta-sus {
+  background: linear-gradient(135deg, #EA580C 0%, #F97316 100%);
+  color: white;
+  box-shadow: 0 4px 16px rgba(234,88,12,0.35);
+}
+.pricing-cta-sus:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.pricing-popular-tag {
+  position: absolute;
+  top: -11px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--brand);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 </style>
 </head>
 <body>
@@ -1265,8 +1452,81 @@ body.sr-cursor-hover #sr-cursor-inner {
       </button>
       <div class="login-err" id="login-error"></div>
       <div class="login-hint" id="auth-hint">¿Problemas? Contacta a tu administrador.</div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);text-align:center">
+        <button onclick="document.getElementById('pricing-modal-bg').classList.add('show')" style="background:none;border:none;cursor:none;font-size:12.5px;color:var(--brand);font-weight:600;font-family:var(--font);text-decoration:underline;text-underline-offset:2px">Ver planes y precios →</button>
+      </div>
+    </div>
+  
+<!-- ═══════════════ PRICING MODAL ═══════════════ -->
+<div id="pricing-modal-bg" onclick="if(event.target===this)closePricing()">
+  <div class="pricing-modal">
+    <button class="pricing-close" onclick="closePricing()">✕</button>
+    <div class="pricing-title">Planes SusaRest</div>
+    <div class="pricing-sub">Sin contratos. Cambia de plan cuando quieras.</div>
+    <div class="pricing-grid">
+
+      <!-- FREE -->
+      <div class="pricing-card">
+        <div class="pricing-badge pricing-badge-free">🆓 Gratis</div>
+        <div class="pricing-plan-name">Free</div>
+        <div class="pricing-price">$0 <span>/ mes</span></div>
+        <div class="pricing-desc">Para conocer la herramienta y arrancar sin riesgo.</div>
+        <ul class="pricing-features">
+          <li>1 restaurante</li>
+          <li>Inventario básico</li>
+          <li>Hasta 10 recetas</li>
+          <li>Food cost manual</li>
+          <li class="no">Analytics avanzados</li>
+          <li class="no">Simulador de escenarios</li>
+          <li class="no">Alertas inteligentes</li>
+          <li class="no">Órdenes de compra</li>
+        </ul>
+        <button class="pricing-cta pricing-cta-free" onclick="closePricing()">Empezar gratis →</button>
+      </div>
+
+      <!-- PRO -->
+      <div class="pricing-card featured">
+        <div class="pricing-popular-tag">⭐ Más popular</div>
+        <div class="pricing-badge pricing-badge-pro">🚀 Pro</div>
+        <div class="pricing-plan-name">Pro</div>
+        <div class="pricing-price">$499 <span>/ mes MXN</span></div>
+        <div class="pricing-desc">Control total de costos, márgenes y rentabilidad.</div>
+        <ul class="pricing-features">
+          <li>Todo lo del plan Free</li>
+          <li>Analytics y rentabilidad</li>
+          <li>Simulador de escenarios</li>
+          <li>Alertas automáticas de precios</li>
+          <li>Órdenes de compra</li>
+          <li>Análisis de clientes</li>
+          <li>Recetas ilimitadas</li>
+          <li>Soporte prioritario</li>
+        </ul>
+        <button class="pricing-cta pricing-cta-pro" onclick="openProSignup()">Quiero el Pro →</button>
+      </div>
+
+      <!-- SUSAZÓN -->
+      <div class="pricing-card special">
+        <div class="pricing-badge pricing-badge-sus">🎁 Exclusivo</div>
+        <div class="pricing-plan-name">Cliente Susazón</div>
+        <div class="pricing-price" style="font-size:22px;letter-spacing:-0.5px">¿Ya nos compras?</div>
+        <div class="pricing-desc" style="color:var(--brand-accent);font-weight:500">Tenemos una sorpresa para ti 🎉</div>
+        <ul class="pricing-features">
+          <li>Todo el plan Pro incluido</li>
+          <li>Acceso exclusivo para clientes</li>
+          <li>Soporte directo con tu ejecutivo</li>
+          <li>Onboarding personalizado</li>
+        </ul>
+        <button class="pricing-cta pricing-cta-sus" onclick="openSusazonContact()">Contáctanos →</button>
+      </div>
+
+    </div>
+    <div style="text-align:center;margin-top:18px;font-size:11.5px;color:var(--text-faint)">
+      ¿Tienes dudas? <a href="https://wa.me/524611234567" target="_blank" style="color:var(--brand-accent);text-decoration:none;font-weight:600">Escríbenos por WhatsApp</a>
     </div>
   </div>
+</div>
+
+</div>
 </div>
 
 <!-- ═══════════════ LOADING ═══════════════ -->
@@ -1453,7 +1713,7 @@ body.sr-cursor-hover #sr-cursor-inner {
     <div class="sb-section">
       <div class="sb-label">Sistema</div>
       <button class="nav-item pro-only" id="nav-alertas" onclick="showPage('alertas',this)"><span class="nav-icon">🔔</span> Alertas<span class="nav-pro-lock">PRO</span></button>
-      <button class="nav-item pro-only" id="nav-configuracion" onclick="showPage('configuracion',this)"><span class="nav-icon">⚙️</span> Configuración<span class="nav-pro-lock">PRO</span></button>
+      <button class="nav-item" id="nav-configuracion" onclick="showPage('configuracion',this)"><span class="nav-icon">⚙️</span> Configuración</button>
       <button class="nav-item pro-only" id="nav-importar" onclick="showPage('importar',this)"><span class="nav-icon">⬆️</span> Importar Datos<span class="nav-pro-lock">PRO</span></button>
     </div>
 
@@ -7939,6 +8199,29 @@ selectImpType('inventario');
 
   document.body.appendChild(btn);
 })();
+
+
+// ── NUEVO — Pricing modal functions ──
+function closePricing() {
+  document.getElementById('pricing-modal-bg').classList.remove('show');
+}
+function openProSignup() {
+  closePricing();
+  // Llevar al tab de crear cuenta
+  document.getElementById('tab-signup').click();
+  setTimeout(function() {
+    var email = document.getElementById('auth-email');
+    if (email) email.focus();
+  }, 200);
+}
+function openSusazonContact() {
+  var msg = encodeURIComponent('Hola Susazón 👋 Soy cliente y me interesa conocer el beneficio exclusivo de SusaRest. ¿Me pueden dar más información?');
+  window.open('https://wa.me/524611234567?text=' + msg, '_blank');
+}
+// Cerrar con Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closePricing();
+});
 
 </script>
 </body>
