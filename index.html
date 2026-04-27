@@ -3698,6 +3698,8 @@ function _showLoading(msg = 'Cargando...') {
 const ADMIN_UID = 'a9a703ca-a28b-422e-af24-b0a44077f4ec';
 
 async function _showApp(user) {
+  // Cancel any pending timeout — we have a valid session
+  if (typeof _globalTimeout !== 'undefined' && _globalTimeout) { clearTimeout(_globalTimeout); _globalTimeout = null; }
   currentUser = user;
   const email = user.email || '';
   document.getElementById('topbar-user-email').textContent = email;
@@ -3813,20 +3815,21 @@ let _appInitialized = false;
 // Mostrar loading inmediato
 _showLoading('Iniciando...');
 
-// Timeout de seguridad global: si en 4s no carga, ir al login
+// Timeout de seguridad: solo aplica si Supabase no responde en absoluto
 var _globalTimeout = setTimeout(function() {
   console.warn('Global timeout — forcing login');
   _showLogin();
-}, 4000);
+}, 8000);
 
 (async () => {
   try {
-    // Verificar que supabase esté disponible (falla en file://)
     if (typeof _supabase === 'undefined' || !_supabase.auth) {
       throw new Error('Supabase not available');
     }
     const { data: { session } } = await _supabase.auth.getSession();
+    // Cancelar timeout inmediatamente — sesión resuelta
     clearTimeout(_globalTimeout);
+    _globalTimeout = null;
     if (session?.user) {
       await _showApp(session.user);
     } else {
@@ -3834,6 +3837,7 @@ var _globalTimeout = setTimeout(function() {
     }
   } catch(e) {
     clearTimeout(_globalTimeout);
+    _globalTimeout = null;
     console.warn('Session init failed:', e.message);
     _showLogin();
   }
@@ -4041,15 +4045,19 @@ function calcSuggestedPrice(recipe, inv) {
   return cpp / (1 - margin/100);
 }
 
+const FC_DEFAULT = {meta:28, alert:32, crit:35, margin:68};
+function _getFcConfig() {
+  return (currentTenant && DB[currentTenant]?.fcConfig) || FC_DEFAULT;
+}
 function fcClass(pct){
   if (pct===null) return 'fc-warn';
-  const c=DB[currentTenant].fcConfig;
+  const c=_getFcConfig();
   return pct<c.alert?'fc-ok':pct<c.crit?'fc-warn':'fc-bad';
 }
 
 function fcStatus(pct){
   if (pct===null) return ['badge-gray','Sin precio'];
-  const c=DB[currentTenant].fcConfig;
+  const c=_getFcConfig();
   return pct<c.alert?['badge-green','Óptimo']:pct<c.crit?['badge-yellow','Alerta']:['badge-red','Crítico'];
 }
 
@@ -4099,7 +4107,7 @@ function renderDashboard(){
     return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:${h}px;background:${col};border-radius:3px 3px 0 0"></div><div style="font-size:10px;color:var(--text-faint)">${d}</div></div>`;
   }).join('');
 
-  const c=DB[currentTenant].fcConfig;
+  const c=_getFcConfig();
   const badge=document.getElementById('dash-fc-badge');
   if(avgFC<c.alert){badge.textContent='✓ Bajo control';badge.className='badge badge-green';}
   else if(avgFC<c.crit){badge.textContent='⚠ Atención';badge.className='badge badge-yellow';}
@@ -7216,7 +7224,7 @@ let szSelectedClient = null;
 
 // ── Admin login: load ALL restaurants from Supabase ──
 async function doLoginSzAdmin() {
-  if (typeof _globalTimeout !== 'undefined') clearTimeout(_globalTimeout);
+  if (typeof _globalTimeout !== 'undefined' && _globalTimeout) { clearTimeout(_globalTimeout); _globalTimeout = null; }
   _hideAllScreens();
   document.getElementById('sz-portal').style.display = 'block';
   document.getElementById('sz-date').textContent = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
@@ -7860,7 +7868,7 @@ function szRenderClientes() {
     const lowS = t.inventory.filter(i=>i.stock<=i.minStock).length;
     const pcts = t.recipes.map(r=>calcFCPct(r,t.inventory)).filter(p=>p!==null);
     const avgFC = pcts.length ? (pcts.reduce((a,b)=>a+b,0)/pcts.length) : 0;
-    const _fcCrit = t.fcConfig?.crit ?? 33;
+    const _fcCrit = t.fcConfig?.crit ?? FC_DEFAULT.crit;
     const health = lowS > 2 || avgFC > _fcCrit ? ['badge-red','⚠ Atención'] : pendOC > 1 ? ['badge-yellow','Revisar'] : ['badge-green','✓ Saludable'];
     const planColors = { free:'badge-gray', pro:'badge-brand', enterprise:'badge-orange' };
 
