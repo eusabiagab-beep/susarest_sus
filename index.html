@@ -32,10 +32,11 @@ input,select,textarea,button{font-family:var(--font)}
 
 /* ── LOGIN ── */
 #login-screen{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  min-height:100vh;display:none;align-items:center;justify-content:center;
   background:linear-gradient(145deg,#071c2e 0%,#0d2b45 40%,#122f1c 80%,#0d2b45 100%);
   position:relative;overflow:hidden;
 }
+#login-screen.visible{display:flex;}
 #login-screen::before{
   content:'';position:absolute;inset:0;
   background:radial-gradient(ellipse at 25% 60%,rgba(200,131,42,.15) 0%,transparent 55%),
@@ -539,7 +540,7 @@ tbody tr:hover td{background:var(--surface2)}
 @keyframes sz-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
 /* ── LOADING SCREEN ── */
-#loading-screen{min-height:100vh;display:none;align-items:center;justify-content:center;background:linear-gradient(145deg,#071c2e 0%,#0d2b45 40%,#122f1c 80%,#0d2b45 100%);flex-direction:column;gap:16px}
+#loading-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#071c2e 0%,#0d2b45 40%,#122f1c 80%,#0d2b45 100%);flex-direction:column;gap:16px}
 .loading-spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,.15);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
 .loading-msg{color:rgba(255,255,255,.7);font-size:13.5px;font-family:var(--font)}
 
@@ -1002,7 +1003,9 @@ textarea:not(.form-inp):focus {
   background: linear-gradient(135deg, #030d18 0%, #071c2e 30%, #0d2b45 60%, #0f2a1a 100%) !important;
   background-size: 400% 400% !important;
   animation: sr-gradientShift 12s ease infinite !important;
+  display: flex !important;
 }
+#loading-screen.hidden { display: none !important; }
 
 /* ── NUEVO — Plan badge con brillo ── */
 .plan-badge {
@@ -3674,16 +3677,23 @@ const SUSAZON_ADMIN_UID = 'a9a703ca-a28b-422e-af24-b0a44077f4ec';
 
 // ─── Screen helpers ───
 function _hideAllScreens() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('loading-screen').style.display = 'none';
+  var ls = document.getElementById('login-screen');
+  ls.style.display = 'none';
+  ls.classList.remove('visible');
+  var ld2=document.getElementById('loading-screen'); ld2.style.display='none'; ld2.classList.add('hidden');
   document.getElementById('onboarding-screen').style.display = 'none';
   document.getElementById('app').style.display = 'none';
+  // Also hide admin/portal views
+  var av = document.getElementById('admin-view');
+  if (av) av.style.display = 'none';
+  var sv = document.getElementById('sz-view');
+  if (sv) sv.style.display = 'none';
 }
 
 function _showLoading(msg = 'Cargando...') {
   _hideAllScreens();
   document.getElementById('loading-msg').textContent = msg;
-  document.getElementById('loading-screen').style.display = 'flex';
+  var ld=document.getElementById('loading-screen'); ld.classList.remove('hidden'); ld.style.display='flex';
 }
 
 const ADMIN_UID = 'a9a703ca-a28b-422e-af24-b0a44077f4ec';
@@ -3792,7 +3802,7 @@ async function _loadRestaurantData(restaurant) {
 function _showLogin() {
   currentUser = null;
   _hideAllScreens();
-  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-screen').classList.add('visible');
   document.getElementById('auth-pass').value = '';
   _setLoginLoading(false);
 }
