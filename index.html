@@ -3683,11 +3683,10 @@ function _hideAllScreens() {
   var ld2=document.getElementById('loading-screen'); ld2.style.display='none'; ld2.classList.add('hidden');
   document.getElementById('onboarding-screen').style.display = 'none';
   document.getElementById('app').style.display = 'none';
-  // Also hide admin/portal views
   var av = document.getElementById('admin-view');
   if (av) av.style.display = 'none';
-  var sv = document.getElementById('sz-view');
-  if (sv) sv.style.display = 'none';
+  var sp = document.getElementById('sz-portal');
+  if (sp) sp.style.display = 'none';
 }
 
 function _showLoading(msg = 'Cargando...') {
