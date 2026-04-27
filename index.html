@@ -585,6 +585,470 @@ tbody tr:hover td{background:var(--surface2)}
 /* user email pill in topbar */
 .tb-user-pill{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px 4px 6px;font-size:12px;color:var(--text-muted)}
 .tb-user-dot{width:22px;height:22px;border-radius:50%;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+
+/* ═══════════════════════════════════════════════════════════════
+   NUEVO — Visual Enhancement Layer (SusaRest v4 → Premium UI)
+   No modifica clases/IDs existentes. Solo añade capas visuales.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* NUEVO — Fuentes adicionales: Inter para hero */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* NUEVO — Variables de mejora visual */
+:root {
+  --glow-brand: rgba(13,43,69,0.18);
+  --glow-accent: rgba(200,131,42,0.22);
+  --glass-bg: rgba(255,255,255,0.07);
+  --glass-border: rgba(255,255,255,0.12);
+  --shine: rgba(255,255,255,0.06);
+  --particle-color: rgba(200,131,42,0.35);
+  --enhance-transition: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* NUEVO — Animaciones base */
+@keyframes sr-fadeUp {
+  from { opacity:0; transform:translateY(22px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes sr-fadeIn {
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+@keyframes sr-slideLeft {
+  from { opacity:0; transform:translateX(-20px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+@keyframes sr-scaleIn {
+  from { opacity:0; transform:scale(0.94); }
+  to   { opacity:1; transform:scale(1); }
+}
+@keyframes sr-float {
+  0%,100% { transform:translateY(0px) rotate(0deg); }
+  33%      { transform:translateY(-8px) rotate(1deg); }
+  66%      { transform:translateY(-4px) rotate(-1deg); }
+}
+@keyframes sr-gradientShift {
+  0%   { background-position:0% 50%; }
+  50%  { background-position:100% 50%; }
+  100% { background-position:0% 50%; }
+}
+@keyframes sr-orbPulse {
+  0%,100% { transform:scale(1); opacity:0.35; }
+  50%     { transform:scale(1.15); opacity:0.55; }
+}
+@keyframes sr-shimmer {
+  0%   { background-position:-200% center; }
+  100% { background-position:200% center; }
+}
+@keyframes sr-borderGlow {
+  0%,100% { box-shadow:0 0 0 1px rgba(200,131,42,0); }
+  50%     { box-shadow:0 0 0 2px rgba(200,131,42,0.4), 0 0 20px rgba(200,131,42,0.15); }
+}
+@keyframes sr-counterUp {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes sr-dotBlink {
+  0%,100% { opacity:1; } 50% { opacity:0.3; }
+}
+
+/* ── NUEVO — Login screen upgrade ── */
+#login-screen {
+  background: linear-gradient(135deg, #030d18 0%, #071c2e 25%, #0d2b45 50%, #0f2a1a 75%, #071c2e 100%) !important;
+  background-size: 400% 400% !important;
+  animation: sr-gradientShift 18s ease infinite !important;
+}
+
+/* NUEVO — Orbs decorativos sobre el grid */
+#login-screen::before {
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 70%, rgba(200,131,42,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 350px at 80% 20%, rgba(26,71,42,0.20) 0%, transparent 65%),
+    radial-gradient(ellipse 700px 300px at 50% 110%, rgba(13,43,69,0.5) 0%, transparent 60%) !important;
+}
+
+/* NUEVO — Orb animado decorativo */
+#login-screen .login-wrap::before {
+  content:'';
+  position:absolute;
+  width:320px; height:320px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(200,131,42,0.18) 0%, transparent 70%);
+  top:-80px; left:-60px;
+  animation:sr-orbPulse 6s ease-in-out infinite;
+  pointer-events:none;
+  z-index:1;
+}
+#login-screen .login-wrap::after {
+  content:'';
+  position:absolute;
+  width:240px; height:240px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(26,71,42,0.22) 0%, transparent 70%);
+  bottom:-60px; right:20px;
+  animation:sr-orbPulse 8s ease-in-out infinite 2s;
+  pointer-events:none;
+  z-index:1;
+}
+
+/* NUEVO — Hero title tipografía premium */
+.login-hero-title {
+  font-family:'Inter', var(--font) !important;
+  font-size: clamp(32px, 4vw, 46px) !important;
+  font-weight: 800 !important;
+  line-height: 1.06 !important;
+  letter-spacing: -2px !important;
+  margin-bottom: 18px !important;
+  background: linear-gradient(135deg, #ffffff 40%, rgba(255,255,255,0.65) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: sr-fadeUp 0.8s var(--enhance-transition) both;
+}
+.login-hero-title span {
+  background: linear-gradient(135deg, #c8832a 0%, #e8a84a 50%, #c8832a 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: sr-shimmer 3s linear infinite !important;
+}
+
+/* NUEVO — Hero subtitle */
+.login-hero-sub {
+  font-size: 16px !important;
+  color: rgba(255,255,255,0.58) !important;
+  animation: sr-fadeUp 0.8s var(--enhance-transition) 0.1s both !important;
+}
+
+/* NUEVO — Features animadas con stagger */
+.login-feature {
+  animation: sr-slideLeft 0.6s var(--enhance-transition) both;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.login-feature:hover { transform: translateX(5px); color:rgba(255,255,255,0.95) !important; }
+.login-feature:nth-child(3) { animation-delay:0.15s; }
+.login-feature:nth-child(4) { animation-delay:0.22s; }
+.login-feature:nth-child(5) { animation-delay:0.29s; }
+.login-feature:nth-child(6) { animation-delay:0.36s; }
+.login-feature:nth-child(7) { animation-delay:0.43s; }
+
+/* NUEVO — Dot de features pulsante */
+.login-feature-dot {
+  animation: sr-borderGlow 2.5s ease-in-out infinite !important;
+  box-shadow: 0 0 6px rgba(200,131,42,0.5) !important;
+}
+
+/* NUEVO — Login card glassmorphism */
+.login-card {
+  background: rgba(255,255,255,0.97) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255,255,255,0.3) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.1),
+    0 20px 60px rgba(0,0,0,0.4),
+    0 4px 16px rgba(0,0,0,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.6) !important;
+  animation: sr-scaleIn 0.6s var(--enhance-transition) 0.1s both !important;
+  transition: box-shadow 0.3s ease, transform 0.3s ease !important;
+}
+.login-card:hover {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.15),
+    0 28px 80px rgba(0,0,0,0.45),
+    0 8px 24px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.7) !important;
+  transform: translateY(-2px);
+}
+
+/* NUEVO — Brand logo en login con glow */
+.lc-brand-logo {
+  box-shadow: 0 4px 16px rgba(13,43,69,0.4), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+  transition: box-shadow 0.3s ease, transform 0.3s ease !important;
+}
+.lc-brand-logo:hover {
+  box-shadow: 0 6px 24px rgba(13,43,69,0.5), 0 0 0 3px rgba(200,131,42,0.25) !important;
+  transform: scale(1.05) !important;
+}
+
+/* NUEVO — Inputs del login mejorados */
+.form-inp {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+}
+.form-inp:focus {
+  border-color: var(--brand) !important;
+  box-shadow: 0 0 0 3px rgba(13,43,69,0.1), 0 2px 8px rgba(13,43,69,0.08) !important;
+  background: #fafbff !important;
+}
+
+/* NUEVO — Botón login con gradiente animado */
+.btn-login {
+  background: linear-gradient(135deg, #0d2b45 0%, #1a4a6b 50%, #0d2b45 100%) !important;
+  background-size: 200% auto !important;
+  box-shadow: 0 4px 16px rgba(13,43,69,0.4), 0 1px 3px rgba(13,43,69,0.2) !important;
+  transition: all 0.25s var(--enhance-transition) !important;
+  letter-spacing: 0.3px !important;
+}
+.btn-login:hover {
+  background-position: right center !important;
+  box-shadow: 0 8px 28px rgba(13,43,69,0.45), 0 2px 6px rgba(13,43,69,0.25) !important;
+  transform: translateY(-2px) !important;
+}
+.btn-login:active { transform: translateY(0) !important; }
+
+/* ── NUEVO — Sidebar premium ── */
+.sidebar {
+  background: #ffffff !important;
+  border-right: 1px solid rgba(0,0,0,0.07) !important;
+  box-shadow: 2px 0 16px rgba(0,0,0,0.04) !important;
+}
+
+/* NUEVO — Nav items con micro-interacciones */
+.nav-item {
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+.nav-item::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+  pointer-events:none;
+}
+.nav-item:hover::after { transform: translateX(100%); }
+.nav-item:hover { transform: translateX(2px) !important; }
+.nav-item.active {
+  background: linear-gradient(90deg, var(--tenant-light), rgba(232,240,234,0.5)) !important;
+  box-shadow: inset 2px 0 0 var(--tenant-primary) !important;
+}
+
+/* ── NUEVO — Topbar upgrade ── */
+.topbar {
+  background: rgba(255,255,255,0.92) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+  box-shadow: 0 1px 12px rgba(0,0,0,0.06) !important;
+}
+
+/* ── NUEVO — Cards con hover premium ── */
+.card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease !important;
+  border: 1px solid rgba(0,0,0,0.07) !important;
+}
+.card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04) !important;
+  transform: translateY(-1px) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+
+/* NUEVO — Card value con contadores animados */
+.card-value {
+  animation: sr-counterUp 0.5s var(--enhance-transition) both;
+}
+
+/* ── NUEVO — Botones base con mejores hovers ── */
+.btn {
+  transition: all 0.15s var(--enhance-transition) !important;
+  position: relative;
+  overflow: hidden;
+}
+.btn::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background: rgba(255,255,255,0);
+  transition: background 0.15s ease;
+  pointer-events:none;
+}
+.btn:hover::before { background: rgba(255,255,255,0.08); }
+.btn:active { transform: scale(0.97) !important; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--tenant-primary) 0%, color-mix(in srgb, var(--tenant-primary) 80%, #000) 100%) !important;
+  box-shadow: 0 2px 8px rgba(26,71,42,0.3) !important;
+  border-color: transparent !important;
+}
+.btn-primary:hover {
+  box-shadow: 0 4px 16px rgba(26,71,42,0.38) !important;
+  transform: translateY(-1px) !important;
+  filter: brightness(1.08) !important;
+}
+
+/* ── NUEVO — Tables upgrade ── */
+tbody tr {
+  transition: background 0.12s ease !important;
+}
+tbody tr:hover td {
+  background: rgba(232,240,234,0.35) !important;
+}
+
+/* ── NUEVO — Badges con sombra suave ── */
+.badge {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+  font-weight: 600 !important;
+}
+
+/* ── NUEVO — Section titles mejorados ── */
+.section-title {
+  font-family: 'Inter', var(--font) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.6px !important;
+}
+
+/* ── NUEVO — Admin topbar con gradiente premium ── */
+.admin-topbar {
+  background: linear-gradient(90deg, #071c2e 0%, #0d2b45 50%, #0f3520 100%) !important;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3) !important;
+}
+
+/* ── NUEVO — Scroll-reveal clase ── */
+.sr-reveal {
+  opacity:0;
+  transform:translateY(18px);
+  transition: opacity 0.5s var(--enhance-transition), transform 0.5s var(--enhance-transition);
+}
+.sr-reveal.visible {
+  opacity:1;
+  transform:translateY(0);
+}
+.sr-reveal-delay-1 { transition-delay:0.05s; }
+.sr-reveal-delay-2 { transition-delay:0.10s; }
+.sr-reveal-delay-3 { transition-delay:0.15s; }
+.sr-reveal-delay-4 { transition-delay:0.20s; }
+
+/* ── NUEVO — Partícula de fondo canvas ── */
+#sr-canvas {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  pointer-events:none;
+  z-index:0;
+  opacity:0.55;
+}
+
+/* ── NUEVO — Toast upgrade ── */
+.toast {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1) !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 12px 18px !important;
+  font-size: 13.5px !important;
+  animation: sr-fadeUp 0.3s var(--enhance-transition) both !important;
+}
+
+/* ── NUEVO — Modal upgrade ── */
+.modal-box {
+  border-radius: 18px !important;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.1) !important;
+  animation: sr-scaleIn 0.25s var(--enhance-transition) both !important;
+}
+.modal-bg {
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  background: rgba(0,0,0,0.35) !important;
+}
+
+/* ── NUEVO — Selects y inputs app mejorados ── */
+input[type="text"]:not(.pin-digit):not(.form-inp),
+input[type="number"]:not(.form-inp),
+select:not(.form-inp),
+textarea:not(.form-inp) {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+input[type="text"]:not(.pin-digit):not(.form-inp):focus,
+input[type="number"]:not(.form-inp):focus,
+select:not(.form-inp):focus,
+textarea:not(.form-inp):focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(13,43,69,0.08) !important;
+}
+
+/* ── NUEVO — Sidebar logo con shimmer en hover ── */
+.logo-box {
+  background: linear-gradient(135deg, #0d2b45 0%, #1a4a6b 100%) !important;
+  box-shadow: 0 2px 8px rgba(13,43,69,0.3) !important;
+  transition: box-shadow 0.2s ease, transform 0.2s ease !important;
+}
+.logo-box:hover {
+  box-shadow: 0 4px 16px rgba(13,43,69,0.4) !important;
+  transform: scale(1.05) !important;
+}
+
+/* ── NUEVO — Chips / filtros mejorados ── */
+.chip {
+  transition: all 0.15s var(--enhance-transition) !important;
+}
+.chip:hover { transform: translateY(-1px) !important; }
+.chip.active {
+  box-shadow: 0 2px 8px rgba(13,43,69,0.2) !important;
+}
+
+/* ── NUEVO — Loading screen con partículas ── */
+#loading-screen {
+  background: linear-gradient(135deg, #030d18 0%, #071c2e 30%, #0d2b45 60%, #0f2a1a 100%) !important;
+  background-size: 400% 400% !important;
+  animation: sr-gradientShift 12s ease infinite !important;
+}
+
+/* ── NUEVO — Plan badge con brillo ── */
+.plan-badge {
+  background: linear-gradient(90deg, var(--brand-light) 0%, rgba(230,237,244,0.5) 100%) !important;
+  border: 1px solid rgba(13,43,69,0.15) !important;
+}
+
+/* ── NUEVO — Progress bars animadas ── */
+.progress-fill, .rb-wf-bar, .rb-pct-fill, .cl-bar-fill {
+  transition: width 0.8s var(--enhance-transition) !important;
+}
+
+/* ── NUEVO — fc-card hover upgrade ── */
+.fc-card {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease !important;
+}
+.fc-card:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+}
+.fc-card.expanded {
+  box-shadow: 0 6px 24px rgba(26,71,42,0.12) !important;
+}
+
+/* ── NUEVO — sz-client-card upgrade ── */
+.sz-client-card {
+  transition: all 0.2s var(--enhance-transition) !important;
+}
+.sz-client-card:hover {
+  box-shadow: 0 8px 28px rgba(0,0,0,0.1) !important;
+  transform: translateY(-3px) !important;
+  border-color: rgba(13,43,69,0.2) !important;
+}
+
+/* ── NUEVO — Topbar title con fuente premium ── */
+.topbar-title {
+  font-family: 'Inter', var(--font) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.3px !important;
+}
+
+/* ── NUEVO — Scroll bar styling ── */
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.12); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:rgba(0,0,0,0.22); }
+
+/* ── NUEVO — Selection color ── */
+::selection { background:rgba(13,43,69,0.15); color:inherit; }
+
+/* ── NUEVO — Focus-visible accesibilidad global ── */
+:focus-visible {
+  outline: 2px solid rgba(13,43,69,0.5) !important;
+  outline-offset: 2px !important;
+}
 </style>
 </head>
 <body>
@@ -6957,6 +7421,202 @@ function szContactClient(id) {
 // Init
 // ═══════════════════════════════════════════════
 selectImpType('inventario');
+</script>
+
+<!-- NUEVO — Enhancement JS: Animations, Canvas BG, Scroll Reveal, Counters -->
+<script>
+/* ══════════════════════════════════════════════════════
+   SUSAREST VISUAL ENHANCEMENT LAYER
+   Zero modifications to existing logic.
+   Adds: canvas particles, scroll-reveal, animated counters,
+   btn ripple micro-interactions, page transitions.
+   ══════════════════════════════════════════════════════ */
+
+// ── NUEVO — Canvas partículas (login + loading + onboarding) ──
+(function initParticles() {
+  var SCREENS = ['login-screen', 'loading-screen', 'onboarding-screen'];
+  SCREENS.forEach(function(screenId) {
+    var screen = document.getElementById(screenId);
+    if (!screen) return;
+
+    var canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:0;transition:opacity 1.2s ease';
+    if (getComputedStyle(screen).position === 'static') screen.style.position = 'relative';
+    screen.insertBefore(canvas, screen.firstChild);
+
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var raf;
+
+    function resize() {
+      canvas.width  = screen.offsetWidth  || window.innerWidth;
+      canvas.height = screen.offsetHeight || window.innerHeight;
+    }
+
+    function mkParticle() {
+      return {
+        x: Math.random() * canvas.width,
+        y: canvas.height + 4,
+        r: Math.random() * 1.8 + 0.4,
+        vx: (Math.random() - 0.5) * 0.28,
+        vy: -(Math.random() * 0.35 + 0.1),
+        op: Math.random() * 0.45 + 0.12,
+        color: Math.random() > 0.55 ? [200,131,42] : [180,215,255]
+      };
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      while (particles.length < 60) { var p = mkParticle(); p.y = Math.random() * canvas.height; particles.push(p); }
+      var now = Date.now();
+      for (var i = particles.length - 1; i >= 0; i--) {
+        var p = particles[i];
+        p.x += p.vx + Math.sin(now * 0.0007 + i) * 0.07;
+        p.y += p.vy;
+        if (p.y < -6 || p.x < -10 || p.x > canvas.width + 10) { particles[i] = mkParticle(); continue; }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + p.color[0] + ',' + p.color[1] + ',' + p.color[2] + ',' + p.op + ')';
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(draw);
+    }
+
+    resize();
+    for (var i = 0; i < 60; i++) { var p = mkParticle(); p.y = Math.random() * canvas.height; particles.push(p); }
+    draw();
+    setTimeout(function() { canvas.style.opacity = 1; }, 300);
+    window.addEventListener('resize', resize);
+  });
+})();
+
+// ── NUEVO — Scroll Reveal con IntersectionObserver ──
+(function initScrollReveal() {
+  if (!window.IntersectionObserver) return;
+
+  var selector = '.card, .fc-card, .sz-client-card, .section-head, .sz-opp-card, .alert-row';
+
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry, i) {
+      if (!entry.isIntersecting) return;
+      var delay = Math.min(i * 45, 220);
+      setTimeout(function() { entry.target.classList.add('visible'); }, delay);
+      obs.unobserve(entry.target);
+    });
+  }, { threshold: 0.07, rootMargin: '0px 0px -20px 0px' });
+
+  function attachReveal() {
+    document.querySelectorAll(selector).forEach(function(el) {
+      if (!el.dataset.srAttached) {
+        el.dataset.srAttached = '1';
+        el.classList.add('sr-reveal');
+        obs.observe(el);
+      }
+    });
+  }
+
+  var mutObs = new MutationObserver(function() { setTimeout(attachReveal, 100); });
+  mutObs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+  setTimeout(attachReveal, 400);
+})();
+
+// ── NUEVO — Animated counters para .card-value numéricos ──
+(function initCounters() {
+  if (!window.IntersectionObserver) return;
+
+  function animateValue(el, end, duration) {
+    var raw = el.textContent.trim();
+    var hasPrefix  = raw.startsWith('$');
+    var hasSuffix  = raw.endsWith('%');
+    var decimals   = (String(end).split('.')[1] || '').length;
+    var startTime  = null;
+
+    function step(now) {
+      if (!startTime) startTime = now;
+      var elapsed  = now - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased    = 1 - Math.pow(2, -10 * progress);
+      var current  = end * eased;
+      el.textContent = (hasPrefix ? '$' : '') + current.toFixed(decimals) + (hasSuffix ? '%' : '');
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  var cntObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      var el = entry.target;
+      if (el.dataset.counted) return;
+      el.dataset.counted = '1';
+      var raw   = el.textContent.trim();
+      var clean = raw.replace(/[$,%\s,k]/gi, '');
+      var num   = parseFloat(clean);
+      var multiplier = raw.includes('k') ? 1000 : 1;
+      if (!isNaN(num) && num > 0 && num < 1000000) {
+        animateValue(el, num * multiplier, 950);
+      }
+      cntObs.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+
+  function attachCounters() {
+    document.querySelectorAll('.card-value').forEach(function(el) {
+      if (!el.dataset.cntAttached) {
+        el.dataset.cntAttached = '1';
+        cntObs.observe(el);
+      }
+    });
+  }
+
+  var mutObs = new MutationObserver(function() { setTimeout(attachCounters, 200); });
+  mutObs.observe(document.body, { childList: true, subtree: true });
+  setTimeout(attachCounters, 600);
+})();
+
+// ── NUEVO — Ripple micro-interacción en botones ──
+(function initRipple() {
+  if (!document.getElementById('sr-ripple-style')) {
+    var style = document.createElement('style');
+    style.id  = 'sr-ripple-style';
+    style.textContent = '@keyframes sr-ripple{to{transform:scale(1);opacity:0}}';
+    document.head.appendChild(style);
+  }
+
+  document.addEventListener('mousedown', function(e) {
+    var btn = e.target.closest('.btn, .btn-login, .nav-item');
+    if (!btn || btn.disabled || btn.classList.contains('locked')) return;
+
+    var rect   = btn.getBoundingClientRect();
+    var size   = Math.max(rect.width, rect.height) * 2.2;
+    var x      = e.clientX - rect.left - size / 2;
+    var y      = e.clientY - rect.top  - size / 2;
+
+    var ripple = document.createElement('span');
+    ripple.style.cssText = 'position:absolute;width:' + size + 'px;height:' + size + 'px;left:' + x + 'px;top:' + y + 'px;border-radius:50%;background:rgba(255,255,255,0.16);transform:scale(0);animation:sr-ripple 0.5s cubic-bezier(0.16,1,0.3,1) forwards;pointer-events:none;z-index:0;';
+
+    if (getComputedStyle(btn).position === 'static') btn.style.position = 'relative';
+    btn.style.overflow = 'hidden';
+    btn.appendChild(ripple);
+    setTimeout(function() { if (ripple.parentNode) ripple.parentNode.removeChild(ripple); }, 560);
+  });
+})();
+
+// ── NUEVO — Page transitions (inyecta animación en .page.active) ──
+(function initPageTransitions() {
+  var style = document.createElement('style');
+  style.textContent = '.page.active{animation:sr-pageIn 0.3s cubic-bezier(0.16,1,0.3,1) both}@keyframes sr-pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}';
+  document.head.appendChild(style);
+})();
+
+// ── NUEVO — Floating dots en hero ──
+(function initFeatureDots() {
+  document.querySelectorAll('.login-feature-dot').forEach(function(dot, i) {
+    dot.style.animation = 'sr-dotBlink 2.2s ease-in-out ' + (i * 0.38) + 's infinite';
+    dot.style.boxShadow = '0 0 6px 1px rgba(200,131,42,0.6)';
+  });
+})();
+
 </script>
 </body>
 </html>
