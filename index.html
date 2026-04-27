@@ -1003,7 +1003,6 @@ textarea:not(.form-inp):focus {
   background: linear-gradient(135deg, #030d18 0%, #071c2e 30%, #0d2b45 60%, #0f2a1a 100%) !important;
   background-size: 400% 400% !important;
   animation: sr-gradientShift 12s ease infinite !important;
-  display: flex !important;
 }
 #loading-screen.hidden { display: none !important; }
 
@@ -3802,31 +3801,41 @@ async function _loadRestaurantData(restaurant) {
 function _showLogin() {
   currentUser = null;
   _hideAllScreens();
-  document.getElementById('login-screen').classList.add('visible');
+  var ls = document.getElementById('login-screen');
+  ls.style.display = 'flex'; // inline style overrides CSS class reliably
   document.getElementById('auth-pass').value = '';
   _setLoginLoading(false);
 }
 
 // ─── Session init ───
-// ACTUALIZADO — Muestra login inmediatamente, sin esperar a Supabase.
-// Si hay sesión activa, onAuthStateChange la detecta y transiciona sola.
 let _appInitialized = false;
 
-// 1. Mostrar loading skeleton inmediato — sin pantalla en blanco, sin login prematuro
+// Mostrar loading inmediato
 _showLoading('Iniciando...');
 
-// 2. Verificar sesión en background
+// Timeout de seguridad global: si en 4s no carga, ir al login
+var _globalTimeout = setTimeout(function() {
+  console.warn('Global timeout — forcing login');
+  _showLogin();
+}, 4000);
+
 (async () => {
   try {
+    // Verificar que supabase esté disponible (falla en file://)
+    if (typeof _supabase === 'undefined' || !_supabase.auth) {
+      throw new Error('Supabase not available');
+    }
     const { data: { session } } = await _supabase.auth.getSession();
+    clearTimeout(_globalTimeout);
     if (session?.user) {
       await _showApp(session.user);
     } else {
-      _showLogin(); // Solo mostrar login si confirmamos que NO hay sesión
+      _showLogin();
     }
   } catch(e) {
-    console.warn('Session check failed:', e.message);
-    _showLogin(); // Red fallida → ir al login
+    clearTimeout(_globalTimeout);
+    console.warn('Session init failed:', e.message);
+    _showLogin();
   }
 
   _supabase.auth.onAuthStateChange(async (event, session) => {
