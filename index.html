@@ -3839,9 +3839,21 @@ var _globalTimeout = setTimeout(function() {
   }
 
   _supabase.auth.onAuthStateChange(async (event, session) => {
+    // Ignore SIGNED_IN after init (already handled by getSession)
     if (_appInitialized && event === 'SIGNED_IN') return;
+    // Ignore TOKEN_REFRESHED — don't redirect, session is still valid
+    if (event === 'TOKEN_REFRESHED') return;
+    // Ignore MFA/password events
+    if (event === 'USER_UPDATED') return;
     if (session?.user) {
-      await _showApp(session.user);
+      // Only re-run _showApp if not already showing the portal/app
+      var szPortal = document.getElementById('sz-portal');
+      var appDiv = document.getElementById('app');
+      var portalVisible = szPortal && szPortal.style.display !== 'none';
+      var appVisible = appDiv && appDiv.style.display !== 'none';
+      if (!portalVisible && !appVisible) {
+        await _showApp(session.user);
+      }
     } else {
       _hideAllScreens();
       _showLogin();
@@ -7204,6 +7216,7 @@ let szSelectedClient = null;
 
 // ── Admin login: load ALL restaurants from Supabase ──
 async function doLoginSzAdmin() {
+  if (typeof _globalTimeout !== 'undefined') clearTimeout(_globalTimeout);
   _hideAllScreens();
   document.getElementById('sz-portal').style.display = 'block';
   document.getElementById('sz-date').textContent = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
