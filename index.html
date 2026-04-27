@@ -7243,9 +7243,10 @@ async function doLoginSzAdmin() {
   szRenderAll();
 }
 
-function closeSzPortal() {
+async function closeSzPortal() {
   szSelectedClient = null;
   _hideAllScreens();
+  await _supabase.auth.signOut();
   _showLogin();
 }
 
