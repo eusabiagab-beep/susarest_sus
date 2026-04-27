@@ -3802,8 +3802,8 @@ function _showLogin() {
 // Si hay sesión activa, onAuthStateChange la detecta y transiciona sola.
 let _appInitialized = false;
 
-// 1. Mostrar login de inmediato — cero pantalla en blanco
-_showLogin();
+// 1. Mostrar loading skeleton inmediato — sin pantalla en blanco, sin login prematuro
+_showLoading('Iniciando...');
 
 // 2. Verificar sesión en background
 (async () => {
@@ -3811,11 +3811,12 @@ _showLogin();
     const { data: { session } } = await _supabase.auth.getSession();
     if (session?.user) {
       await _showApp(session.user);
+    } else {
+      _showLogin(); // Solo mostrar login si confirmamos que NO hay sesión
     }
-    // Si no hay sesión, el login ya está visible — no hacer nada
   } catch(e) {
-    // Error de red — login ya visible, usuario puede intentar manualmente
     console.warn('Session check failed:', e.message);
+    _showLogin(); // Red fallida → ir al login
   }
 
   _supabase.auth.onAuthStateChange(async (event, session) => {
@@ -7824,7 +7825,8 @@ function szRenderClientes() {
     const lowS = t.inventory.filter(i=>i.stock<=i.minStock).length;
     const pcts = t.recipes.map(r=>calcFCPct(r,t.inventory)).filter(p=>p!==null);
     const avgFC = pcts.length ? (pcts.reduce((a,b)=>a+b,0)/pcts.length) : 0;
-    const health = lowS > 2 || avgFC > t.fcConfig.crit ? ['badge-red','⚠ Atención'] : pendOC > 1 ? ['badge-yellow','Revisar'] : ['badge-green','✓ Saludable'];
+    const _fcCrit = t.fcConfig?.crit ?? 33;
+    const health = lowS > 2 || avgFC > _fcCrit ? ['badge-red','⚠ Atención'] : pendOC > 1 ? ['badge-yellow','Revisar'] : ['badge-green','✓ Saludable'];
     const planColors = { free:'badge-gray', pro:'badge-brand', enterprise:'badge-orange' };
 
     return `<div class="sz-client-card">
