@@ -2328,7 +2328,7 @@ body.sr-cursor-hover #sr-cursor-inner {
     <button class="tab" onclick="cfgTab('clientes-cfg',this)">👥 Análisis de Clientes</button>
     <button class="tab" onclick="cfgTab('unidades',this)">Unidades</button>
     <button class="tab" onclick="cfgTab('plan',this)">Plan & Facturación</button>
-    <button class="tab" onclick="cfgTab('supabase',this)">Supabase Schema</button>
+    <!-- HIDDEN: Supabase Schema tab -->
   </div>
 
   <!-- Identidad -->
@@ -2616,8 +2616,8 @@ body.sr-cursor-hover #sr-cursor-inner {
     </div>
   </div>
 
-  <!-- Supabase Schema -->
-  <div class="settings-tab-content" id="cfg-supabase">
+  <!-- HIDDEN: Supabase Schema content -->
+  <div class="settings-tab-content" id="cfg-supabase" style="display:none!important">
     <div class="section-sub" style="margin-bottom:16px">Esquema SQL listo para implementar en Supabase con Row Level Security (RLS)</div>
     <pre class="schema-block">
 <span class="schema-comment">-- ═══════════════════════════════════════</span>
