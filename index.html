@@ -7573,6 +7573,9 @@ let szSelectedClient = null;
 // ── Admin login: load ALL restaurants from Supabase ──
 async function doLoginSzAdmin() {
   if (typeof _globalTimeout !== 'undefined' && _globalTimeout) { clearTimeout(_globalTimeout); _globalTimeout = null; }
+  // Wipe hardcoded demo data immediately — before any await
+  Object.keys(DB).forEach(k => { delete DB[k]; });
+  Object.keys(TENANTS).forEach(k => { delete TENANTS[k]; });
   document.getElementById('sz-portal').style.display = 'block';
   document.getElementById('sz-date').textContent = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
 
@@ -7983,6 +7986,9 @@ async function szToggleSuspend(key) {
 async function doLoginSzTeamMember(role, userId, email) {
   _szCurrentUserId = userId;
   _szCurrentEmail  = email;
+  // Wipe hardcoded demo data immediately — before any await
+  Object.keys(DB).forEach(k => { delete DB[k]; });
+  Object.keys(TENANTS).forEach(k => { delete TENANTS[k]; });
   document.getElementById('sz-date').textContent = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
 
   // Load this user's team record (find by user_id or email for first login)
