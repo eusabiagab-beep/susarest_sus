@@ -3090,6 +3090,20 @@ body.sr-cursor-hover #sr-cursor-inner {
         </div>
         <div id="sz-cuentas-table"></div>
       </div>
+
+      <!-- ── Equipo Susazón ── -->
+      <div style="margin-top:28px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px">
+          <div>
+            <div style="font-size:16px;font-weight:700">👤 Equipo Susazón</div>
+            <div style="font-size:12.5px;color:var(--text-muted);margin-top:2px">Usuarios con acceso al portal · cada uno ve solo lo que tú le asignas</div>
+          </div>
+          <button class="btn btn-primary" onclick="szOpenNewTeamMember()" style="background:var(--brand);border-color:var(--brand);font-size:13px;flex-shrink:0">+ Nuevo Usuario</button>
+        </div>
+        <div class="card" style="padding:0">
+          <div id="sz-team-table"><div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">⏳ Cargando equipo…</div></div>
+        </div>
+      </div>
     </div>
 
     <!-- ── AUDITORÍA ── -->
@@ -3151,6 +3165,68 @@ body.sr-cursor-hover #sr-cursor-inner {
     <div style="display:flex;gap:8px;margin-top:14px">
       <button class="btn" style="flex:1" onclick="closeModal('pin-modal')">Cancelar</button>
       <button class="btn btn-primary" style="flex:1;background:var(--brand);border-color:var(--brand)" onclick="checkPin()">Ingresar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nuevo Usuario de Equipo -->
+<div class="modal-bg" id="sz-new-team-modal">
+  <div class="modal" style="width:500px">
+    <div class="modal-header">
+      <div class="modal-title">👤 Nuevo Usuario de Equipo</div>
+      <button class="modal-close" onclick="closeModal('sz-new-team-modal')">✕</button>
+    </div>
+    <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:14px">Se creará la cuenta y se enviará un email de invitación para que el usuario establezca su contraseña.</p>
+    <div class="form-row">
+      <div class="field"><label>Nombre *</label><input type="text" id="ntm-name" placeholder="Ej. Carlos Martínez"></div>
+      <div class="field"><label>Email *</label><input type="email" id="ntm-email" placeholder="carlos@susazon.mx"></div>
+    </div>
+    <div class="field" style="margin-bottom:14px">
+      <label>Rol</label>
+      <select id="ntm-role" onchange="szToggleTeamClientList('ntm')" style="width:100%">
+        <option value="director">🎯 Director — ve todos los tabs analíticos</option>
+        <option value="vendedor">👤 Vendedor — ve Overview, Compras y Necesitan</option>
+      </select>
+    </div>
+    <div id="ntm-clients-wrap">
+      <label style="font-size:12.5px;font-weight:500;color:var(--text);display:block;margin-bottom:6px">Clientes asignados</label>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px" id="ntm-clients-hint">Selecciona los restaurantes que este usuario puede ver. Director ve todos por default.</div>
+      <div id="ntm-clients" style="max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:6px 10px"></div>
+    </div>
+    <div id="ntm-error" style="display:none;color:#dc2626;font-size:12.5px;margin-top:10px;padding:8px 11px;background:#fef2f2;border-radius:7px"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn" style="flex:1" onclick="closeModal('sz-new-team-modal')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:1;background:var(--brand);border-color:var(--brand)" onclick="szCreateTeamMember()" id="ntm-submit-btn">Crear Usuario</button>
+    </div>
+  </div>
+</div>
+
+<!-- Editar Usuario de Equipo -->
+<div class="modal-bg" id="sz-edit-team-modal">
+  <div class="modal" style="width:500px">
+    <div class="modal-header">
+      <div class="modal-title">✏️ Editar Usuario</div>
+      <button class="modal-close" onclick="closeModal('sz-edit-team-modal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Nombre</label><input type="text" id="etm-name" placeholder="Nombre"></div>
+      <div class="field"><label>Email</label><div id="etm-email" style="padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text-muted)">—</div></div>
+    </div>
+    <div class="field" style="margin-bottom:14px">
+      <label>Rol</label>
+      <select id="etm-role" onchange="szToggleTeamClientList('etm')" style="width:100%">
+        <option value="director">🎯 Director — ve todos los tabs analíticos</option>
+        <option value="vendedor">👤 Vendedor — ve Overview, Compras y Necesitan</option>
+      </select>
+    </div>
+    <div id="etm-clients-wrap">
+      <label style="font-size:12.5px;font-weight:500;color:var(--text);display:block;margin-bottom:6px">Clientes asignados</label>
+      <div id="etm-clients" style="max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:6px 10px"></div>
+    </div>
+    <input type="hidden" id="etm-id">
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn" style="flex:1" onclick="closeModal('sz-edit-team-modal')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:1;background:var(--brand);border-color:var(--brand)" onclick="szSaveTeamMember()">Guardar</button>
     </div>
   </div>
 </div>
@@ -3836,11 +3912,17 @@ async function _showApp(user) {
 
   // getUser() valida el JWT contra los servidores de Supabase — nunca confiar en datos del cliente
   const { data: { user: verifiedUser } } = await _supabase.auth.getUser();
-  if (verifiedUser?.app_metadata?.role === 'susazon_admin') {
-    // Show portal shell immediately — data loads in background
+  const szRole = verifiedUser?.app_metadata?.role;
+  if (szRole === 'susazon_admin') {
     _hideAllScreens();
     document.getElementById('sz-portal').style.display = 'block';
     doLoginSzAdmin(); // intentionally no await
+    return;
+  }
+  if (szRole === 'susazon_director' || szRole === 'susazon_vendedor') {
+    _hideAllScreens();
+    document.getElementById('sz-portal').style.display = 'block';
+    doLoginSzTeamMember(szRole, verifiedUser.id, verifiedUser.email); // no await
     return;
   }
 
@@ -7801,6 +7883,288 @@ async function szToggleSuspend(key) {
   showToast(newStatus === 'suspended' ? `🚫 "${t.name}" suspendida` : `✅ "${t.name}" activada`);
 }
 
+// ── TEAM MEMBER LOGIN ──
+
+async function doLoginSzTeamMember(role, userId, email) {
+  document.getElementById('sz-date').textContent = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+  // Load this user's team record (find by user_id or email for first login)
+  const { data: members } = await _supabase.from('sz_team_members')
+    .select('*').or(`user_id.eq.${userId},email.eq.${email}`).limit(1);
+  const member = members?.[0];
+
+  // Link user_id on first login
+  if (member && !member.user_id) {
+    await _supabase.from('sz_team_members').update({ user_id: userId }).eq('id', member.id);
+  }
+
+  // If deactivated, sign out
+  if (member && member.active === false) {
+    await _supabase.auth.signOut();
+    _showLogin();
+    showToast('⛔ Tu acceso ha sido desactivado. Contacta al administrador.');
+    return;
+  }
+
+  const assignedClients = member?.assigned_clients || [];
+
+  // Load restaurants filtered by assignment
+  let query = _supabase.from('restaurants').select('*')
+    .eq('status', 'active').order('created_at', { ascending: false });
+  if (role === 'susazon_vendedor' && assignedClients.length > 0) {
+    query = query.in('id', assignedClients);
+  } else if (role === 'susazon_vendedor' && assignedClients.length === 0) {
+    // No clients assigned yet
+    szApplyRoleAccess(role);
+    szBuildDropdown();
+    szRenderAll();
+    return;
+  }
+
+  const { data: restaurants } = await query;
+  Object.keys(DB).forEach(k => { if (!['steakhouse1','sushi1','mexicano1'].includes(k)) return; delete DB[k]; delete TENANTS[k]; });
+
+  await Promise.all((restaurants || []).map(async r => {
+    const [{ data: inv }, { data: recs }, { data: ords }, { data: ph }] = await Promise.all([
+      _supabase.from('inventory').select('*').eq('restaurant_id', r.id),
+      _supabase.from('recipes').select('*, recipe_ingredients(*)').eq('restaurant_id', r.id),
+      _supabase.from('orders').select('*').eq('restaurant_id', r.id).order('date', { ascending: false }),
+      _supabase.from('price_history').select('*').eq('restaurant_id', r.id).order('date', { ascending: false }),
+    ]);
+    TENANTS[r.id] = {
+      id: r.id, name: r.name, emoji: r.emoji || '🍽️',
+      initials: r.initials || r.name.slice(0,2).toUpperCase(),
+      plan: r.plan || 'free', primaryColor: r.primary_color || '#1a472a',
+      primaryLight: r.primary_light || '#e8f0ea',
+      fcMeta: r.fc_meta||28, fcAlert: r.fc_alert||32, fcCrit: r.fc_crit||35, margin: r.margin||68,
+      ownerEmail: r.owner_email || '', phone: r.phone || '', city: r.city || '',
+      status: r.status || 'active', userId: r.user_id || null, createdAt: r.created_at || '',
+    };
+    DB[r.id] = {
+      inventory: (inv||[]).map(i=>({ id:i.id, name:i.name, cat:i.cat, unit:i.unit, stock:i.stock, minStock:i.min_stock, cost:i.cost, buyUnit:i.buy_unit })),
+      recipes: (recs||[]).map(rec=>({ id:rec.id, name:rec.name, cat:rec.cat, portions:rec.portions, price:rec.price, ingredients:(rec.recipe_ingredients||[]).map(ri=>({ ingId:ri.inventory_id, qty:ri.qty, unit:ri.unit })) })),
+      orders: (ords||[]).map(o=>({ id:o.id, date:o.date, supplier:o.supplier, status:o.status, items:o.items, total:o.total, delivery:o.delivery })),
+      priceHistory: (ph||[]).map(p=>({ itemId:p.inventory_id, itemName:p.item_name, oldCost:p.old_cost, newCost:p.new_cost, pct:p.pct, date:p.date })),
+      fcConfig: { meta:r.fc_meta||28, alert:r.fc_alert||32, crit:r.fc_crit||35, margin:r.margin||68 },
+      opCosts: { period:'mes', ventas:0, items:[] }
+    };
+  }));
+
+  szApplyRoleAccess(role);
+  szBuildDropdown();
+  szRenderAll();
+}
+
+// ── ROLE-BASED ACCESS ──
+
+let _szCurrentRole = 'susazon_admin';
+
+function szApplyRoleAccess(role) {
+  _szCurrentRole = role;
+  const allowed = {
+    susazon_admin:    ['overview','compras','necesitan','ventas','oportunidades','clientes','cuentas','auditoria'],
+    susazon_director: ['overview','compras','necesitan','ventas','oportunidades','clientes'],
+    susazon_vendedor: ['overview','compras','necesitan'],
+  }[role] || ['overview'];
+
+  ['overview','compras','necesitan','ventas','oportunidades','clientes','cuentas','auditoria'].forEach(tab => {
+    const btn = document.getElementById(`sz-nav-${tab}`);
+    if (btn) btn.style.display = allowed.includes(tab) ? '' : 'none';
+  });
+
+  // Update portal subtitle
+  const subtitle = { susazon_director:'· Director', susazon_vendedor:'· Vendedor' }[role];
+  const subEl = document.querySelector('#sz-portal [style*="Portal Proveedor"] span');
+  if (subtitle && subEl) subEl.textContent = subtitle;
+}
+
+// ── TEAM MANAGEMENT ──
+
+async function szRenderTeam() {
+  const tableEl = document.getElementById('sz-team-table');
+  if (!tableEl) return;
+  tableEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px">⏳ Cargando equipo…</div>';
+
+  const { data: members, error } = await _supabase
+    .from('sz_team_members').select('*').order('created_at', { ascending: false });
+
+  if (error || !members || members.length === 0) {
+    tableEl.innerHTML = '<div style="padding:28px;text-align:center;color:var(--text-muted);font-size:13px">Sin usuarios de equipo · haz click en "+ Nuevo Usuario" para agregar</div>';
+    return;
+  }
+
+  const roleLabel = { director:'🎯 Director', vendedor:'👤 Vendedor' };
+  const roleColor = { director:'#7c3aed', vendedor:'var(--brand)' };
+
+  tableEl.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border)">
+          <th style="padding:10px 18px;text-align:left;color:var(--text-muted);font-weight:500">Nombre</th>
+          <th style="padding:10px 14px;text-align:left;color:var(--text-muted);font-weight:500">Email</th>
+          <th style="padding:10px 14px;text-align:center;color:var(--text-muted);font-weight:500">Rol</th>
+          <th style="padding:10px 14px;text-align:center;color:var(--text-muted);font-weight:500">Clientes</th>
+          <th style="padding:10px 14px;text-align:center;color:var(--text-muted);font-weight:500">Estado</th>
+          <th style="padding:10px 18px;text-align:right;color:var(--text-muted);font-weight:500">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${members.map(m => {
+          const n = m.assigned_clients?.length || 0;
+          const clientLabel = m.role === 'director' && n === 0 ? 'Todos' : `${n} asignado${n!==1?'s':''}`;
+          const active = m.active !== false;
+          return `<tr style="border-bottom:1px solid var(--border);transition:background .1s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+            <td style="padding:12px 18px;font-weight:600;color:var(--text)">${esc(m.name)}</td>
+            <td style="padding:12px 14px;color:var(--text-muted);font-size:12.5px">${esc(m.email)}</td>
+            <td style="padding:12px 14px;text-align:center">
+              <span style="font-size:12px;font-weight:700;color:${roleColor[m.role]||'#6b7280'}">${roleLabel[m.role]||m.role}</span>
+            </td>
+            <td style="padding:12px 14px;text-align:center;font-size:12.5px;color:var(--text-muted)">${clientLabel}</td>
+            <td style="padding:12px 14px;text-align:center">
+              ${active
+                ? '<span class="badge" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;padding:3px 8px">Activo</span>'
+                : '<span class="badge" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;padding:3px 8px">Inactivo</span>'}
+            </td>
+            <td style="padding:12px 18px">
+              <div style="display:flex;gap:6px;justify-content:flex-end">
+                <button onclick="szOpenEditTeamMember('${esc(m.id)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px">✏️ Editar</button>
+                <button onclick="szToggleTeamActive('${esc(m.id)}',${active},'${esc(m.name)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px;color:${active?'#dc2626':'#16a34a'}">${active?'Desactivar':'Activar'}</button>
+                <button onclick="szDeleteTeamMember('${esc(m.id)}','${esc(m.name)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px;color:#dc2626">🗑</button>
+              </div>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+function szRenderTeamClientChecklist(containerId, selectedIds) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const keys = Object.keys(TENANTS).filter(k => !['steakhouse1','sushi1','mexicano1'].includes(k));
+  if (keys.length === 0) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:8px 0">No hay clientes activos aún</div>';
+    return;
+  }
+  el.innerHTML = keys.map(key => {
+    const t = TENANTS[key];
+    const checked = selectedIds.includes(key) ? 'checked' : '';
+    return `<label style="display:flex;align-items:center;gap:8px;padding:7px 2px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border)">
+      <input type="checkbox" value="${esc(key)}" ${checked} style="width:15px;height:15px;cursor:pointer;accent-color:var(--brand)">
+      <span style="font-size:16px">${esc(t.emoji)}</span>
+      <span style="flex:1">${esc(t.name)}</span>
+      <span style="font-size:11px;color:var(--text-faint)">${esc((t.plan||'free').toUpperCase())}</span>
+    </label>`;
+  }).join('');
+}
+
+function szToggleTeamClientList(prefix) {
+  const role = document.getElementById(`${prefix}-role`)?.value;
+  const hint = document.getElementById(`${prefix}-clients-hint`);
+  if (hint) hint.textContent = role === 'director'
+    ? 'Director ve todos por default. Desmarca para restringir.'
+    : 'Selecciona los restaurantes que este vendedor puede ver.';
+}
+
+function szOpenNewTeamMember() {
+  ['ntm-name','ntm-email'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('ntm-role').value = 'vendedor';
+  document.getElementById('ntm-error').style.display = 'none';
+  const btn = document.getElementById('ntm-submit-btn');
+  btn.disabled = false; btn.textContent = 'Crear Usuario';
+  szRenderTeamClientChecklist('ntm-clients', []);
+  szToggleTeamClientList('ntm');
+  openModal('sz-new-team-modal');
+}
+
+async function szCreateTeamMember() {
+  const name  = document.getElementById('ntm-name').value.trim();
+  const email = document.getElementById('ntm-email').value.trim().toLowerCase();
+  const role  = document.getElementById('ntm-role').value;
+  const errEl = document.getElementById('ntm-error');
+  const btn   = document.getElementById('ntm-submit-btn');
+
+  if (!name)  { errEl.textContent='El nombre es requerido.'; errEl.style.display='block'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent='Ingresa un email válido.'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+
+  const assigned_clients = Array.from(
+    document.querySelectorAll('#ntm-clients input[type="checkbox"]:checked')
+  ).map(cb => cb.value);
+
+  btn.disabled = true; btn.textContent = 'Creando…';
+
+  const { data, error } = await _supabase.functions.invoke('create-sz-team-user', {
+    body: { name, email, role, assigned_clients }
+  });
+
+  if (error || data?.error) {
+    errEl.textContent = 'Error: ' + (data?.error || error.message);
+    errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Crear Usuario';
+    return;
+  }
+
+  closeModal('sz-new-team-modal');
+  showToast(`✅ Usuario "${name}" creado · Invitación enviada a ${email}`);
+  await _auditLog('team_member_created', null, name, { email, role, clients: assigned_clients.length });
+  szRenderTeam();
+}
+
+async function szOpenEditTeamMember(id) {
+  const { data: m } = await _supabase.from('sz_team_members').select('*').eq('id', id).single();
+  if (!m) return;
+  document.getElementById('etm-id').value = id;
+  document.getElementById('etm-name').value = m.name;
+  document.getElementById('etm-email').textContent = m.email;
+  document.getElementById('etm-role').value = m.role;
+  szRenderTeamClientChecklist('etm-clients', m.assigned_clients || []);
+  szToggleTeamClientList('etm');
+  openModal('sz-edit-team-modal');
+}
+
+async function szSaveTeamMember() {
+  const id   = document.getElementById('etm-id').value;
+  const name = document.getElementById('etm-name').value.trim();
+  const role = document.getElementById('etm-role').value;
+  const assigned_clients = Array.from(
+    document.querySelectorAll('#etm-clients input[type="checkbox"]:checked')
+  ).map(cb => cb.value);
+
+  const { error } = await _supabase.from('sz_team_members')
+    .update({ name, role, assigned_clients }).eq('id', id);
+  if (error) { showToast('❌ Error: ' + error.message); return; }
+
+  // Update role in app_metadata via Edge Function
+  await _supabase.functions.invoke('create-sz-team-user', {
+    body: { action: 'update_role', team_member_id: id, role }
+  });
+
+  closeModal('sz-edit-team-modal');
+  showToast('✅ Usuario actualizado');
+  await _auditLog('team_member_updated', null, name, { role, clients: assigned_clients.length });
+  szRenderTeam();
+}
+
+async function szToggleTeamActive(id, currentActive, name) {
+  const { error } = await _supabase.from('sz_team_members')
+    .update({ active: !currentActive }).eq('id', id);
+  if (error) { showToast('❌ Error: ' + error.message); return; }
+  showToast(currentActive ? `⏸ "${name}" desactivado` : `✅ "${name}" activado`);
+  szRenderTeam();
+}
+
+async function szDeleteTeamMember(id, name) {
+  if (!confirm(`¿Eliminar al usuario "${name}"?\nPerdará acceso al portal inmediatamente.`)) return;
+  await _supabase.functions.invoke('create-sz-team-user', {
+    body: { action: 'delete', team_member_id: id }
+  });
+  await _supabase.from('sz_team_members').delete().eq('id', id);
+  await _auditLog('team_member_deleted', null, name, {});
+  showToast(`🗑 "${name}" eliminado`);
+  szRenderTeam();
+}
+
 // ── AUDIT LOG ──
 
 async function _auditLog(action, targetId, targetName, details) {
@@ -7932,6 +8296,13 @@ function _szPaintAudit() {
     </table>`;
 
   if (moreEl) moreEl.style.display = _auditOffset < _auditTotal ? 'block' : 'none';
+}
+
+// Render team when Cuentas tab loads (admin only)
+const _szTabOrig = szTab;
+function szTab(tab, btn) {
+  _szTabOrig(tab, btn);
+  if (tab === 'cuentas' && _szCurrentRole === 'susazon_admin') szRenderTeam();
 }
 
 // Called after any tenant data mutation — silently refreshes Susazón if open
