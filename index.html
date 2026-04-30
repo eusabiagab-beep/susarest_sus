@@ -7590,8 +7590,9 @@ async function doLoginSzAdmin() {
 
   if (error) { console.error('[SusaRest Admin]', error); return; }
 
-  // Clear demo data, load real data from Supabase
-  Object.keys(DB).forEach(k => { if (!['steakhouse1','sushi1','mexicano1'].includes(k)) return; delete DB[k]; delete TENANTS[k]; });
+  // Clear ALL in-memory data before loading fresh from Supabase
+  Object.keys(DB).forEach(k => { delete DB[k]; });
+  Object.keys(TENANTS).forEach(k => { delete TENANTS[k]; });
 
   await Promise.all((allRestaurants || []).map(async r => {
     const [{ data: inv }, { data: recs }, { data: ords }, { data: ph }] = await Promise.all([
