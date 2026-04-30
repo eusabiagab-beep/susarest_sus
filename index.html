@@ -8013,7 +8013,7 @@ async function doLoginSzTeamMember(role, userId, email) {
 
   // Load restaurants filtered by assignment
   let query = _supabase.from('restaurants').select('*')
-    .eq('status', 'active').order('created_at', { ascending: false });
+    .order('created_at', { ascending: false });
   if (role === 'susazon_vendedor' && assignedClients.length > 0) {
     query = query.in('id', assignedClients);
   } else if (role === 'susazon_vendedor' && assignedClients.length === 0) {
