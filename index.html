@@ -3916,6 +3916,7 @@ async function doSetPassword() {
     return;
   }
 
+  _recoveryMode = false; // allow normal auth events again
   showToast('✅ Contraseña establecida · Bienvenido');
   _hideAllScreens();
   const { data: { user } } = await _supabase.auth.getUser();
@@ -4087,21 +4088,33 @@ var _globalTimeout = setTimeout(function() {
   _showLogin();
 }, 8000);
 
+// Set to true while the user is on the reset-password screen; prevents
+// any auth event (SIGNED_IN, etc.) from navigating away from it.
+var _recoveryMode = false;
+
 (async () => {
   try {
     if (typeof _supabase === 'undefined' || !_supabase.auth) {
       throw new Error('Supabase not available');
     }
 
-    // If URL contains a recovery token, skip getSession and let
-    // onAuthStateChange handle it with PASSWORD_RECOVERY event
-    const _hash = window.location.hash;
-    const _isRecovery = _hash.includes('type=recovery') || _hash.includes('type=invite');
+    // Detect recovery/invite tokens in both hash (implicit flow) and
+    // query string (PKCE flow — Supabase default for newer projects)
+    const _hash   = window.location.hash;
+    const _search = window.location.search;
+    const _isRecovery = _hash.includes('type=recovery')
+      || _hash.includes('type=invite')
+      || _search.includes('code=');
+
     if (_isRecovery) {
       clearTimeout(_globalTimeout);
       _globalTimeout = null;
+      _recoveryMode = true;
+      // Show reset screen immediately before any auth event fires
       _hideAllScreens();
       document.getElementById('reset-password-screen').style.display = 'flex';
+      // Exchange the PKCE code — fires PASSWORD_RECOVERY or SIGNED_IN internally
+      await _supabase.auth.getSession();
     } else {
       const { data: { session } } = await _supabase.auth.getSession();
       clearTimeout(_globalTimeout);
@@ -4120,12 +4133,23 @@ var _globalTimeout = setTimeout(function() {
   }
 
   _supabase.auth.onAuthStateChange(async (event, session) => {
+    // While in recovery flow, only PASSWORD_RECOVERY is relevant — block everything else
+    // (SIGNED_IN fires when PKCE code is exchanged and would override the reset screen)
+    if (_recoveryMode) {
+      if (event === 'PASSWORD_RECOVERY') {
+        _hideAllScreens();
+        document.getElementById('reset-password-screen').style.display = 'flex';
+      }
+      // SIGNED_IN, TOKEN_REFRESHED, USER_UPDATED — all ignored during recovery
+      return;
+    }
     // Ignore SIGNED_IN after init (already handled by getSession)
     if (_appInitialized && event === 'SIGNED_IN') return;
     // Ignore TOKEN_REFRESHED — don't redirect, session is still valid
     if (event === 'TOKEN_REFRESHED') return;
-    // Password recovery — show reset screen
+    // Password recovery — show reset screen (implicit/hash flow)
     if (event === 'PASSWORD_RECOVERY') {
+      _recoveryMode = true;
       _hideAllScreens();
       document.getElementById('reset-password-screen').style.display = 'flex';
       return;
