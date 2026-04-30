@@ -1538,6 +1538,28 @@ body.sr-cursor-hover #sr-cursor-inner {
   <div class="loading-msg" id="loading-msg">Cargando...</div>
 </div>
 
+<!-- ═══════════════ RESET PASSWORD ═══════════════ -->
+<div id="reset-password-screen" style="display:none;min-height:100vh;background:var(--bg);align-items:center;justify-content:center;font-family:'DM Sans',sans-serif">
+  <div style="background:var(--surface);border-radius:20px;padding:40px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,.12);text-align:center">
+    <div style="width:56px;height:56px;background:var(--brand-light);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:26px">🔑</div>
+    <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:6px">Nueva contraseña</div>
+    <p style="font-size:13.5px;color:var(--text-muted);margin-bottom:24px">Elige una contraseña segura para tu cuenta de Susazón.</p>
+    <div class="field" style="text-align:left;margin-bottom:12px">
+      <label>Nueva contraseña</label>
+      <input type="password" id="rp-password" placeholder="Mínimo 8 caracteres" style="width:100%;box-sizing:border-box">
+    </div>
+    <div class="field" style="text-align:left;margin-bottom:18px">
+      <label>Confirmar contraseña</label>
+      <input type="password" id="rp-confirm" placeholder="Repite la contraseña" style="width:100%;box-sizing:border-box">
+    </div>
+    <div id="rp-error" style="display:none;color:#dc2626;font-size:12.5px;margin-bottom:12px;padding:8px 11px;background:#fef2f2;border-radius:7px;text-align:left"></div>
+    <button class="btn btn-primary" onclick="doSetPassword()" id="rp-btn"
+      style="width:100%;background:var(--brand);border-color:var(--brand);font-size:14px;padding:11px">
+      Guardar contraseña →
+    </button>
+  </div>
+</div>
+
 <!-- ═══════════════ ONBOARDING ═══════════════ -->
 <div id="onboarding-screen" style="position:relative;display:none">
   <div class="ob-card">
@@ -3875,6 +3897,31 @@ async function doAuth() {
   }
 }
 
+async function doSetPassword() {
+  const pass    = document.getElementById('rp-password').value;
+  const confirm = document.getElementById('rp-confirm').value;
+  const errEl   = document.getElementById('rp-error');
+  const btn     = document.getElementById('rp-btn');
+
+  if (pass.length < 8)    { errEl.textContent = 'La contraseña debe tener al menos 8 caracteres.'; errEl.style.display='block'; return; }
+  if (pass !== confirm)   { errEl.textContent = 'Las contraseñas no coinciden.'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Guardando…';
+
+  const { error } = await _supabase.auth.updateUser({ password: pass });
+  if (error) {
+    errEl.textContent = 'Error: ' + error.message;
+    errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Guardar contraseña →';
+    return;
+  }
+
+  showToast('✅ Contraseña establecida · Bienvenido');
+  _hideAllScreens();
+  const { data: { user } } = await _supabase.auth.getUser();
+  if (user) await _showApp(user);
+}
+
 async function doLogout() {
   _hideAllScreens();
   await _supabase.auth.signOut();
@@ -3888,6 +3935,7 @@ function _hideAllScreens() {
   ls.classList.remove('visible');
   var ld2=document.getElementById('loading-screen'); ld2.style.display='none'; ld2.classList.add('hidden');
   document.getElementById('onboarding-screen').style.display = 'none';
+  document.getElementById('reset-password-screen').style.display = 'none';
   document.getElementById('app').style.display = 'none';
   var av = document.getElementById('admin-view');
   if (av) av.style.display = 'none';
@@ -4065,7 +4113,12 @@ var _globalTimeout = setTimeout(function() {
     if (_appInitialized && event === 'SIGNED_IN') return;
     // Ignore TOKEN_REFRESHED — don't redirect, session is still valid
     if (event === 'TOKEN_REFRESHED') return;
-    // Ignore MFA/password events
+    // Password recovery — show reset screen
+    if (event === 'PASSWORD_RECOVERY') {
+      _hideAllScreens();
+      document.getElementById('reset-password-screen').style.display = 'flex';
+      return;
+    }
     if (event === 'USER_UPDATED') return;
     if (session?.user) {
       // Only re-run _showApp if not already showing the portal/app
