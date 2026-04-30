@@ -7662,6 +7662,7 @@ function szTab(tab, btn) {
   document.getElementById('sz-' + tab).classList.add('active');
   if (btn) btn.classList.add('active');
   if (tab === 'auditoria') szRenderAuditoria();
+  if (tab === 'cuentas' && _szCurrentRole === 'susazon_admin') szRenderTeam();
 }
 
 // ── Data aggregator — filters by szSelectedClient if set ──
@@ -8298,12 +8299,6 @@ function _szPaintAudit() {
   if (moreEl) moreEl.style.display = _auditOffset < _auditTotal ? 'block' : 'none';
 }
 
-// Render team when Cuentas tab loads (admin only)
-const _szTabOrig = szTab;
-function szTab(tab, btn) {
-  _szTabOrig(tab, btn);
-  if (tab === 'cuentas' && _szCurrentRole === 'susazon_admin') szRenderTeam();
-}
 
 // Called after any tenant data mutation — silently refreshes Susazón if open
 function szNotifyChange() {
