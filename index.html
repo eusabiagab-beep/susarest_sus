@@ -4092,14 +4092,25 @@ var _globalTimeout = setTimeout(function() {
     if (typeof _supabase === 'undefined' || !_supabase.auth) {
       throw new Error('Supabase not available');
     }
-    const { data: { session } } = await _supabase.auth.getSession();
-    // Cancelar timeout inmediatamente — sesión resuelta
-    clearTimeout(_globalTimeout);
-    _globalTimeout = null;
-    if (session?.user) {
-      await _showApp(session.user);
+
+    // If URL contains a recovery token, skip getSession and let
+    // onAuthStateChange handle it with PASSWORD_RECOVERY event
+    const _hash = window.location.hash;
+    const _isRecovery = _hash.includes('type=recovery') || _hash.includes('type=invite');
+    if (_isRecovery) {
+      clearTimeout(_globalTimeout);
+      _globalTimeout = null;
+      _hideAllScreens();
+      document.getElementById('reset-password-screen').style.display = 'flex';
     } else {
-      _showLogin();
+      const { data: { session } } = await _supabase.auth.getSession();
+      clearTimeout(_globalTimeout);
+      _globalTimeout = null;
+      if (session?.user) {
+        await _showApp(session.user);
+      } else {
+        _showLogin();
+      }
     }
   } catch(e) {
     clearTimeout(_globalTimeout);
