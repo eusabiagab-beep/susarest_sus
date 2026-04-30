@@ -3111,6 +3111,7 @@ body.sr-cursor-hover #sr-cursor-inner {
             <option value="plan_changed">Plan cambiado</option>
             <option value="account_suspended">Cuenta suspendida</option>
             <option value="account_activated">Cuenta activada</option>
+            <option value="account_deleted">Cuenta eliminada</option>
             <option value="user_linked">Usuario vinculado</option>
             <option value="restaurant_created">Restaurante creado</option>
           </select>
@@ -7695,6 +7696,7 @@ function szRenderCuentas() {
               <div style="display:flex;gap:6px;justify-content:flex-end">
                 <button onclick="szOpenChangePlan('${esc(key)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px">📋 Plan</button>
                 <button onclick="szToggleSuspend('${esc(key)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px;color:${status==='suspended'?'#16a34a':'#dc2626'}">${status==='suspended'?'✓ Activar':'🚫 Suspender'}</button>
+                <button onclick="szDeleteAccount('${esc(key)}','${esc(t.name)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px;color:#dc2626" title="Eliminar cuenta">🗑</button>
               </div>
             </td>
           </tr>`;
@@ -7767,6 +7769,17 @@ async function szSavePlan() {
   await _auditLog('plan_changed', key, TENANTS[key]?.name || key, { from: prevPlan, to: plan });
   szRenderCuentas();
   showToast('✅ Plan actualizado');
+}
+
+async function szDeleteAccount(key, name) {
+  if (!confirm(`¿Eliminar la cuenta "${name}"?\n\nEsto borrará el restaurante y todos sus datos (inventario, recetas, órdenes). Esta acción no se puede deshacer.`)) return;
+  const { error } = await _supabase.from('restaurants').delete().eq('id', key);
+  if (error) { showToast('❌ Error al eliminar: ' + error.message); return; }
+  await _auditLog('account_deleted', key, name, {});
+  delete TENANTS[key];
+  delete DB[key];
+  szRenderAll();
+  showToast(`🗑 Cuenta "${name}" eliminada`);
 }
 
 async function szToggleSuspend(key) {
@@ -7869,6 +7882,7 @@ function _szPaintAudit() {
     account_activated: { label:'Activada',         color:'#16a34a', bg:'#f0fdf4', border:'#bbf7d0' },
     user_linked:       { label:'Usuario vinculado',color:'#0284c7', bg:'#f0f9ff', border:'#bae6fd' },
     restaurant_created:{ label:'Rest. creado',     color:'var(--brand)', bg:'var(--brand-light)', border:'var(--brand)' },
+    account_deleted:   { label:'Cuenta eliminada', color:'#7f1d1d',      bg:'#fef2f2',            border:'#fca5a5' },
   };
 
   tableEl.innerHTML = `
