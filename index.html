@@ -8012,7 +8012,9 @@ async function doLoginSzTeamMember(role, userId, email) {
   }
 
   const { data: restaurants } = await query;
-  Object.keys(DB).forEach(k => { if (!['steakhouse1','sushi1','mexicano1'].includes(k)) return; delete DB[k]; delete TENANTS[k]; });
+  // Clear ALL in-memory data before loading the filtered set for this team member
+  Object.keys(DB).forEach(k => { delete DB[k]; });
+  Object.keys(TENANTS).forEach(k => { delete TENANTS[k]; });
 
   await Promise.all((restaurants || []).map(async r => {
     const [{ data: inv }, { data: recs }, { data: ords }, { data: ph }] = await Promise.all([
