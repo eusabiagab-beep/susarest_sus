@@ -3837,8 +3837,10 @@ async function _showApp(user) {
   // getUser() valida el JWT contra los servidores de Supabase — nunca confiar en datos del cliente
   const { data: { user: verifiedUser } } = await _supabase.auth.getUser();
   if (verifiedUser?.app_metadata?.role === 'susazon_admin') {
-    _showLoading('Cargando portal Susazón...');
-    await doLoginSzAdmin();
+    // Show portal shell immediately — data loads in background
+    _hideAllScreens();
+    document.getElementById('sz-portal').style.display = 'block';
+    doLoginSzAdmin(); // intentionally no await
     return;
   }
 
@@ -7400,19 +7402,24 @@ let szSelectedClient = null;
 // ── Admin login: load ALL restaurants from Supabase ──
 async function doLoginSzAdmin() {
   if (typeof _globalTimeout !== 'undefined' && _globalTimeout) { clearTimeout(_globalTimeout); _globalTimeout = null; }
-  _hideAllScreens();
   document.getElementById('sz-portal').style.display = 'block';
   document.getElementById('sz-date').textContent = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
 
-  const overviewEl = document.getElementById('sz-overview-kpis');
-  if (overviewEl) overviewEl.innerHTML = '<div style="padding:24px;color:var(--text-muted);font-size:13px">⏳ Cargando datos de clientes...</div>';
+  // Show skeleton while data loads — portal is already visible
+  const skeletonKpi = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+    ${Array(4).fill('<div style="height:90px;background:var(--border);border-radius:12px;animation:sz-pulse 1.4s ease-in-out infinite"></div>').join('')}
+  </div>`;
+  ['sz-kpis','sz-compras-kpis','sz-client-status'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = skeletonKpi;
+  });
 
   const { data: allRestaurants, error } = await _supabase
     .from('restaurants').select('*').order('created_at', { ascending: false });
 
   if (error) { console.error('[SusaRest Admin]', error); return; }
 
-  // Clear demo data, load real data
+  // Clear demo data, load real data from Supabase
   Object.keys(DB).forEach(k => { if (!['steakhouse1','sushi1','mexicano1'].includes(k)) return; delete DB[k]; delete TENANTS[k]; });
 
   await Promise.all((allRestaurants || []).map(async r => {
