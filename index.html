@@ -4129,7 +4129,8 @@ var _recoveryMode = false;
     clearTimeout(_globalTimeout);
     _globalTimeout = null;
     console.warn('Session init failed:', e.message);
-    _showLogin();
+    // Don't redirect to login if we're already showing the recovery screen
+    if (!_recoveryMode) _showLogin();
   }
 
   _supabase.auth.onAuthStateChange(async (event, session) => {
