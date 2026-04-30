@@ -8010,6 +8010,8 @@ async function doLoginSzTeamMember(role, userId, email) {
   }
 
   const assignedClients = member?.assigned_clients || [];
+  console.log('[SZ] member:', member);
+  console.log('[SZ] assignedClients:', assignedClients);
 
   // Load restaurants filtered by assignment
   let query = _supabase.from('restaurants').select('*')
@@ -8024,7 +8026,8 @@ async function doLoginSzTeamMember(role, userId, email) {
     return;
   }
 
-  const { data: restaurants } = await query;
+  const { data: restaurants, error: rErr } = await query;
+  console.log('[SZ] restaurants:', restaurants, 'error:', rErr);
   // Clear ALL in-memory data before loading the filtered set for this team member
   Object.keys(DB).forEach(k => { delete DB[k]; });
   Object.keys(TENANTS).forEach(k => { delete TENANTS[k]; });
