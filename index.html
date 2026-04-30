@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://*.supabase.co wss://*.supabase.co; img-src 'self' data:; object-src 'none'; frame-src 'none';">
 <title>SusaRest — Sistema Profesional para Restaurantes</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,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">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -2933,6 +2934,8 @@ body.sr-cursor-hover #sr-cursor-inner {
       <button class="sz-nav" id="sz-nav-ventas"       onclick="szTab('ventas',this)">💰 Qué venden</button>
       <button class="sz-nav" id="sz-nav-oportunidades" onclick="szTab('oportunidades',this)">🎯 Oportunidades</button>
       <button class="sz-nav" id="sz-nav-clientes"     onclick="szTab('clientes',this)">🏬 Clientes</button>
+      <button class="sz-nav" id="sz-nav-cuentas"      onclick="szTab('cuentas',this)">👥 Cuentas</button>
+      <button class="sz-nav" id="sz-nav-auditoria"   onclick="szTab('auditoria',this)">📋 Auditoría</button>
     </div>
   </div>
 
@@ -3065,6 +3068,67 @@ body.sr-cursor-hover #sr-cursor-inner {
       <div id="sz-client-cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px"></div>
     </div>
 
+    <!-- ── CUENTAS ── -->
+    <div class="sz-tab-content" id="sz-cuentas">
+      <div style="margin-bottom:18px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-size:20px;font-weight:700">👥 Gestión de Cuentas</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:3px">Crear, configurar y administrar cuentas de restaurantes</div>
+        </div>
+        <button class="btn btn-primary" onclick="szOpenNewAccount()" style="background:var(--brand);border-color:var(--brand);font-size:13px;flex-shrink:0">+ Nueva Cuenta</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid-4" id="sz-cuentas-stats" style="margin-bottom:18px"></div>
+
+      <!-- Account list -->
+      <div class="card" style="padding:0">
+        <div class="card-header" style="padding:14px 18px">
+          <div class="card-title">Cuentas registradas</div>
+          <input type="text" id="sz-cuentas-search" placeholder="Buscar por nombre o email…" oninput="szRenderCuentas()"
+            style="padding:6px 11px;border:1px solid var(--border);border-radius:7px;font-size:12.5px;font-family:inherit;width:200px;outline:none">
+        </div>
+        <div id="sz-cuentas-table"></div>
+      </div>
+    </div>
+
+    <!-- ── AUDITORÍA ── -->
+    <div class="sz-tab-content" id="sz-auditoria">
+      <div style="margin-bottom:18px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-size:20px;font-weight:700">📋 Auditoría</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:3px">Registro de todas las acciones administrativas y de sistema</div>
+        </div>
+        <button class="btn btn-ghost" onclick="szRenderAuditoria()" style="font-size:12.5px;flex-shrink:0">↺ Actualizar</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="card" style="padding:12px 16px;margin-bottom:14px">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <select id="sz-audit-filter-action" onchange="szRenderAuditoria()" style="padding:6px 10px;border:1px solid var(--border);border-radius:7px;font-size:12.5px;font-family:inherit">
+            <option value="">Todas las acciones</option>
+            <option value="account_created">Cuenta creada</option>
+            <option value="plan_changed">Plan cambiado</option>
+            <option value="account_suspended">Cuenta suspendida</option>
+            <option value="account_activated">Cuenta activada</option>
+            <option value="user_linked">Usuario vinculado</option>
+            <option value="restaurant_created">Restaurante creado</option>
+          </select>
+          <input type="text" id="sz-audit-filter-search" placeholder="Buscar actor o restaurante…" oninput="szRenderAuditoria()"
+            style="padding:6px 11px;border:1px solid var(--border);border-radius:7px;font-size:12.5px;font-family:inherit;width:210px;outline:none">
+          <span style="margin-left:auto;font-size:12px;color:var(--text-faint)" id="sz-audit-count"></span>
+        </div>
+      </div>
+
+      <!-- Log table -->
+      <div class="card" style="padding:0">
+        <div id="sz-audit-table"><div style="padding:28px;text-align:center;color:var(--text-muted);font-size:13px">⏳ Cargando log…</div></div>
+        <div id="sz-audit-load-more" style="display:none;padding:12px;text-align:center">
+          <button class="btn btn-ghost" onclick="szLoadMoreAudit()" style="font-size:12.5px">Cargar más</button>
+        </div>
+      </div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /sz-portal -->
 
@@ -3086,6 +3150,63 @@ body.sr-cursor-hover #sr-cursor-inner {
     <div style="display:flex;gap:8px;margin-top:14px">
       <button class="btn" style="flex:1" onclick="closeModal('pin-modal')">Cancelar</button>
       <button class="btn btn-primary" style="flex:1;background:var(--brand);border-color:var(--brand)" onclick="checkPin()">Ingresar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nueva Cuenta -->
+<div class="modal-bg" id="sz-new-account-modal">
+  <div class="modal" style="width:480px">
+    <div class="modal-header">
+      <div class="modal-title">➕ Nueva Cuenta de Restaurante</div>
+      <button class="modal-close" onclick="closeModal('sz-new-account-modal')">✕</button>
+    </div>
+    <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:14px">Se crea el perfil del restaurante. El cliente puede registrarse después usando el email indicado y quedará vinculado automáticamente.</p>
+    <div class="form-row">
+      <div class="field"><label>Nombre del restaurante *</label><input type="text" id="na-name" placeholder="Ej. Taquería El Patrón"></div>
+      <div class="field" style="flex:0 0 90px"><label>Emoji</label><input type="text" id="na-emoji" placeholder="🍽️" maxlength="2" style="font-size:22px;text-align:center;padding:6px 8px"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Email del propietario *</label><input type="email" id="na-email" placeholder="dueño@email.com"></div>
+      <div class="field"><label>Teléfono</label><input type="tel" id="na-phone" placeholder="+52 55 0000 0000"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Plan</label>
+        <select id="na-plan">
+          <option value="free">Free</option>
+          <option value="pro" selected>Pro</option>
+          <option value="enterprise">Enterprise</option>
+        </select>
+      </div>
+      <div class="field"><label>Ciudad</label><input type="text" id="na-city" placeholder="CDMX"></div>
+    </div>
+    <div id="na-error" style="display:none;color:#dc2626;font-size:12.5px;margin-top:8px;padding:8px 11px;background:#fef2f2;border-radius:7px"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn" style="flex:1" onclick="closeModal('sz-new-account-modal')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:1;background:var(--brand);border-color:var(--brand)" onclick="szCreateAccount()" id="na-submit-btn">Crear Cuenta</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cambiar Plan -->
+<div class="modal-bg" id="sz-change-plan-modal">
+  <div class="modal" style="width:360px">
+    <div class="modal-header">
+      <div class="modal-title">📋 Cambiar Plan</div>
+      <button class="modal-close" onclick="closeModal('sz-change-plan-modal')">✕</button>
+    </div>
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:14px" id="cp-restaurant-name"></div>
+    <div class="field"><label>Nuevo plan</label>
+      <select id="cp-plan">
+        <option value="free">Free</option>
+        <option value="pro">Pro</option>
+        <option value="enterprise">Enterprise</option>
+      </select>
+    </div>
+    <input type="hidden" id="cp-restaurant-id">
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn" style="flex:1" onclick="closeModal('sz-change-plan-modal')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:1;background:var(--brand);border-color:var(--brand)" onclick="szSavePlan()">Guardar</button>
     </div>
   </div>
 </div>
@@ -3589,6 +3710,16 @@ function convertQty(qty, fromUnit, toUnit) {
   return UNIT_CONV[key] ? qty * UNIT_CONV[key] : qty;
 }
 
+function esc(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
@@ -3673,9 +3804,6 @@ async function doLogout() {
   _showLogin();
 }
 
-// ─── Admin UID — Susazón portal access ───
-const SUSAZON_ADMIN_UID = 'a9a703ca-a28b-422e-af24-b0a44077f4ec';
-
 // ─── Screen helpers ───
 function _hideAllScreens() {
   var ls = document.getElementById('login-screen');
@@ -3696,45 +3824,49 @@ function _showLoading(msg = 'Cargando...') {
   var ld=document.getElementById('loading-screen'); ld.classList.remove('hidden'); ld.style.display='flex';
 }
 
-const ADMIN_UID = 'a9a703ca-a28b-422e-af24-b0a44077f4ec';
-
 async function _showApp(user) {
-  // Cancel any pending timeout — we have a valid session
   if (typeof _globalTimeout !== 'undefined' && _globalTimeout) { clearTimeout(_globalTimeout); _globalTimeout = null; }
   currentUser = user;
   const email = user.email || '';
   document.getElementById('topbar-user-email').textContent = email;
   document.getElementById('topbar-av').textContent = email.slice(0,2).toUpperCase();
 
-  // Admin → Susazón portal
-  if (user.id === ADMIN_UID) {
+  _showLoading('Verificando cuenta...');
+
+  // getUser() valida el JWT contra los servidores de Supabase — nunca confiar en datos del cliente
+  const { data: { user: verifiedUser } } = await _supabase.auth.getUser();
+  if (verifiedUser?.app_metadata?.role === 'susazon_admin') {
     _showLoading('Cargando portal Susazón...');
     await doLoginSzAdmin();
     return;
   }
 
-  _showLoading('Verificando cuenta...');
-
-  const { data: restaurants, error } = await _supabase
+  // Primary lookup: restaurant already linked to this user
+  let restaurant = null;
+  const { data: byUserId } = await _supabase
     .from('restaurants').select('*').eq('user_id', user.id).limit(1);
+  if (byUserId && byUserId.length > 0) {
+    restaurant = byUserId[0];
+  } else {
+    // Fallback: admin pre-created the restaurant with this owner_email — link it now
+    const { data: byEmail } = await _supabase
+      .from('restaurants').select('*')
+      .eq('owner_email', user.email).is('user_id', null).limit(1);
+    if (byEmail && byEmail.length > 0) {
+      await _supabase.from('restaurants').update({ user_id: user.id }).eq('id', byEmail[0].id);
+      restaurant = { ...byEmail[0], user_id: user.id };
+      await _auditLog('user_linked', byEmail[0].id, byEmail[0].name, { email: user.email });
+    }
+  }
 
-  console.log('[SusaRest] restaurants query →', { restaurants, error });
-
-  if (error) {
-    console.error('[SusaRest] Error:', error);
+  if (!restaurant) {
     _hideAllScreens();
     document.getElementById('onboarding-screen').style.display = 'flex';
     return;
   }
 
-  if (!restaurants || restaurants.length === 0) {
-    _hideAllScreens();
-    document.getElementById('onboarding-screen').style.display = 'flex';
-    return;
-  }
-
-  _showLoading(`Bienvenido, ${restaurants[0].name}...`);
-  await _loadRestaurantData(restaurants[0]);
+  _showLoading(`Bienvenido, ${restaurant.name}...`);
+  await _loadRestaurantData(restaurant);
   _hideAllScreens();
   document.getElementById('app').style.display = 'block';
   initApp();
@@ -4116,7 +4248,7 @@ function renderDashboard(){
 
   // Alerts preview
   const alerts=getAlerts().slice(0,3);
-  document.getElementById('dash-alerts').innerHTML=alerts.length?alerts.map(a=>`<div class="alert-row"><div class="alert-ico" style="background:${a.bg}">${a.icon}</div><div><div class="alert-title">${a.title}</div><div class="alert-desc">${a.desc}</div></div></div>`).join(''):'<div style="color:var(--text-faint);text-align:center;padding:18px;font-size:13px">✓ Sin alertas críticas</div>';
+  document.getElementById('dash-alerts').innerHTML=alerts.length?alerts.map(a=>`<div class="alert-row"><div class="alert-ico" style="background:${a.bg}">${a.icon}</div><div><div class="alert-title">${esc(a.title)}</div><div class="alert-desc">${esc(a.desc)}</div></div></div>`).join(''):'<div style="color:var(--text-faint);text-align:center;padding:18px;font-size:13px">✓ Sin alertas críticas</div>';
 
   // Top ingredients
   const usage={};
@@ -4128,11 +4260,11 @@ function renderDashboard(){
   const sorted=Object.entries(usage).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const maxU=Math.max(...sorted.map(s=>s[1]));
   document.getElementById('dash-top-ing').innerHTML=sorted.map(([name,val])=>`
-    <div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>${name}</span><span class="td-mono" style="font-size:12px">$${val.toFixed(0)}</span></div>
+    <div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>${esc(name)}</span><span class="td-mono" style="font-size:12px">$${val.toFixed(0)}</span></div>
     <div class="progress-wrap"><div class="progress-bar" style="width:${(val/maxU*100).toFixed(0)}%;background:var(--tenant-primary)"></div></div></div>`).join('');
 
   // Resumen del restaurante
-  const today = new Date('2026-03-17').toISOString().split('T')[0];
+  const today = new Date().toISOString().split('T')[0];
   const thisMonth = today.slice(0,7); // 'YYYY-MM'
   const thisYear = today.slice(0,4);  // 'YYYY'
 
@@ -4212,8 +4344,8 @@ function renderInventario(){
     const convKey=`${i.unit}→${i.unit==='kg'?'g':i.unit==='litro'?'ml':i.unit}`;
     const convBadge=UNIT_CONV[convKey]?`<span class="unit-badge">1 ${i.unit} = ${UNIT_CONV[convKey]} ${i.unit==='kg'?'g':i.unit==='litro'?'ml':'–'}</span>`:'–';
     return `<tr id="inv-row-${i.id}">
-      <td style="min-width:160px"><strong>${i.name}</strong></td>
-      <td style="min-width:90px"><span class="badge badge-gray">${catLabel(i.cat)}</span></td>
+      <td style="min-width:160px"><strong>${esc(i.name)}</strong></td>
+      <td style="min-width:90px"><span class="badge badge-gray">${esc(catLabel(i.cat))}</span></td>
       <td style="min-width:170px">
         <div style="display:flex;align-items:center;gap:8px">
           <div class="inv-stock-cell" id="inv-stock-cell-${i.id}">
@@ -4386,7 +4518,7 @@ function loadDemoTickets() {
     'Juan Pérez','Laura Torres','Miguel Sánchez','Valentina Cruz','Andrés Morales',
     'Isabella Díaz','Felipe Ruiz','Camila Vargas','Sebastián Flores','Daniela Jiménez'];
   const rows = [];
-  const now = new Date('2026-03-17');
+  const now = new Date();
   for (let d = 0; d < 90; d++) {
     const date = new Date(now); date.setDate(date.getDate() - d);
     const dateStr = date.toISOString().split('T')[0];
@@ -4430,7 +4562,7 @@ function handleDrop2(e) { e.preventDefault(); document.getElementById('ticket-dr
 function handleTicketFile(input) { if (input.files[0]) simulateTicketImport(); }
 
 function applyClientPeriod() {
-  const now = new Date('2026-03-17');
+  const now = new Date();
   let from = new Date(0);
   if (clientPeriod === 'hoy') { from = new Date(now); from.setHours(0,0,0,0); }
   else if (clientPeriod === 'semana') { from = new Date(now); from.setDate(from.getDate()-7); }
@@ -4654,13 +4786,13 @@ function renderClientTable() {
     const [cls, lbl] = segLabel[c.seg];
     return `<tr>
       <td class="td-mono" style="color:var(--text-faint)">${i+1}</td>
-      <td><strong>${c.name}</strong></td>
+      <td><strong>${esc(c.name)}</strong></td>
       <td class="td-mono">${c.visitCount}</td>
       <td class="td-mono">${c.orders}</td>
       <td class="td-mono" style="font-weight:600;color:var(--success)">$${c.revenue >= 1000 ? (c.revenue/1000).toFixed(1)+'k' : c.revenue.toFixed(0)}</td>
       <td class="td-mono">$${c.ticketAvg.toFixed(0)}</td>
-      <td style="font-size:12.5px;color:var(--text-muted)">${c.lastDate}</td>
-      <td style="font-size:12.5px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.favDish}</td>
+      <td style="font-size:12.5px;color:var(--text-muted)">${esc(c.lastDate)}</td>
+      <td style="font-size:12.5px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.favDish)}</td>
       <td><span class="cl-segment ${cls}">${lbl}</span></td>
     </tr>`;
   }).join('');
@@ -5027,8 +5159,8 @@ function showPriceHistory(id){
   const ph=DB[currentTenant].priceHistory.filter(h=>h.itemId===id);
   const item=DB[currentTenant].inventory.find(i=>i.id===id);
   document.getElementById('price-history-content').innerHTML=`
-    <div style="font-size:14px;font-weight:600;margin-bottom:14px">📜 ${item?.name} — Historial de precios</div>
-    ${ph.length?ph.map(h=>`<div class="ph-row"><span>${h.date}</span><span class="td-mono">$${h.oldCost} → $${h.newCost}</span><span class="${h.pct>0?'ph-delta-up':'ph-delta-dn'}">${h.pct>0?'▲':'▼'} ${Math.abs(h.pct).toFixed(1)}%</span></div>`).join(''):'<div style="color:var(--text-faint);text-align:center;padding:20px;font-size:13px">Sin cambios registrados</div>'}`;
+    <div style="font-size:14px;font-weight:600;margin-bottom:14px">📜 ${esc(item?.name)} — Historial de precios</div>
+    ${ph.length?ph.map(h=>`<div class="ph-row"><span>${esc(h.date)}</span><span class="td-mono">$${h.oldCost} → $${h.newCost}</span><span class="${h.pct>0?'ph-delta-up':'ph-delta-dn'}">${h.pct>0?'▲':'▼'} ${Math.abs(h.pct).toFixed(1)}%</span></div>`).join(''):'<div style="color:var(--text-faint);text-align:center;padding:20px;font-size:13px">Sin cambios registrados</div>'}`;
   openModal('price-history-modal');
 }
 
@@ -5107,10 +5239,10 @@ function renderRecetas(){
       <div class="recipe-fc-bar"><div class="recipe-fc-fill" style="width:${bw}%;background:${bc}"></div></div>
       <div style="padding:13px 15px 10px;cursor:pointer" onclick="showRecipeDetail(${r.id})">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:7px">
-          <div style="font-size:14px;font-weight:600;line-height:1.2">${r.name}</div>
+          <div style="font-size:14px;font-weight:600;line-height:1.2">${esc(r.name)}</div>
           <span class="badge ${cls}" style="white-space:nowrap;flex-shrink:0">${lbl}</span>
         </div>
-        <div style="font-size:11.5px;color:var(--text-faint);margin-top:3px">${recCatLabel(r.cat)} · ${r.portions} porción${r.portions>1?'es':''}</div>
+        <div style="font-size:11.5px;color:var(--text-faint);margin-top:3px">${esc(recCatLabel(r.cat))} · ${r.portions} porción${r.portions>1?'es':''}</div>
       </div>
       <div style="padding:0 15px 10px;cursor:pointer" onclick="showRecipeDetail(${r.id})">
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:12px">
@@ -5151,9 +5283,9 @@ function showRecipeDetail(id){
       const convQty=convertQty(ing.qty,ing.unit||item.unit,item.unit);
       const sub=item.cost*convQty;const pi=cost>0?(sub/cost*100).toFixed(1):0;
       const needsConv=ing.unit&&ing.unit!==item.unit;
-      return`<tr><td><strong>${item.name}</strong></td><td class="td-mono">${ing.qty}</td><td>${ing.unit||item.unit}</td>
-        <td>${needsConv?`<span class="unit-badge">${ing.qty} ${ing.unit} = ${convQty.toFixed(4)} ${item.unit}</span>`:'–'}</td>
-        <td class="td-mono">$${item.cost.toFixed(2)}/${item.unit}</td><td class="td-mono"><strong>$${sub.toFixed(2)}</strong></td>
+      return`<tr><td><strong>${esc(item.name)}</strong></td><td class="td-mono">${ing.qty}</td><td>${esc(ing.unit||item.unit)}</td>
+        <td>${needsConv?`<span class="unit-badge">${ing.qty} ${esc(ing.unit)} = ${convQty.toFixed(4)} ${esc(item.unit)}</span>`:'–'}</td>
+        <td class="td-mono">$${item.cost.toFixed(2)}/${esc(item.unit)}</td><td class="td-mono"><strong>$${sub.toFixed(2)}</strong></td>
         <td><div style="display:flex;align-items:center;gap:5px"><div class="progress-wrap" style="width:55px"><div class="progress-bar" style="width:${pi}%;background:var(--tenant-primary)"></div></div><span style="font-size:12px">${pi}%</span></div></td></tr>`;
     }).join('')}</tbody></table>
     ${pct>35?`<div style="background:var(--danger-light);border-radius:8px;padding:12px;margin-top:13px;font-size:13px;color:var(--danger)">⚠️ <strong>Receta no rentable.</strong> Precio sugerido para FC=30%: <strong>$${((cost/r.portions)/0.30).toFixed(0)} MXN</strong></div>`:''}`;
@@ -5192,7 +5324,7 @@ function editRecipe(id) {
     div.innerHTML = `
       <select onchange="calcRecipePreview()" style="padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px">
         <option value="">Seleccionar ingrediente</option>
-        ${inventory.map(i=>`<option value="${i.id}" ${i.id===ing.ingId?'selected':''}>${i.name} ($${i.cost}/${i.unit})</option>`).join('')}
+        ${inventory.map(i=>`<option value="${i.id}" ${i.id===ing.ingId?'selected':''}>${esc(i.name)} ($${i.cost}/${esc(i.unit)})</option>`).join('')}
       </select>
       <input type="number" placeholder="Cantidad" step="0.001" value="${ing.qty}" style="padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px" oninput="calcRecipePreview()">
       <select style="padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px" onchange="calcRecipePreview()">
@@ -5231,7 +5363,7 @@ function addIngRow(){
   div.innerHTML=`
     <select onchange="calcRecipePreview()" style="padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px">
       <option value="">Seleccionar ingrediente</option>
-      ${inv.map(i=>`<option value="${i.id}">${i.name} ($${i.cost}/${i.unit})</option>`).join('')}
+      ${inv.map(i=>`<option value="${i.id}">${esc(i.name)} ($${i.cost}/${esc(i.unit)})</option>`).join('')}
     </select>
     <input type="number" placeholder="Cantidad" step="0.001" style="padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px" oninput="calcRecipePreview()">
     <select style="padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px" onchange="calcRecipePreview()">
@@ -5433,7 +5565,7 @@ function renderFoodCost() {
       <td>
         <div style="display:flex;align-items:center;gap:7px">
           <div class="fc-status-dot" style="background:${dotColor}"></div>
-          <div><div style="font-weight:600;font-size:13.5px">${r.name}</div><div class="td-sm">${recCatLabel(r.cat)} · ${r.portions} porc.</div></div>
+          <div><div style="font-weight:600;font-size:13.5px">${esc(r.name)}</div><div class="td-sm">${esc(recCatLabel(r.cat))} · ${r.portions} porc.</div></div>
         </div>
       </td>
       <td class="td-mono">${r.portions}</td>
@@ -5485,8 +5617,8 @@ function renderFoodCost() {
       <div class="fc-card-head" onclick="toggleFCCard(${r.id})">
         <div class="fc-status-dot" style="background:${dotColor}"></div>
         <div style="flex:1">
-          <div style="font-weight:600;font-size:14px">${r.name}</div>
-          <div class="td-sm" style="margin-top:1px">${recCatLabel(r.cat)} · ${r.portions} porción${r.portions > 1 ? 'es' : ''}</div>
+          <div style="font-weight:600;font-size:14px">${esc(r.name)}</div>
+          <div class="td-sm" style="margin-top:1px">${esc(recCatLabel(r.cat))} · ${r.portions} porción${r.portions > 1 ? 'es' : ''}</div>
         </div>
         <!-- mini KPIs in row -->
         <div style="display:flex;gap:18px;font-size:12px;align-items:center">
@@ -5517,8 +5649,8 @@ function renderFoodCost() {
           const convQty = convertQty(ing.qty, ing.unit || item.unit, item.unit);
           const sub = item.cost * convQty;
           return `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12.5px">
-            <span>${item.name}</span>
-            <span class="td-mono" style="color:var(--text-muted)">${ing.qty} ${ing.unit || item.unit}</span>
+            <span>${esc(item.name)}</span>
+            <span class="td-mono" style="color:var(--text-muted)">${ing.qty} ${esc(ing.unit || item.unit)}</span>
             <span class="td-mono" style="font-weight:600">$${sub.toFixed(2)}</span>
           </div>`;
         }).join('')}
@@ -5533,7 +5665,7 @@ function renderFoodCost() {
     const bw = p ? Math.min(100, p * 2) : 0;
     return `<div style="margin-bottom:9px">
       <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
-        <span>${r.name}</span>
+        <span>${esc(r.name)}</span>
         <span class="td-mono ${fcClass(p)}" style="font-weight:700">${p !== null ? p.toFixed(1) + '%' : 'N/D'}</span>
       </div>
       <div class="progress-wrap"><div class="progress-bar" style="width:${bw}%;background:${p < (DB[currentTenant].fcConfig.alert) ? 'var(--success)' : p < DB[currentTenant].fcConfig.crit ? '#e6a817' : 'var(--danger)'}"></div></div>
@@ -5552,7 +5684,7 @@ function renderFoodCost() {
   document.getElementById('fc-margin-ranking').innerHTML = marginRanked.map(({ r, mp, obj }) =>
     `<div style="margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px;align-items:center">
-        <span>${r.name}</span>
+        <span>${esc(r.name)}</span>
         <div style="display:flex;gap:8px;align-items:center">
           <span style="font-size:11px;color:var(--text-faint)">obj ${obj}%</span>
           <span class="td-mono" style="font-weight:700;color:${mp !== null && mp >= obj ? 'var(--success)' : mp !== null && mp >= obj * .85 ? 'var(--warning)' : 'var(--danger)'}">${mp !== null ? mp.toFixed(1) + '%' : 'N/D'}</span>
@@ -5641,7 +5773,7 @@ function openFCEdit(id) {
     const pctOfTotal = 0; // will calc after render
     return `<div class="fc-ing-row" id="fce-ing-${idx}" data-idx="${idx}">
       <div>
-        <div style="font-size:13px;font-weight:500">${item.name}</div>
+        <div style="font-size:13px;font-weight:500">${esc(item.name)}</div>
         <div style="font-size:11px;color:var(--text-faint)" id="fce-ing-sub-${idx}">subtotal: $${sub.toFixed(2)}</div>
         <div class="fc-meter-mini" style="width:80px;margin-top:3px"><div class="fc-meter-mini-fill" id="fce-ing-bar-${idx}" style="width:0%;background:var(--tenant-primary)"></div></div>
       </div>
@@ -6055,7 +6187,7 @@ function renderRentabilidad() {
     for (const item of catItems) {
       pnlHtml += `
         <div class="rb-pnl-row">
-          <div class="rb-pnl-label" style="padding-left:18px;font-size:13px;color:var(--text-muted)">${item.name} <span style="font-size:11px;background:${item.fixed?'var(--brand-light)':'var(--warning-light)'};color:${item.fixed?'var(--brand)':'var(--warning)'};padding:1px 6px;border-radius:4px;margin-left:4px">${item.fixed?'Fijo':'Variable'}</span></div>
+          <div class="rb-pnl-label" style="padding-left:18px;font-size:13px;color:var(--text-muted)">${esc(item.name)} <span style="font-size:11px;background:${item.fixed?'var(--brand-light)':'var(--warning-light)'};color:${item.fixed?'var(--brand)':'var(--warning)'};padding:1px 6px;border-radius:4px;margin-left:4px">${item.fixed?'Fijo':'Variable'}</span></div>
           <div class="rb-pnl-amt" style="color:var(--text-muted)">-$${item.amountScaled >= 1000 ? (item.amountScaled/1000).toFixed(1)+'k' : item.amountScaled.toFixed(0)}</div>
           <div class="rb-pnl-pct">${ventas > 0 ? (item.amountScaled/ventas*100).toFixed(1) : 0}%</div>
         </div>`;
@@ -6116,7 +6248,7 @@ function renderOpCostRows() {
   const op = DB[currentTenant].opCosts;
   document.getElementById('opc-rows').innerHTML = op.items.map((item, idx) => `
     <div class="opc-row" id="opc-row-${idx}">
-      <input class="opc-input" type="text" value="${item.name}" id="opc-name-${idx}" placeholder="Concepto" oninput="recalcOpCostTotals()">
+      <input class="opc-input" type="text" value="${esc(item.name)}" id="opc-name-${idx}" placeholder="Concepto" oninput="recalcOpCostTotals()">
       <select class="opc-input" id="opc-cat-${idx}" onchange="recalcOpCostTotals()">
         ${Object.entries(OP_CATS).map(([k,v]) => `<option value="${k}" ${item.cat===k?'selected':''}>${v.label}</option>`).join('')}
       </select>
@@ -6188,7 +6320,7 @@ function renderAnalytics(){
   // Top cost ingredients
   const costs=inventory.map(i=>({name:i.name,val:i.cost})).sort((a,b)=>b.val-a.val).slice(0,6);
   const mc=Math.max(...costs.map(c=>c.val));
-  document.getElementById('an-top-cost').innerHTML=costs.map(c=>`<div class="an-bar"><div class="an-bar-label">${c.name}</div><div class="an-bar-track"><div class="an-bar-fill" style="width:${(c.val/mc*100).toFixed(0)}%"></div></div><div class="an-bar-val">$${c.val.toFixed(0)}</div></div>`).join('');
+  document.getElementById('an-top-cost').innerHTML=costs.map(c=>`<div class="an-bar"><div class="an-bar-label">${esc(c.name)}</div><div class="an-bar-track"><div class="an-bar-fill" style="width:${(c.val/mc*100).toFixed(0)}%"></div></div><div class="an-bar-val">$${c.val.toFixed(0)}</div></div>`).join('');
 
   // Margins
   const margins=recipes.map(r=>{
@@ -6197,7 +6329,7 @@ function renderAnalytics(){
     return{name:r.name,mg};
   }).sort((a,b)=>(b.mg||0)-(a.mg||0));
   const mm=Math.max(...margins.map(m=>m.mg||0));
-  document.getElementById('an-margins').innerHTML=margins.map(m=>`<div class="an-bar"><div class="an-bar-label">${m.name}</div><div class="an-bar-track"><div class="an-bar-fill" style="width:${m.mg?(m.mg/mm*100).toFixed(0):0}%;background:${m.mg>50?'var(--success)':m.mg>30?'#e6a817':'var(--danger)'}"></div></div><div class="an-bar-val" style="color:${m.mg>50?'var(--success)':m.mg>30?'var(--warning)':'var(--danger)'}">${m.mg!==null?m.mg.toFixed(1)+'%':'N/D'}</div></div>`).join('');
+  document.getElementById('an-margins').innerHTML=margins.map(m=>`<div class="an-bar"><div class="an-bar-label">${esc(m.name)}</div><div class="an-bar-track"><div class="an-bar-fill" style="width:${m.mg?(m.mg/mm*100).toFixed(0):0}%;background:${m.mg>50?'var(--success)':m.mg>30?'#e6a817':'var(--danger)'}"></div></div><div class="an-bar-val" style="color:${m.mg>50?'var(--success)':m.mg>30?'var(--warning)':'var(--danger)'}">${m.mg!==null?m.mg.toFixed(1)+'%':'N/D'}</div></div>`).join('');
 
   // Trend
   const weeks=['S-7','S-6','S-5','S-4','S-3','S-2','S-1','Hoy'];
@@ -6215,7 +6347,7 @@ function renderAnalytics(){
     const pct=calcFCPct(r,inventory);
     const tier=pct===null?'Sin precio':pct<28?'Alta rentabilidad':pct<35?'Rentabilidad media':'Baja rentabilidad';
     const tc=pct===null?'badge-gray':pct<28?'badge-green':pct<35?'badge-yellow':'badge-red';
-    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">${r.name}</span><div style="display:flex;gap:6px;align-items:center"><span class="td-mono" style="font-size:12px">FC:${pct!==null?pct.toFixed(1)+'%':'N/D'}</span><span class="badge ${tc}">${tier}</span></div></div>`;
+    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">${esc(r.name)}</span><div style="display:flex;gap:6px;align-items:center"><span class="td-mono" style="font-size:12px">FC:${pct!==null?pct.toFixed(1)+'%':'N/D'}</span><span class="badge ${tc}">${esc(tier)}</span></div></div>`;
   }).join('');
   document.getElementById('an-profitability').innerHTML=rank;
 }
@@ -6232,7 +6364,7 @@ function initSimulator(){
     simMultipliers[item.id]=0;
     return`<div class="sim-card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div style="font-size:13px;font-weight:500">${item.name} <span style="font-size:11px;color:var(--text-faint)">($${item.cost}/${item.unit})</span></div>
+        <div style="font-size:13px;font-weight:500">${esc(item.name)} <span style="font-size:11px;color:var(--text-faint)">($${item.cost}/${esc(item.unit)})</span></div>
         <span id="sim-lbl-${item.id}" style="font-family:var(--mono);font-weight:700;font-size:14px;color:var(--text-muted)">+0%</span>
       </div>
       <input type="range" class="sim-slider" min="-30" max="50" value="0" step="1"
@@ -6277,7 +6409,7 @@ function renderSimImpact(){
       const sim=calcFCPct(r,inventory,simMultipliers)||0;
       const d=sim-base;
       return`<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
-        <span style="font-size:13px">${r.name}</span>
+        <span style="font-size:13px">${esc(r.name)}</span>
         <div style="display:flex;gap:8px;align-items:center">
           <span class="td-mono" style="font-size:12px;color:var(--text-faint)">${base.toFixed(1)}%</span>
           <span style="color:var(--text-faint)">→</span>
@@ -6325,13 +6457,13 @@ function renderOrdenes(){
   document.getElementById('oc-tbody').innerHTML=filtered.map(o=>{
     const[cls,lbl]=stMap[o.status]||['badge-gray',o.status];
     return`<tr>
-      <td class="td-mono"><strong>${o.id}</strong></td><td>${o.date}</td><td>${o.supplier}</td>
+      <td class="td-mono"><strong>${esc(o.id)}</strong></td><td>${esc(o.date)}</td><td>${esc(o.supplier)}</td>
       <td>${o.items} ítems</td><td class="td-mono"><strong>$${o.total.toLocaleString()}</strong></td>
-      <td><span class="badge ${cls}">${lbl}</span></td><td>${o.delivery}</td>
+      <td><span class="badge ${cls}">${lbl}</span></td><td>${esc(o.delivery)}</td>
       <td style="display:flex;gap:5px">
-        ${o.status==='pendiente'?`<button class="btn btn-sm btn-primary" onclick="changeOCStatus('${o.id}','enviada')">Enviar</button>`:''}
-        ${o.status==='enviada'?`<button class="btn btn-sm btn-primary" onclick="changeOCStatus('${o.id}','recibida')">Recibir</button>`:''}
-        <button class="btn btn-sm" onclick="viewOC('${o.id}')">Ver</button>
+        ${o.status==='pendiente'?`<button class="btn btn-sm btn-primary" onclick="changeOCStatus('${esc(o.id)}','enviada')">Enviar</button>`:''}
+        ${o.status==='enviada'?`<button class="btn btn-sm btn-primary" onclick="changeOCStatus('${esc(o.id)}','recibida')">Recibir</button>`:''}
+        <button class="btn btn-sm" onclick="viewOC('${esc(o.id)}')">Ver</button>
       </td>
     </tr>`;
   }).join('');
@@ -6441,10 +6573,10 @@ function viewOC(id) {
 
     <!-- Restaurante info -->
     <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--brand-light);border-radius:10px;margin-bottom:18px;border:1px solid rgba(13,43,69,.1)">
-      <div style="width:38px;height:38px;border-radius:9px;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0">${t.initials || t.name.slice(0,2).toUpperCase()}</div>
+      <div style="width:38px;height:38px;border-radius:9px;background:var(--brand);color:white;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0">${esc(t.initials || t.name.slice(0,2).toUpperCase())}</div>
       <div style="flex:1">
-        <div style="font-weight:600;font-size:14px;color:var(--brand)">${t.name} <span style="font-size:12px;font-weight:400;color:var(--text-faint)">· ${currentTenant}</span></div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:1px">${t.address || ''} ${t.phone ? '· ' + t.phone : ''}</div>
+        <div style="font-weight:600;font-size:14px;color:var(--brand)">${esc(t.name)} <span style="font-size:12px;font-weight:400;color:var(--text-faint)">· ${esc(currentTenant)}</span></div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:1px">${esc(t.address || '')} ${t.phone ? '· ' + esc(t.phone) : ''}</div>
       </div>
       <div style="text-align:right">
         <span class="badge ${st.cls}">${st.lbl}</span>
@@ -6471,9 +6603,9 @@ function viewOC(id) {
         <tbody>
           ${lineItems.map((l, i) => `
             <tr style="border-bottom:1px solid var(--border);${i%2===1?'background:var(--surface2)':''};transition:background .1s" onmouseover="this.style.background='rgba(26,71,42,.04)'" onmouseout="this.style.background='${i%2===1?'var(--surface2)':'transparent'}'">
-              <td style="padding:10px 14px;font-size:13.5px;font-weight:500">${l.name}</td>
-              <td style="padding:10px 14px;text-align:center"><span class="badge badge-gray" style="font-size:11px">${l.cat}</span></td>
-              <td style="padding:10px 14px;text-align:right;font-family:var(--mono);font-size:13px">${l.qty.toFixed(2)} ${l.unit}</td>
+              <td style="padding:10px 14px;font-size:13.5px;font-weight:500">${esc(l.name)}</td>
+              <td style="padding:10px 14px;text-align:center"><span class="badge badge-gray" style="font-size:11px">${esc(l.cat)}</span></td>
+              <td style="padding:10px 14px;text-align:right;font-family:var(--mono);font-size:13px">${l.qty.toFixed(2)} ${esc(l.unit)}</td>
               <td style="padding:10px 14px;text-align:right;font-family:var(--mono);font-size:13px">$${l.unitCost.toFixed(2)}</td>
               <td style="padding:10px 14px;text-align:right;font-family:var(--mono);font-size:13.5px;font-weight:600">$${l.subtotal.toFixed(2)}</td>
             </tr>
@@ -6510,9 +6642,9 @@ function viewOC(id) {
           const newStock = item ? +(item.stock + l.qty).toFixed(2) : l.qty;
           const wasLow = item && item.stock <= item.minStock;
           return `<div style="background:white;border-radius:8px;padding:10px;font-size:12.5px">
-            <div style="font-weight:600;margin-bottom:4px">${l.name}</div>
+            <div style="font-weight:600;margin-bottom:4px">${esc(l.name)}</div>
             <div style="color:var(--text-muted)">
-              ${item ? item.stock.toFixed(1) : 0} → <strong style="color:var(--success)">${newStock.toFixed(1)} ${l.unit}</strong>
+              ${item ? item.stock.toFixed(1) : 0} → <strong style="color:var(--success)">${newStock.toFixed(1)} ${esc(l.unit)}</strong>
             </div>
             ${wasLow ? `<div style="font-size:11px;color:var(--success);margin-top:3px">✓ Supera mínimo</div>` : ''}
           </div>`;
@@ -6558,7 +6690,7 @@ function addOCRow(){
   div.style.cssText='display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;margin-bottom:7px';
   div.innerHTML=`
     <select style="padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px" onchange="calcOCTotal()">
-      <option value="">Ingrediente</option>${inv.map(i=>`<option value="${i.id}">${i.name}</option>`).join('')}
+      <option value="">Ingrediente</option>${inv.map(i=>`<option value="${i.id}">${esc(i.name)}</option>`).join('')}
     </select>
     <input type="number" placeholder="Cantidad" style="padding:8px 10px;border:1.5px solid var(--border);border-radius:8px" oninput="calcOCTotal()">
     <input type="number" placeholder="Precio" step="0.01" style="padding:8px 10px;border:1.5px solid var(--border);border-radius:8px" oninput="calcOCTotal()">
@@ -6659,7 +6791,7 @@ function renderAlertas(){
 
   document.getElementById('alerts-list').innerHTML=filtered.length?filtered.map(a=>`<div class="alert-row">
     <div class="alert-ico" style="background:${a.bg}">${a.icon}</div>
-    <div style="flex:1"><div class="alert-title">${a.title}</div><div class="alert-desc">${a.desc}</div><div class="alert-time">${a.time}</div></div>
+    <div style="flex:1"><div class="alert-title">${esc(a.title)}</div><div class="alert-desc">${esc(a.desc)}</div><div class="alert-time">${esc(a.time)}</div></div>
     ${a.cat==='stock'?`<button class="btn btn-sm btn-primary" onclick="showPage('ordenes',null)">Ordenar</button>`:''}
     ${a.cat==='rentabilidad'?`<button class="btn btn-sm" onclick="showPage('foodcost',null)">Ver FC</button>`:''}
   </div>`).join(''):`<div style="padding:28px;text-align:center;color:var(--text-faint)">✓ Sin alertas en esta categoría</div>`;
@@ -7025,16 +7157,57 @@ function addManualIngredient(){
 // ═══════════════════════════════════════════════
 // ADMIN VIEW / PIN
 // ═══════════════════════════════════════════════
+let _pinAttempts = 0;
+let _pinLocked = false;
+let _pinLockTimer = null;
+
 function showPinModal(){
   ['p1','p2','p3','p4'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('pin-error').style.display='none';
-  openModal('pin-modal');setTimeout(()=>document.getElementById('p1').focus(),200);
+  const errEl = document.getElementById('pin-error');
+  if (!_pinLocked) { errEl.style.display='none'; errEl.textContent='PIN incorrecto'; }
+  openModal('pin-modal');
+  setTimeout(()=>{ if(!_pinLocked) document.getElementById('p1').focus(); },200);
 }
+
 function movePin(el,nextId){if(el.value.length===1)document.getElementById(nextId).focus();}
+
 function checkPin(){
+  if (_pinLocked) return;
   const pin=['p1','p2','p3','p4'].map(id=>document.getElementById(id).value).join('');
-  if(pin==='1234'){closeModal('pin-modal');document.getElementById('app').style.display='none';document.getElementById('admin-view').style.display='block';}
-  else{document.getElementById('pin-error').style.display='block';['p4','p3','p2','p1'].forEach(id=>document.getElementById(id).value='');document.getElementById('p1').focus();}
+  const errEl = document.getElementById('pin-error');
+  if(pin==='1234'){
+    _pinAttempts = 0;
+    closeModal('pin-modal');
+    document.getElementById('app').style.display='none';
+    document.getElementById('admin-view').style.display='block';
+  } else {
+    _pinAttempts++;
+    ['p4','p3','p2','p1'].forEach(id=>document.getElementById(id).value='');
+    if (_pinAttempts >= 5) {
+      _pinLocked = true;
+      ['p1','p2','p3','p4'].forEach(id=>document.getElementById(id).disabled=true);
+      let secs = 30;
+      errEl.textContent = `Demasiados intentos. Espera ${secs}s.`;
+      errEl.style.display='block';
+      _pinLockTimer = setInterval(()=>{
+        secs--;
+        if (secs <= 0) {
+          clearInterval(_pinLockTimer);
+          _pinLocked = false;
+          _pinAttempts = 0;
+          ['p1','p2','p3','p4'].forEach(id=>document.getElementById(id).disabled=false);
+          errEl.style.display='none';
+          document.getElementById('p1').focus();
+        } else {
+          errEl.textContent = `Demasiados intentos. Espera ${secs}s.`;
+        }
+      }, 1000);
+    } else {
+      errEl.textContent = `PIN incorrecto (${_pinAttempts}/5 intentos)`;
+      errEl.style.display='block';
+      document.getElementById('p1').focus();
+    }
+  }
 }
 function closeAdmin(){document.getElementById('admin-view').style.display='none';document.getElementById('app').style.display='block';}
 
@@ -7249,12 +7422,19 @@ async function doLoginSzAdmin() {
       _supabase.from('price_history').select('*').eq('restaurant_id', r.id).order('date', { ascending: false }),
     ]);
     TENANTS[r.id] = {
+      id: r.id,
       name: r.name, emoji: r.emoji || '🍽️',
       initials: r.initials || r.name.slice(0,2).toUpperCase(),
       plan: r.plan || 'free',
       primaryColor: r.primary_color || '#1a472a',
       primaryLight: r.primary_light || '#e8f0ea',
       fcMeta: r.fc_meta||28, fcAlert: r.fc_alert||32, fcCrit: r.fc_crit||35, margin: r.margin||68,
+      ownerEmail: r.owner_email || '',
+      phone: r.phone || '',
+      city: r.city || '',
+      status: r.status || 'active',
+      userId: r.user_id || null,
+      createdAt: r.created_at || '',
     };
     DB[r.id] = {
       inventory: (inv||[]).map(i=>({ id:i.id, name:i.name, cat:i.cat, unit:i.unit, stock:i.stock, minStock:i.min_stock, cost:i.cost, buyUnit:i.buy_unit })),
@@ -7299,14 +7479,14 @@ function szBuildDropdown() {
     const lowS = DB[key].inventory.filter(i=>i.stock<=i.minStock).length;
     const pendOC = DB[key].orders.filter(o=>o.status==='pendiente').length;
     const alert = lowS > 0 || pendOC > 0;
-    return `<div class="sz-dd-option" id="sz-dd-opt-${key}" onclick="setSzClient('${key}')"
+    return `<div class="sz-dd-option" id="sz-dd-opt-${esc(key)}" onclick="setSzClient('${esc(key)}')"
       style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .1s">
-      <span style="font-size:18px">${t.emoji}</span>
+      <span style="font-size:18px">${esc(t.emoji)}</span>
       <div style="flex:1">
-        <div style="font-size:13.5px;font-weight:500;color:var(--text)">${t.name}</div>
-        <div style="font-size:11px;color:var(--text-faint)">${(t.plan||'free').toUpperCase()} · ${alert?'⚠ requiere atención':'✓ OK'}</div>
+        <div style="font-size:13.5px;font-weight:500;color:var(--text)">${esc(t.name)}</div>
+        <div style="font-size:11px;color:var(--text-faint)">${esc((t.plan||'free').toUpperCase())} · ${alert?'⚠ requiere atención':'✓ OK'}</div>
       </div>
-      <span id="sz-dd-check-${key}" style="color:var(--brand);font-size:14px;display:none">✓</span>
+      <span id="sz-dd-check-${esc(key)}" style="color:var(--brand);font-size:14px;display:none">✓</span>
     </div>`;
   }).join('');
 
@@ -7391,6 +7571,7 @@ function szTab(tab, btn) {
   document.querySelectorAll('.sz-nav').forEach(n => n.classList.remove('active'));
   document.getElementById('sz-' + tab).classList.add('active');
   if (btn) btn.classList.add('active');
+  if (tab === 'auditoria') szRenderAuditoria();
 }
 
 // ── Data aggregator — filters by szSelectedClient if set ──
@@ -7426,6 +7607,310 @@ function szRenderAll() {
   szRenderVentas();
   szRenderOportunidades();
   szRenderClientes();
+  szRenderCuentas();
+}
+
+// ── CUENTAS tab ──
+
+function szRenderCuentas() {
+  const search = (document.getElementById('sz-cuentas-search')?.value || '').toLowerCase();
+  const keys = Object.keys(TENANTS);
+  const total = keys.length;
+  const active   = keys.filter(k => (TENANTS[k].status||'active') === 'active' && !!TENANTS[k].userId).length;
+  const pending  = keys.filter(k => !TENANTS[k].userId).length;
+  const suspended = keys.filter(k => TENANTS[k].status === 'suspended').length;
+
+  const statsEl = document.getElementById('sz-cuentas-stats');
+  if (statsEl) {
+    statsEl.innerHTML = [
+      { label:'Total cuentas', val:total,     icon:'🏬', color:'var(--brand)' },
+      { label:'Activas',       val:active,    icon:'✅', color:'#16a34a' },
+      { label:'Pendientes',    val:pending,   icon:'⏳', color:'#d97706' },
+      { label:'Suspendidas',   val:suspended, icon:'🚫', color:'#dc2626' },
+    ].map(s=>`
+      <div class="card" style="text-align:center;padding:16px">
+        <div style="font-size:24px;margin-bottom:4px">${s.icon}</div>
+        <div style="font-size:26px;font-weight:700;color:${s.color}">${s.val}</div>
+        <div style="font-size:12px;color:var(--text-muted)">${s.label}</div>
+      </div>`).join('');
+  }
+
+  const tableEl = document.getElementById('sz-cuentas-table');
+  if (!tableEl) return;
+
+  const filtered = keys.filter(k => {
+    if (!search) return true;
+    const t = TENANTS[k];
+    return t.name.toLowerCase().includes(search) || (t.ownerEmail||'').toLowerCase().includes(search);
+  });
+
+  if (filtered.length === 0) {
+    tableEl.innerHTML = '<div style="padding:28px;text-align:center;color:var(--text-muted);font-size:13px">No se encontraron cuentas</div>';
+    return;
+  }
+
+  const planColor = { free:'#6b7280', pro:'var(--brand)', enterprise:'#7c3aed' };
+
+  tableEl.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border)">
+          <th style="padding:10px 18px;text-align:left;color:var(--text-muted);font-weight:500">Restaurante</th>
+          <th style="padding:10px 14px;text-align:left;color:var(--text-muted);font-weight:500">Email propietario</th>
+          <th style="padding:10px 14px;text-align:center;color:var(--text-muted);font-weight:500">Plan</th>
+          <th style="padding:10px 14px;text-align:center;color:var(--text-muted);font-weight:500">Estado</th>
+          <th style="padding:10px 14px;text-align:center;color:var(--text-muted);font-weight:500">Alta</th>
+          <th style="padding:10px 18px;text-align:right;color:var(--text-muted);font-weight:500">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filtered.map(key => {
+          const t = TENANTS[key];
+          const linked = !!t.userId;
+          const status = t.status || 'active';
+          const statusBadge = status === 'suspended'
+            ? '<span class="badge" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;padding:3px 8px">Suspendida</span>'
+            : linked
+              ? '<span class="badge" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;padding:3px 8px">Activa</span>'
+              : '<span class="badge" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a;padding:3px 8px">Pendiente</span>';
+          const pc = planColor[t.plan] || '#6b7280';
+          const dateStr = t.createdAt ? new Date(t.createdAt).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'}) : '—';
+          return `<tr style="border-bottom:1px solid var(--border);transition:background .1s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+            <td style="padding:12px 18px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:36px;height:36px;background:var(--brand-light);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${esc(t.emoji)}</div>
+                <div>
+                  <div style="font-weight:600;color:var(--text)">${esc(t.name)}</div>
+                  <div style="font-size:11.5px;color:var(--text-faint)">${esc(t.city||'—')}</div>
+                </div>
+              </div>
+            </td>
+            <td style="padding:12px 14px;color:var(--text-muted);font-size:12.5px">${esc(t.ownerEmail||'—')}</td>
+            <td style="padding:12px 14px;text-align:center">
+              <span style="font-size:12px;font-weight:700;color:${pc};text-transform:uppercase;letter-spacing:.5px">${esc(t.plan||'free')}</span>
+            </td>
+            <td style="padding:12px 14px;text-align:center">${statusBadge}</td>
+            <td style="padding:12px 14px;text-align:center;font-size:12px;color:var(--text-muted)">${esc(dateStr)}</td>
+            <td style="padding:12px 18px">
+              <div style="display:flex;gap:6px;justify-content:flex-end">
+                <button onclick="szOpenChangePlan('${esc(key)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px">📋 Plan</button>
+                <button onclick="szToggleSuspend('${esc(key)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px;color:${status==='suspended'?'#16a34a':'#dc2626'}">${status==='suspended'?'✓ Activar':'🚫 Suspender'}</button>
+              </div>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+function szOpenNewAccount() {
+  ['na-name','na-emoji','na-email','na-phone','na-city'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('na-emoji').value = '🍽️';
+  document.getElementById('na-plan').value = 'pro';
+  document.getElementById('na-error').style.display = 'none';
+  const btn = document.getElementById('na-submit-btn');
+  btn.disabled = false; btn.textContent = 'Crear Cuenta';
+  openModal('sz-new-account-modal');
+}
+
+async function szCreateAccount() {
+  const name  = document.getElementById('na-name').value.trim();
+  const emoji = document.getElementById('na-emoji').value.trim() || '🍽️';
+  const email = document.getElementById('na-email').value.trim().toLowerCase();
+  const phone = document.getElementById('na-phone').value.trim();
+  const plan  = document.getElementById('na-plan').value;
+  const city  = document.getElementById('na-city').value.trim();
+  const errEl = document.getElementById('na-error');
+  const btn   = document.getElementById('na-submit-btn');
+
+  if (!name)                       { errEl.textContent = 'El nombre del restaurante es requerido.'; errEl.style.display='block'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent = 'Ingresa un email válido.'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Creando…';
+
+  const { error } = await _supabase.from('restaurants').insert([{
+    name, emoji, owner_email: email, phone, plan, city,
+    status: 'active', initials: name.slice(0,2).toUpperCase(),
+  }]);
+
+  if (error) {
+    errEl.textContent = 'Error: ' + error.message;
+    errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Crear Cuenta';
+    return;
+  }
+
+  closeModal('sz-new-account-modal');
+  showToast(`✅ Cuenta "${name}" creada · El cliente puede registrarse con ${email}`);
+  await _auditLog('account_created', null, name, { plan, owner_email: email, city });
+  await doLoginSzAdmin();
+  szTab('cuentas', document.getElementById('sz-nav-cuentas'));
+}
+
+function szOpenChangePlan(key) {
+  const t = TENANTS[key];
+  if (!t) return;
+  document.getElementById('cp-restaurant-name').textContent = `${t.emoji} ${t.name}`;
+  document.getElementById('cp-plan').value = t.plan || 'free';
+  document.getElementById('cp-restaurant-id').value = key;
+  openModal('sz-change-plan-modal');
+}
+
+async function szSavePlan() {
+  const key  = document.getElementById('cp-restaurant-id').value;
+  const plan = document.getElementById('cp-plan').value;
+  const { error } = await _supabase.from('restaurants').update({ plan }).eq('id', key);
+  if (error) { showToast('❌ Error al guardar plan: ' + error.message); return; }
+  closeModal('sz-change-plan-modal');
+  const prevPlan = TENANTS[key]?.plan;
+  if (TENANTS[key]) TENANTS[key].plan = plan;
+  await _auditLog('plan_changed', key, TENANTS[key]?.name || key, { from: prevPlan, to: plan });
+  szRenderCuentas();
+  showToast('✅ Plan actualizado');
+}
+
+async function szToggleSuspend(key) {
+  const t = TENANTS[key];
+  if (!t) return;
+  const newStatus = (t.status || 'active') === 'suspended' ? 'active' : 'suspended';
+  const { error } = await _supabase.from('restaurants').update({ status: newStatus }).eq('id', key);
+  if (error) { showToast('❌ Error: ' + error.message); return; }
+  t.status = newStatus;
+  await _auditLog(newStatus === 'suspended' ? 'account_suspended' : 'account_activated', key, t.name, {});
+  szRenderCuentas();
+  showToast(newStatus === 'suspended' ? `🚫 "${t.name}" suspendida` : `✅ "${t.name}" activada`);
+}
+
+// ── AUDIT LOG ──
+
+async function _auditLog(action, targetId, targetName, details) {
+  try {
+    await _supabase.from('audit_log').insert([{
+      actor_email: currentUser?.email || 'system',
+      action,
+      target_id:   targetId   || null,
+      target_name: targetName || null,
+      details:     details    || {},
+    }]);
+  } catch (e) {
+    console.warn('[audit]', e);
+  }
+}
+
+const _AUDIT_PAGE = 50;
+let _auditOffset = 0;
+let _auditTotal  = 0;
+let _auditRows   = [];
+
+async function szRenderAuditoria() {
+  _auditOffset = 0;
+  _auditRows   = [];
+  const tableEl = document.getElementById('sz-audit-table');
+  if (tableEl) tableEl.innerHTML = '<div style="padding:28px;text-align:center;color:var(--text-muted);font-size:13px">⏳ Cargando log…</div>';
+  await _szFetchAudit(true);
+}
+
+async function szLoadMoreAudit() {
+  await _szFetchAudit(false);
+}
+
+async function _szFetchAudit(reset) {
+  const action = document.getElementById('sz-audit-filter-action')?.value || '';
+  const search = (document.getElementById('sz-audit-filter-search')?.value || '').toLowerCase();
+
+  let query = _supabase.from('audit_log')
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(_auditOffset, _auditOffset + _AUDIT_PAGE - 1);
+
+  if (action) query = query.eq('action', action);
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    const tableEl = document.getElementById('sz-audit-table');
+    if (tableEl) tableEl.innerHTML = `<div style="padding:28px;text-align:center;color:#dc2626;font-size:13px">❌ Error: ${esc(error.message)}</div>`;
+    return;
+  }
+
+  if (reset) _auditRows = [];
+  _auditTotal = count || 0;
+
+  const filtered = (data || []).filter(r => {
+    if (!search) return true;
+    return (r.actor_email||'').toLowerCase().includes(search)
+        || (r.target_name||'').toLowerCase().includes(search);
+  });
+
+  _auditRows = _auditRows.concat(filtered);
+  _auditOffset += (data || []).length;
+
+  _szPaintAudit();
+}
+
+function _szPaintAudit() {
+  const tableEl = document.getElementById('sz-audit-table');
+  const countEl = document.getElementById('sz-audit-count');
+  const moreEl  = document.getElementById('sz-audit-load-more');
+  if (!tableEl) return;
+
+  if (countEl) countEl.textContent = `${_auditTotal} evento${_auditTotal !== 1 ? 's' : ''}`;
+
+  if (_auditRows.length === 0) {
+    tableEl.innerHTML = '<div style="padding:28px;text-align:center;color:var(--text-muted);font-size:13px">Sin eventos en este período</div>';
+    if (moreEl) moreEl.style.display = 'none';
+    return;
+  }
+
+  const actionMeta = {
+    account_created:   { label:'Cuenta creada',   color:'#16a34a', bg:'#f0fdf4', border:'#bbf7d0' },
+    plan_changed:      { label:'Plan cambiado',    color:'#7c3aed', bg:'#faf5ff', border:'#ddd6fe' },
+    account_suspended: { label:'Suspendida',       color:'#dc2626', bg:'#fef2f2', border:'#fecaca' },
+    account_activated: { label:'Activada',         color:'#16a34a', bg:'#f0fdf4', border:'#bbf7d0' },
+    user_linked:       { label:'Usuario vinculado',color:'#0284c7', bg:'#f0f9ff', border:'#bae6fd' },
+    restaurant_created:{ label:'Rest. creado',     color:'var(--brand)', bg:'var(--brand-light)', border:'var(--brand)' },
+  };
+
+  tableEl.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border)">
+          <th style="padding:10px 18px;text-align:left;color:var(--text-muted);font-weight:500;white-space:nowrap">Fecha y hora</th>
+          <th style="padding:10px 14px;text-align:left;color:var(--text-muted);font-weight:500">Acción</th>
+          <th style="padding:10px 14px;text-align:left;color:var(--text-muted);font-weight:500">Actor</th>
+          <th style="padding:10px 14px;text-align:left;color:var(--text-muted);font-weight:500">Restaurante</th>
+          <th style="padding:10px 18px;text-align:left;color:var(--text-muted);font-weight:500">Detalles</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${_auditRows.map(r => {
+          const m = actionMeta[r.action] || { label: r.action, color:'#6b7280', bg:'#f9fafb', border:'#e5e7eb' };
+          const ts = new Date(r.created_at);
+          const dateStr = ts.toLocaleDateString('es-MX', { day:'numeric', month:'short', year:'numeric' });
+          const timeStr = ts.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+          const det = r.details || {};
+          let detailStr = '';
+          if (r.action === 'plan_changed') detailStr = `${esc(det.from||'?')} → ${esc(det.to||'?')}`;
+          else if (r.action === 'account_created') detailStr = `Plan: ${esc(det.plan||'?')} · ${esc(det.owner_email||'')}`;
+          else if (r.action === 'user_linked') detailStr = esc(det.email||'');
+          else if (r.action === 'account_suspended' || r.action === 'account_activated') detailStr = '';
+          return `<tr style="border-bottom:1px solid var(--border);transition:background .1s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+            <td style="padding:11px 18px;white-space:nowrap">
+              <div style="font-size:12.5px;font-weight:500;color:var(--text)">${esc(dateStr)}</div>
+              <div style="font-size:11px;color:var(--text-faint)">${esc(timeStr)}</div>
+            </td>
+            <td style="padding:11px 14px">
+              <span style="font-size:11.5px;font-weight:600;color:${m.color};background:${m.bg};border:1px solid ${m.border};border-radius:6px;padding:2px 8px;white-space:nowrap">${m.label}</span>
+            </td>
+            <td style="padding:11px 14px;font-size:12px;color:var(--text-muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.actor_email||'—')}</td>
+            <td style="padding:11px 14px;font-size:12.5px;color:var(--text);font-weight:500">${esc(r.target_name||'—')}</td>
+            <td style="padding:11px 18px;font-size:12px;color:var(--text-muted)">${detailStr}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+
+  if (moreEl) moreEl.style.display = _auditOffset < _auditTotal ? 'block' : 'none';
 }
 
 // Called after any tenant data mutation — silently refreshes Susazón if open
