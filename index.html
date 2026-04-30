@@ -7992,8 +7992,10 @@ async function doLoginSzTeamMember(role, userId, email) {
   document.getElementById('sz-date').textContent = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
 
   // Load this user's team record (find by user_id or email for first login)
-  const { data: members } = await _supabase.from('sz_team_members')
+  console.log('[SZ] userId:', userId, 'email:', email);
+  const { data: members, error: mErr } = await _supabase.from('sz_team_members')
     .select('*').or(`user_id.eq.${userId},email.eq.${email}`).limit(1);
+  console.log('[SZ] members raw:', members, 'error:', mErr);
   const member = members?.[0];
 
   // Link user_id on first login
