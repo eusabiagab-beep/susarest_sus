@@ -7643,7 +7643,11 @@ async function closeSzPortal() {
 async function szRefreshAll() {
   const badge = document.getElementById('sz-sync-badge');
   if (badge) { badge.style.animation = 'sz-pulse .4s 3'; setTimeout(()=>badge.style.animation='',1200); }
-  await doLoginSzAdmin();
+  if (_szCurrentRole === 'susazon_admin') {
+    await doLoginSzAdmin();
+  } else {
+    await doLoginSzTeamMember(_szCurrentRole, _szCurrentUserId, _szCurrentEmail);
+  }
   showToast('↺ Portal Susazón actualizado con datos en vivo');
 }
 
@@ -7976,6 +7980,8 @@ async function szToggleSuspend(key) {
 // ── TEAM MEMBER LOGIN ──
 
 async function doLoginSzTeamMember(role, userId, email) {
+  _szCurrentUserId = userId;
+  _szCurrentEmail  = email;
   document.getElementById('sz-date').textContent = new Date().toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
 
   // Load this user's team record (find by user_id or email for first login)
@@ -8050,6 +8056,8 @@ async function doLoginSzTeamMember(role, userId, email) {
 // ── ROLE-BASED ACCESS ──
 
 let _szCurrentRole = 'susazon_admin';
+let _szCurrentUserId = null;
+let _szCurrentEmail  = null;
 
 function szApplyRoleAccess(role) {
   _szCurrentRole = role;
