@@ -9708,8 +9708,8 @@ async function openChangePasswordForRestaurant(restaurantId, restaurantName) {
 
   // Build user list: owner first
   const users = [];
-  if (t?.userId && t?.ownerEmail) {
-    users.push({ id: t.userId, name: 'Propietario', email: t.ownerEmail, role: null });
+  if (t?.userId) {
+    users.push({ id: t.userId, name: 'Propietario', email: t.ownerEmail || t.email || '(sin correo)', role: null });
   }
 
   // Fetch restaurant_users members
