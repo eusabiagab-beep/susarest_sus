@@ -2690,40 +2690,6 @@ body.sr-cursor-hover #sr-cursor-inner {
 </div>
 
 <!-- Modal agregar miembro -->
-<div class="modal-bg" id="add-team-member-modal">
-  <div class="modal" style="max-width:420px">
-    <div class="modal-header">
-      <div class="modal-title">👥 Nuevo usuario</div>
-      <button class="modal-close" onclick="closeModal('add-team-member-modal')">✕</button>
-    </div>
-    <div class="form-grp">
-      <label class="form-lbl">Nombre completo</label>
-      <input type="text" class="form-inp" id="tm-name" placeholder="Ej. Ana García">
-    </div>
-    <div class="form-grp">
-      <label class="form-lbl">Correo electrónico</label>
-      <input type="email" class="form-inp" id="tm-email" placeholder="correo@ejemplo.com">
-    </div>
-    <div class="form-grp">
-      <label class="form-lbl">Contraseña</label>
-      <input type="text" class="form-inp" id="tm-password" placeholder="Mínimo 8 caracteres">
-      <div style="font-size:11px;color:var(--text-faint);margin-top:4px">Comparte estas credenciales directamente con tu colaborador.</div>
-    </div>
-    <div class="form-grp">
-      <label class="form-lbl">Tipo de acceso</label>
-      <select class="form-inp" id="tm-role">
-        <option value="viewer">👁 Lectura — solo puede ver información</option>
-        <option value="editor">✏️ Modificación — puede editar inventario, recetas y órdenes</option>
-      </select>
-    </div>
-    <div id="tm-error" style="color:var(--danger);font-size:13px;display:none;margin-bottom:8px"></div>
-    <div style="display:flex;gap:10px;margin-top:8px">
-      <button class="btn btn-ghost" onclick="closeModal('add-team-member-modal')" style="flex:1">Cancelar</button>
-      <button class="btn btn-primary" onclick="createRestaurantUser()" style="flex:1" id="tm-save-btn">Crear usuario</button>
-    </div>
-  </div>
-</div>
-
 <div class="page" id="page-configuracion">
   <div class="section-head">
     <div><div class="section-title">Configuración</div><div class="section-sub">Personaliza tu restaurante y parámetros del sistema</div></div>
@@ -8349,6 +8315,7 @@ function szRenderCuentas() {
             <td style="padding:12px 18px">
               <div style="display:flex;gap:6px;justify-content:flex-end">
                 <button onclick="szOpenChangePlan('${esc(key)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px">📋 Plan</button>
+                ${t.userId ? `<button onclick="openChangePasswordForRestaurant('${esc(key)}','${esc(t.name)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px" title="Cambiar contraseña">🔑</button>` : ''}
                 <button onclick="szToggleSuspend('${esc(key)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px;color:${status==='suspended'?'#16a34a':'#dc2626'}">${status==='suspended'?'✓ Activar':'🚫 Suspender'}</button>
                 <button onclick="szDeleteAccount('${esc(key)}','${esc(t.name)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px;color:#dc2626" title="Eliminar cuenta">🗑</button>
               </div>
@@ -8602,6 +8569,7 @@ async function szRenderTeam() {
             <td style="padding:12px 18px">
               <div style="display:flex;gap:6px;justify-content:flex-end">
                 <button onclick="szOpenEditTeamMember('${esc(m.id)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px">✏️ Editar</button>
+                ${m.user_id ? `<button onclick="openChangePassword('${esc(m.user_id)}','${esc(m.name)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px" title="Cambiar contraseña">🔑</button>` : ''}
                 <button onclick="szToggleTeamActive('${esc(m.id)}',${active},'${esc(m.name)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px;color:${active?'#dc2626':'#16a34a'}">${active?'Desactivar':'Activar'}</button>
                 <button onclick="szDeleteTeamMember('${esc(m.id)}','${esc(m.name)}')" class="btn btn-sm btn-ghost" style="font-size:11.5px;color:#dc2626">🗑</button>
               </div>
@@ -9715,6 +9683,98 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ══════════════════════════════════════
+// CAMBIAR CONTRASEÑA (admin Susazón)
+// ══════════════════════════════════════
+let _cpUserId = null;
+
+function openChangePassword(userId, userName) {
+  _cpUserId = userId;
+  document.getElementById('cp-user-label').textContent = `Usuario: ${userName}`;
+  document.getElementById('cp-user-label').style.display = 'block';
+  document.getElementById('cp-user-select-wrap').style.display = 'none';
+  document.getElementById('cp-password').value = '';
+  document.getElementById('cp-error').style.display = 'none';
+  openModal('change-password-modal');
+}
+
+async function openChangePasswordForRestaurant(restaurantId, restaurantName) {
+  const t = TENANTS[restaurantId];
+  _cpUserId = null;
+  document.getElementById('cp-user-label').style.display = 'none';
+  document.getElementById('cp-user-select-wrap').style.display = 'none';
+  document.getElementById('cp-password').value = '';
+  document.getElementById('cp-error').style.display = 'none';
+  openModal('change-password-modal');
+
+  // Build user list: owner first
+  const users = [];
+  if (t?.userId && t?.ownerEmail) {
+    users.push({ id: t.userId, name: 'Propietario', email: t.ownerEmail, role: null });
+  }
+
+  // Fetch restaurant_users members
+  const { data: members } = await _supabase
+    .from('restaurant_users')
+    .select('user_id, name, email, role')
+    .eq('restaurant_id', restaurantId);
+
+  if (members) {
+    members.forEach(m => {
+      if (m.user_id) users.push({ id: m.user_id, name: m.name || m.email, email: m.email, role: m.role });
+    });
+  }
+
+  if (users.length === 0) {
+    document.getElementById('cp-user-label').textContent = 'No hay usuarios registrados para este restaurante.';
+    document.getElementById('cp-user-label').style.display = 'block';
+    return;
+  }
+
+  if (users.length === 1) {
+    _cpUserId = users[0].id;
+    document.getElementById('cp-user-label').textContent = `Usuario: ${users[0].name} (${users[0].email})`;
+    document.getElementById('cp-user-label').style.display = 'block';
+    return;
+  }
+
+  // Multiple users — show dropdown
+  const select = document.getElementById('cp-user-select');
+  select.innerHTML = users.map(u =>
+    `<option value="${esc(u.id)}" data-email="${esc(u.email)}">${esc(u.name)} — ${esc(u.email)}${u.role ? ` (${u.role})` : ''}</option>`
+  ).join('');
+  _cpUserId = users[0].id;
+  document.getElementById('cp-selected-info').textContent = '';
+  document.getElementById('cp-user-select-wrap').style.display = 'block';
+}
+
+async function doChangePassword() {
+  const password = document.getElementById('cp-password').value.trim();
+  const errEl = document.getElementById('cp-error');
+  const btn = document.getElementById('cp-save-btn');
+
+  errEl.style.display = 'none';
+  if (!password || password.length < 8) {
+    errEl.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  const { data: { session } } = await _supabase.auth.getSession();
+  const res = await fetch('https://vdporqqrycwclpihyeul.supabase.co/functions/v1/create-sz-team-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+    body: JSON.stringify({ action: 'update_password', user_id: _cpUserId, new_password: password })
+  });
+  const result = await res.json();
+  btn.disabled = false; btn.textContent = 'Guardar';
+
+  if (result.error) { errEl.textContent = result.error; errEl.style.display = 'block'; return; }
+  closeModal('change-password-modal');
+  showToast('✅ Contraseña actualizada correctamente');
+}
+
+// ══════════════════════════════════════
 // PORTAL SZ — USUARIOS DE RESTAURANTES
 // ══════════════════════════════════════
 let _szUsersCurrentRestaurant = null;
@@ -9888,5 +9948,66 @@ async function deleteRestaurantUser(memberId) {
 }
 
 </script>
+
+<!-- Modal agregar usuario — fuera de #app para funcionar en portal Susazón y en app -->
+<div class="modal-bg" id="add-team-member-modal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <div class="modal-title">👥 Nuevo usuario</div>
+      <button class="modal-close" onclick="closeModal('add-team-member-modal')">✕</button>
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Nombre completo</label>
+      <input type="text" class="form-inp" id="tm-name" placeholder="Ej. Ana García">
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Correo electrónico</label>
+      <input type="email" class="form-inp" id="tm-email" placeholder="correo@ejemplo.com">
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Contraseña</label>
+      <input type="text" class="form-inp" id="tm-password" placeholder="Mínimo 8 caracteres">
+      <div style="font-size:11px;color:var(--text-faint);margin-top:4px">Comparte estas credenciales directamente con tu colaborador.</div>
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Tipo de acceso</label>
+      <select class="form-inp" id="tm-role">
+        <option value="viewer">👁 Lectura — solo puede ver información</option>
+        <option value="editor">✏️ Modificación — puede editar inventario, recetas y órdenes</option>
+      </select>
+    </div>
+    <div id="tm-error" style="color:var(--danger);font-size:13px;display:none;margin-bottom:8px"></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-ghost" onclick="closeModal('add-team-member-modal')" style="flex:1">Cancelar</button>
+      <button class="btn btn-primary" onclick="createRestaurantUser()" style="flex:1" id="tm-save-btn">Crear usuario</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal cambiar contraseña -->
+<div class="modal-bg" id="change-password-modal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <div class="modal-title">🔑 Cambiar contraseña</div>
+      <button class="modal-close" onclick="closeModal('change-password-modal')">✕</button>
+    </div>
+    <div id="cp-user-label" style="font-size:13px;color:var(--text-muted);margin-bottom:16px"></div>
+    <div id="cp-user-select-wrap" class="form-grp" style="display:none">
+      <label class="form-lbl">Seleccionar usuario</label>
+      <select class="form-inp" id="cp-user-select" onchange="_cpUserId=this.value;document.getElementById('cp-selected-info').textContent=this.options[this.selectedIndex].getAttribute('data-email')"></select>
+      <div id="cp-selected-info" style="font-size:11.5px;color:var(--text-faint);margin-top:4px"></div>
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Nueva contraseña</label>
+      <input type="text" class="form-inp" id="cp-password" placeholder="Mínimo 8 caracteres">
+    </div>
+    <div id="cp-error" style="color:var(--danger);font-size:13px;display:none;margin-bottom:8px"></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-ghost" onclick="closeModal('change-password-modal')" style="flex:1">Cancelar</button>
+      <button class="btn btn-primary" onclick="doChangePassword()" style="flex:1" id="cp-save-btn">Guardar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
