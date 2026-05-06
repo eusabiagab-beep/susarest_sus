@@ -4385,14 +4385,25 @@ async function _showApp(user) {
   if (szRole === 'restaurant_member') {
     const restaurantId = verifiedUser.app_metadata?.restaurant_id;
     const restaurantRole = verifiedUser.app_metadata?.restaurant_role || 'viewer';
-    if (!restaurantId) { _showLogin(); return; }
-    const { data: rest } = await _supabase.from('restaurants').select('*').eq('id', restaurantId).single();
-    if (!rest) { _showLogin(); return; }
+    if (!restaurantId) {
+      await _supabase.auth.signOut();
+      _showLogin();
+      _showAuthError('Tu cuenta no tiene un restaurante asignado. Contacta a tu administrador.');
+      return;
+    }
+    const { data: rest, error: restErr } = await _supabase.from('restaurants').select('*').eq('id', restaurantId).single();
+    if (!rest) {
+      // Could be RLS blocking — sign out and show helpful message
+      await _supabase.auth.signOut();
+      _showLogin();
+      _showAuthError('No se pudo cargar tu restaurante. Verifica tu conexión o contacta a tu administrador.');
+      return;
+    }
     _showLoading(`Bienvenido, ${rest.name}...`);
     await _loadRestaurantData(rest);
     _hideAllScreens();
     document.getElementById('app').style.display = 'block';
-    initApp(restaurantRole === 'viewer'); // read-only solo si es viewer
+    initApp(restaurantRole === 'viewer');
     return;
   }
 
