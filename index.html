@@ -2067,6 +2067,7 @@ body.sr-cursor-hover #sr-cursor-inner {
     <div class="sb-section">
       <div class="sb-label">Sistema</div>
       <button class="nav-item pro-only" id="nav-alertas" onclick="showPage('alertas',this)"><span class="nav-icon">🔔</span> Alertas<span class="nav-pro-lock">PRO</span></button>
+      <button class="nav-item" id="nav-equipo" onclick="showPage('equipo',this)"><span class="nav-icon">👥</span> Mi Equipo<span class="nav-pro-lock">PRO</span></button>
       <button class="nav-item" id="nav-configuracion" onclick="showPage('configuracion',this)"><span class="nav-icon">⚙️</span> Configuración</button>
       <button class="nav-item pro-only" id="nav-importar" onclick="showPage('importar',this)"><span class="nav-icon">⬆️</span> Importar Datos<span class="nav-pro-lock">PRO</span></button>
     </div>
@@ -2669,6 +2670,60 @@ body.sr-cursor-hover #sr-cursor-inner {
 </div>
 
 <!-- ══════════ CONFIGURACIÓN ══════════ -->
+<!-- ═══════════════ MI EQUIPO ═══════════════ -->
+<div class="page" id="page-equipo">
+  <div class="section-head">
+    <div>
+      <div class="section-title">Mi Equipo</div>
+      <div class="section-sub">Agrega hasta 2 usuarios para que vean la información de tu restaurante</div>
+    </div>
+    <button class="btn btn-primary" onclick="openModal('add-team-member-modal')">+ Agregar usuario</button>
+  </div>
+
+  <div id="equipo-list" style="display:flex;flex-direction:column;gap:12px;max-width:640px;">
+    <div style="text-align:center;padding:40px;color:var(--text-faint)">Cargando...</div>
+  </div>
+
+  <div style="margin-top:16px;padding:14px 16px;background:var(--info-light);border-radius:10px;font-size:13px;color:var(--info);max-width:640px;">
+    💡 <strong>Plan Pro:</strong> máximo 2 usuarios adicionales. Comparte sus credenciales directamente con ellos — solo podrán ver la información, no modificarla.
+  </div>
+</div>
+
+<!-- Modal agregar miembro -->
+<div class="modal-bg" id="add-team-member-modal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <div class="modal-title">👥 Nuevo usuario</div>
+      <button class="modal-close" onclick="closeModal('add-team-member-modal')">✕</button>
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Nombre completo</label>
+      <input type="text" class="form-inp" id="tm-name" placeholder="Ej. Ana García">
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Correo electrónico</label>
+      <input type="email" class="form-inp" id="tm-email" placeholder="correo@ejemplo.com">
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Contraseña</label>
+      <input type="text" class="form-inp" id="tm-password" placeholder="Mínimo 8 caracteres">
+      <div style="font-size:11px;color:var(--text-faint);margin-top:4px">Comparte estas credenciales directamente con tu colaborador.</div>
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Tipo de acceso</label>
+      <select class="form-inp" id="tm-role">
+        <option value="viewer">👁 Lectura — solo puede ver información</option>
+        <option value="editor">✏️ Modificación — puede editar inventario, recetas y órdenes</option>
+      </select>
+    </div>
+    <div id="tm-error" style="color:var(--danger);font-size:13px;display:none;margin-bottom:8px"></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-ghost" onclick="closeModal('add-team-member-modal')" style="flex:1">Cancelar</button>
+      <button class="btn btn-primary" onclick="createRestaurantUser()" style="flex:1" id="tm-save-btn">Crear usuario</button>
+    </div>
+  </div>
+</div>
+
 <div class="page" id="page-configuracion">
   <div class="section-head">
     <div><div class="section-title">Configuración</div><div class="section-sub">Personaliza tu restaurante y parámetros del sistema</div></div>
@@ -3286,6 +3341,7 @@ body.sr-cursor-hover #sr-cursor-inner {
       <button class="sz-nav" id="sz-nav-oportunidades" onclick="szTab('oportunidades',this)">🎯 Oportunidades</button>
       <button class="sz-nav" id="sz-nav-clientes"     onclick="szTab('clientes',this)">🏬 Clientes</button>
       <button class="sz-nav" id="sz-nav-cuentas"      onclick="szTab('cuentas',this)">👥 Cuentas</button>
+      <button class="sz-nav" id="sz-nav-usuarios"     onclick="szTab('usuarios',this);szLoadRestaurantUsers()">👤 Usuarios</button>
       <button class="sz-nav" id="sz-nav-auditoria"   onclick="szTab('auditoria',this)">📋 Auditoría</button>
     </div>
   </div>
@@ -3492,6 +3548,25 @@ body.sr-cursor-hover #sr-cursor-inner {
         <div id="sz-audit-load-more" style="display:none;padding:12px;text-align:center">
           <button class="btn btn-ghost" onclick="szLoadMoreAudit()" style="font-size:12.5px">Cargar más</button>
         </div>
+      </div>
+    </div>
+
+    <!-- ── USUARIOS ── -->
+    <div class="sz-tab-content" id="sz-usuarios">
+      <div style="margin-bottom:18px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:20px;font-weight:700">👤 Usuarios de restaurantes</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:3px">Gestiona los usuarios de acceso de cada cliente. Sin límite de usuarios.</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <select id="sz-users-restaurant-filter" onchange="szLoadRestaurantUsers()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+            <option value="">— Selecciona un restaurante —</option>
+          </select>
+          <button class="btn btn-primary" onclick="szOpenAddUserModal()" style="font-size:13px">+ Agregar usuario</button>
+        </div>
+      </div>
+      <div class="card" style="padding:0">
+        <div id="sz-users-list" style="padding:28px;text-align:center;color:var(--text-muted);font-size:13px">Selecciona un restaurante para ver sus usuarios.</div>
       </div>
     </div>
 
@@ -4337,6 +4412,21 @@ async function _showApp(user) {
     return;
   }
 
+  // Restaurant team member
+  if (szRole === 'restaurant_member') {
+    const restaurantId = verifiedUser.app_metadata?.restaurant_id;
+    const restaurantRole = verifiedUser.app_metadata?.restaurant_role || 'viewer';
+    if (!restaurantId) { _showLogin(); return; }
+    const { data: rest } = await _supabase.from('restaurants').select('*').eq('id', restaurantId).single();
+    if (!rest) { _showLogin(); return; }
+    _showLoading(`Bienvenido, ${rest.name}...`);
+    await _loadRestaurantData(rest);
+    _hideAllScreens();
+    document.getElementById('app').style.display = 'block';
+    initApp(restaurantRole === 'viewer'); // read-only solo si es viewer
+    return;
+  }
+
   // Primary lookup: restaurant already linked to this user
   let restaurant = null;
   const { data: byUserId } = await _supabase
@@ -4659,11 +4749,20 @@ function showProUpgradeToast() {
 // ACTUALIZADO — Lazy init: solo renderiza Dashboard al cargar.
 // Resto de módulos se renderizan on-demand cuando el usuario navega a ellos.
 var _rendered = {};
-function initApp(){
+let _isReadOnly = false;
+
+function initApp(readOnly){
+  _isReadOnly = !!readOnly;
   applyTenantTheme();
   updateTopbar();
   applyPlanRestrictions();
   setDate();
+  // En modo read-only ocultar botones de acción y nav items de escritura
+  if (_isReadOnly) {
+    document.querySelectorAll('.btn-primary, .btn-danger, #nav-equipo, #nav-configuracion, #nav-importar').forEach(el => el.style.display = 'none');
+    var topbarName = document.getElementById('sidebar-tenant');
+    if (topbarName) topbarName.textContent = 'VIEWER';
+  }
   // Solo el dashboard al arranque
   renderDashboard();
   _rendered['dashboard'] = true;
@@ -7756,7 +7855,7 @@ function closeAdmin(){document.getElementById('admin-view').style.display='none'
 // ═══════════════════════════════════════════════
 // UI HELPERS
 // ═══════════════════════════════════════════════
-const PAGE_TITLES={dashboard:'Dashboard',rentabilidad:'Rentabilidad del Negocio',inventario:'Inventario',recetas:'Recetas',foodcost:'Food Cost',ordenes:'Órdenes de Compra',analytics:'Analytics',clientes:'Análisis de Clientes',simulador:'Simulador de Escenarios',alertas:'Centro de Alertas',configuracion:'Configuración',importar:'Importar Datos'};
+const PAGE_TITLES={dashboard:'Dashboard',rentabilidad:'Rentabilidad del Negocio',inventario:'Inventario',recetas:'Recetas',foodcost:'Food Cost',ordenes:'Órdenes de Compra',analytics:'Analytics',clientes:'Análisis de Clientes',simulador:'Simulador de Escenarios',alertas:'Centro de Alertas',configuracion:'Configuración',importar:'Importar Datos',equipo:'Mi Equipo'};
 
 function showPage(name,navEl){
   _currentModule = name;
@@ -7767,7 +7866,7 @@ function showPage(name,navEl){
   document.getElementById('topbar-title').textContent=PAGE_TITLES[name]||name;
   // ACTUALIZADO — módulos que siempre necesitan refresh vs los que solo cargan una vez
   const alwaysRefresh = {alertas:renderAlertas, ordenes:renderOrdenes};
-  const onceRender = {foodcost:renderFoodCost, inventario:renderInventario, recetas:renderRecetas, analytics:renderAnalytics, rentabilidad:renderRentabilidad, configuracion:loadConfig, simulador:initSimulator, clientes:()=>{if(ticketData.length){applyClientPeriod();}}};
+  const onceRender = {foodcost:renderFoodCost, inventario:renderInventario, recetas:renderRecetas, analytics:renderAnalytics, rentabilidad:renderRentabilidad, configuracion:loadConfig, simulador:initSimulator, clientes:()=>{if(ticketData.length){applyClientPeriod();}}, equipo:loadEquipo};
   if(alwaysRefresh[name]) alwaysRefresh[name]();
   else if(onceRender[name] && !_rendered[name]){ onceRender[name](); _rendered[name]=true; }
 }
@@ -9614,6 +9713,179 @@ function openSusazonContact() {
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closePricing();
 });
+
+// ══════════════════════════════════════
+// PORTAL SZ — USUARIOS DE RESTAURANTES
+// ══════════════════════════════════════
+let _szUsersCurrentRestaurant = null;
+
+async function szLoadRestaurantUsers() {
+  const select = document.getElementById('sz-users-restaurant-filter');
+  const list = document.getElementById('sz-users-list');
+  if (!select || !list) return;
+
+  // Poblar dropdown con restaurantes si está vacío
+  if (select.options.length <= 1) {
+    const allRests = Object.entries(TENANTS).map(([id, t]) => ({ id, name: t.name }));
+    // También cargar desde DB
+    const { data: rests } = await _supabase.from('restaurants').select('id, name').order('name');
+    if (rests) {
+      rests.forEach(r => {
+        if (!select.querySelector(`option[value="${r.id}"]`)) {
+          const opt = document.createElement('option');
+          opt.value = r.id; opt.textContent = r.name;
+          select.appendChild(opt);
+        }
+      });
+    }
+  }
+
+  const restaurantId = select.value;
+  if (!restaurantId) { list.innerHTML = '<div style="padding:28px;text-align:center;color:var(--text-muted);font-size:13px">Selecciona un restaurante para ver sus usuarios.</div>'; return; }
+  _szUsersCurrentRestaurant = restaurantId;
+
+  list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">Cargando...</div>';
+
+  const { data: members } = await _supabase.from('restaurant_users').select('*').eq('restaurant_id', restaurantId).order('created_at');
+
+  if (!members?.length) {
+    list.innerHTML = '<div style="padding:28px;text-align:center;color:var(--text-muted);font-size:13px">Este restaurante no tiene usuarios adicionales.</div>';
+    return;
+  }
+
+  list.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead><tr style="border-bottom:1px solid var(--border);background:var(--surface2)">
+        <th style="padding:10px 16px;text-align:left;font-weight:600">Nombre</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600">Correo</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600">Acceso</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600">Estado</th>
+        <th style="padding:10px 16px;text-align:right;font-weight:600">Acciones</th>
+      </tr></thead>
+      <tbody>
+        ${members.map(m => `
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 16px;font-weight:500">${m.name}</td>
+            <td style="padding:10px 16px;color:var(--text-muted)">${m.email}</td>
+            <td style="padding:10px 16px"><span style="font-size:11px;padding:3px 10px;border-radius:20px;background:${m.role==='editor'?'var(--warning-light)':'var(--info-light)'};color:${m.role==='editor'?'var(--warning)':'var(--info)'}">${m.role==='editor'?'✏️ Modificación':'👁 Lectura'}</span></td>
+            <td style="padding:10px 16px"><span style="font-size:11px;padding:3px 10px;border-radius:20px;background:${m.active?'var(--success-light)':'var(--surface2)'};color:${m.active?'var(--success)':'var(--text-faint)'}">${m.active?'Activo':'Inactivo'}</span></td>
+            <td style="padding:10px 16px;text-align:right">
+              <button onclick="szDeleteRestaurantUser('${m.id}')" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:16px" title="Eliminar">🗑</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+}
+
+function szOpenAddUserModal() {
+  if (!_szUsersCurrentRestaurant) { showToast('⚠️ Selecciona un restaurante primero'); return; }
+  openModal('add-team-member-modal');
+}
+
+async function szDeleteRestaurantUser(memberId) {
+  if (!confirm('¿Eliminar este usuario? Perderá acceso inmediatamente.')) return;
+  const { data: { session } } = await _supabase.auth.getSession();
+  const res = await fetch('https://vdporqqrycwclpihyeul.supabase.co/functions/v1/create-restaurant-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+    body: JSON.stringify({ action: 'delete', restaurant_id: _szUsersCurrentRestaurant, member_id: memberId })
+  });
+  const result = await res.json();
+  if (result.error) { showToast('❌ ' + result.error); return; }
+  szLoadRestaurantUsers();
+  showToast('✅ Usuario eliminado');
+}
+
+// ══════════════════════════════════════
+// MI EQUIPO
+// ══════════════════════════════════════
+async function loadEquipo() {
+  const container = document.getElementById('equipo-list');
+  if (!container) return;
+  container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-faint)">Cargando...</div>';
+
+  const { data: members, error } = await _supabase
+    .from('restaurant_users')
+    .select('*')
+    .eq('restaurant_id', currentTenant)
+    .order('created_at', { ascending: true });
+
+  if (error || !members?.length) {
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-faint)">No hay usuarios agregados aún.</div>';
+    return;
+  }
+
+  container.innerHTML = members.map(m => `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:38px;height:38px;border-radius:50%;background:var(--brand-light);color:var(--brand);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0">${m.name.slice(0,2).toUpperCase()}</div>
+        <div>
+          <div style="font-weight:600;font-size:14px">${m.name}</div>
+          <div style="font-size:12px;color:var(--text-muted)">${m.email}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:${m.role==='editor'?'var(--warning-light)':'var(--info-light)'};color:${m.role==='editor'?'var(--warning)':'var(--info)'}">${m.role==='editor'?'✏️ Modificación':'👁 Lectura'}</span>
+        <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:${m.active ? 'var(--success-light)' : 'var(--surface2)'};color:${m.active ? 'var(--success)' : 'var(--text-faint)'}">${m.active ? 'Activo' : 'Inactivo'}</span>
+        <button onclick="deleteRestaurantUser('${m.id}')" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:18px;padding:4px 6px;border-radius:6px;" title="Eliminar">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function createRestaurantUser(restaurantId) {
+  const rid = restaurantId || _szUsersCurrentRestaurant || currentTenant;
+  const name = document.getElementById('tm-name').value.trim();
+  const email = document.getElementById('tm-email').value.trim();
+  const password = document.getElementById('tm-password').value.trim();
+  const role = document.getElementById('tm-role').value;
+  const errEl = document.getElementById('tm-error');
+  const btn = document.getElementById('tm-save-btn');
+
+  errEl.style.display = 'none';
+  if (!name || !email || !password) { errEl.textContent = 'Completa todos los campos.'; errEl.style.display = 'block'; return; }
+  if (password.length < 8) { errEl.textContent = 'La contraseña debe tener al menos 8 caracteres.'; errEl.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Creando...';
+
+  const { data: { session } } = await _supabase.auth.getSession();
+  const res = await fetch('https://vdporqqrycwclpihyeul.supabase.co/functions/v1/create-restaurant-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+    body: JSON.stringify({ restaurant_id: rid, name, email, password, role })
+  });
+  const result = await res.json();
+
+  btn.disabled = false;
+  btn.textContent = 'Crear usuario';
+
+  if (result.error) { errEl.textContent = result.error; errEl.style.display = 'block'; return; }
+
+  closeModal('add-team-member-modal');
+  ['tm-name','tm-email','tm-password'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('tm-role').value = 'viewer';
+  _rendered.equipo = false;
+  if (rid === currentTenant) loadEquipo();
+  if (rid === _szUsersCurrentRestaurant && rid !== currentTenant) szLoadRestaurantUsers();
+  showToast('✅ Usuario creado correctamente');
+}
+
+async function deleteRestaurantUser(memberId) {
+  if (!confirm('¿Eliminar este usuario? Perderá acceso inmediatamente.')) return;
+  const { data: { session } } = await _supabase.auth.getSession();
+  const res = await fetch('https://vdporqqrycwclpihyeul.supabase.co/functions/v1/create-restaurant-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+    body: JSON.stringify({ action: 'delete', restaurant_id: currentTenant, member_id: memberId })
+  });
+  const result = await res.json();
+  if (result.error) { showToast('❌ ' + result.error); return; }
+  _rendered.equipo = false;
+  loadEquipo();
+  showToast('✅ Usuario eliminado');
+}
 
 </script>
 </body>
