@@ -2046,6 +2046,7 @@ body.sr-cursor-hover #sr-cursor-inner {
       </div>
     </div>
 
+    <div style="flex:1;overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:var(--border) transparent">
     <div class="sb-section">
       <div class="sb-label">Principal</div>
       <button class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</button>
@@ -2074,17 +2075,9 @@ body.sr-cursor-hover #sr-cursor-inner {
       <button class="nav-item" id="nav-configuracion" onclick="showPage('configuracion',this)"><span class="nav-icon">⚙️</span> Configuración</button>
       <button class="nav-item pro-only" id="nav-importar" onclick="showPage('importar',this)"><span class="nav-icon">⬆️</span> Importar Datos<span class="nav-pro-lock">PRO</span></button>
     </div>
-
-    <div class="sb-plan">
-      <div class="plan-pill" id="sb-plan-pill"><span>🆓</span><strong>Plan Free</strong></div>
     </div>
 
-    <div class="sb-bottom">
-      <button class="sb-admin-btn" onclick="showPinModal()">
-        <span class="brand-dot"></span> Panel Admin SusaRest
-        <span style="margin-left:auto;font-size:11px;opacity:.5">⬆</span>
-      </button>
-    </div>
+
   </nav>
 
   <!-- MAIN -->
@@ -3271,20 +3264,28 @@ body.sr-cursor-hover #sr-cursor-inner {
           <span style="opacity:.6;font-size:10px" id="sz-dd-arrow">▼</span>
         </button>
         <!-- Dropdown panel -->
-        <div id="sz-dropdown-panel" style="display:none;position:absolute;top:calc(100% + 6px);left:0;min-width:240px;background:white;border-radius:11px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:100;overflow:hidden;border:1px solid var(--border)">
-          <div style="padding:8px 0">
+        <div id="sz-dropdown-panel" style="display:none;position:absolute;top:calc(100% + 6px);left:0;min-width:280px;background:white;border-radius:11px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:100;overflow:hidden;border:1px solid var(--border)">
+          <!-- Search bar -->
+          <div style="padding:10px 10px 6px">
+            <input id="sz-dd-search" type="text" placeholder="🔍 Buscar cliente..." oninput="szFilterDropdown(this.value)"
+              style="width:100%;padding:7px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none;color:var(--text);transition:border-color .15s"
+              onfocus="this.style.borderColor='var(--brand)'" onblur="this.style.borderColor='var(--border)'"
+              onclick="event.stopPropagation()">
+          </div>
+          <div style="padding:0 0 6px">
             <!-- All clients option -->
             <div class="sz-dd-option" id="sz-dd-opt-all" onclick="setSzClient(null)" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .1s;background:var(--brand-light)">
               <span style="font-size:18px">🌐</span>
               <div>
                 <div style="font-size:13.5px;font-weight:600;color:var(--brand)">Todos los clientes</div>
-                <div style="font-size:11px;color:var(--text-faint)">Vista consolidada · 3 tenants</div>
+                <div style="font-size:11px;color:var(--text-faint)" id="sz-dd-all-sub">Vista consolidada</div>
               </div>
               <span id="sz-dd-check-all" style="margin-left:auto;color:var(--brand);font-size:14px">✓</span>
             </div>
-            <div style="height:1px;background:var(--border);margin:4px 0"></div>
+            <div style="height:1px;background:var(--border);margin:2px 0"></div>
             <!-- Per-client options populated by JS -->
-            <div id="sz-dd-options"></div>
+            <div id="sz-dd-options" style="max-height:320px;overflow-y:auto"></div>
+            <div id="sz-dd-no-results" style="display:none;padding:14px;text-align:center;font-size:13px;color:var(--text-faint)">Sin resultados</div>
           </div>
         </div>
       </div>
@@ -3474,7 +3475,12 @@ body.sr-cursor-hover #sr-cursor-inner {
             <div style="font-size:16px;font-weight:700">👤 Equipo Susazón</div>
             <div style="font-size:12.5px;color:var(--text-muted);margin-top:2px">Usuarios con acceso al portal · cada uno ve solo lo que tú le asignas</div>
           </div>
-          <button class="btn btn-primary" onclick="szOpenNewTeamMember()" style="background:var(--brand);border-color:var(--brand);font-size:13px;flex-shrink:0">+ Nuevo Usuario</button>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input type="text" id="sz-team-search" placeholder="🔍 Buscar miembro..." oninput="szFilterTeam(this.value)"
+              style="padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none;color:var(--text);transition:border-color .15s;width:200px"
+              onfocus="this.style.borderColor='var(--brand)'" onblur="this.style.borderColor='var(--border)'">
+            <button class="btn btn-primary" onclick="szOpenNewTeamMember()" style="background:var(--brand);border-color:var(--brand);font-size:13px;flex-shrink:0">+ Nuevo Usuario</button>
+          </div>
         </div>
         <div class="card" style="padding:0">
           <div id="sz-team-table"><div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">⏳ Cargando equipo…</div></div>
@@ -8114,6 +8120,7 @@ function szBuildDropdown() {
     const pendOC = DB[key].orders.filter(o=>o.status==='pendiente').length;
     const alert = lowS > 0 || pendOC > 0;
     return `<div class="sz-dd-option" id="sz-dd-opt-${esc(key)}" onclick="setSzClient('${esc(key)}')"
+      data-name="${esc(t.name)}" data-city="${esc(t.city||'')}" data-email="${esc(t.ownerEmail||t.email||'')}"
       style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .1s">
       <span style="font-size:18px">${esc(t.emoji)}</span>
       <div style="flex:1">
@@ -8124,8 +8131,27 @@ function szBuildDropdown() {
     </div>`;
   }).join('');
 
-  const allSub = document.querySelector('#sz-dd-opt-all div div:last-child');
+  const allSub = document.getElementById('sz-dd-all-sub');
   if (allSub) allSub.textContent = `Vista consolidada · ${keys.length} restaurantes`;
+}
+
+function szFilterDropdown(query) {
+  const q = query.trim().toLowerCase();
+  const opts = document.getElementById('sz-dd-options');
+  if (!opts) return;
+  let visible = 0;
+  opts.querySelectorAll('.sz-dd-option').forEach(el => {
+    const name = (el.getAttribute('data-name') || '').toLowerCase();
+    const city = (el.getAttribute('data-city') || '').toLowerCase();
+    const email = (el.getAttribute('data-email') || '').toLowerCase();
+    const match = !q || name.includes(q) || city.includes(q) || email.includes(q);
+    el.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  const allOpt = document.getElementById('sz-dd-opt-all');
+  if (allOpt) allOpt.style.display = q ? 'none' : '';
+  const noRes = document.getElementById('sz-dd-no-results');
+  if (noRes) noRes.style.display = visible === 0 ? 'block' : 'none';
 }
 
 // ── Toggle dropdown visibility ──
@@ -8142,6 +8168,7 @@ function toggleSzDropdown() {
         if (!document.getElementById('sz-client-dropdown-wrap')?.contains(e.target)) {
           panel.style.display = 'none';
           if (arrow) arrow.textContent = '▼';
+          var s = document.getElementById('sz-dd-search'); if (s) { s.value = ''; szFilterDropdown(''); }
           document.removeEventListener('click', closeDd);
         }
       });
@@ -8153,11 +8180,12 @@ function toggleSzDropdown() {
 function setSzClient(tenantId) {
   szSelectedClient = tenantId;
 
-  // Close dropdown
+  // Close dropdown and clear search
   const panel = document.getElementById('sz-dropdown-panel');
   if (panel) panel.style.display = 'none';
   const arrow = document.getElementById('sz-dd-arrow');
   if (arrow) arrow.textContent = '▼';
+  var srch = document.getElementById('sz-dd-search'); if (srch) { srch.value = ''; szFilterDropdown(''); }
 
   // Update dropdown button label
   const emojiEl = document.getElementById('sz-dd-emoji');
@@ -8206,7 +8234,7 @@ function szTab(tab, btn) {
   document.getElementById('sz-' + tab).classList.add('active');
   if (btn) btn.classList.add('active');
   if (tab === 'auditoria') szRenderAuditoria();
-  if (tab === 'cuentas' && _szCurrentRole === 'susazon_admin') szRenderTeam();
+  if (tab === 'cuentas' && _szCurrentRole === 'susazon_admin') { var ts = document.getElementById('sz-team-search'); if(ts){ts.value='';szFilterTeam('');} szRenderTeam(); }
 }
 
 // ── Data aggregator — filters by szSelectedClient if set ──
@@ -8568,7 +8596,7 @@ async function szRenderTeam() {
           const n = m.assigned_clients?.length || 0;
           const clientLabel = m.role === 'director' && n === 0 ? 'Todos' : `${n} asignado${n!==1?'s':''}`;
           const active = m.active !== false;
-          return `<tr style="border-bottom:1px solid var(--border);transition:background .1s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+          return `<tr class="sz-team-row" data-name="${esc(m.name.toLowerCase())}" data-email="${esc(m.email.toLowerCase())}" data-role="${esc(m.role||'')}" style="border-bottom:1px solid var(--border);transition:background .1s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
             <td style="padding:12px 18px;font-weight:600;color:var(--text)">${esc(m.name)}</td>
             <td style="padding:12px 14px;color:var(--text-muted);font-size:12.5px">${esc(m.email)}</td>
             <td style="padding:12px 14px;text-align:center">
@@ -8592,6 +8620,36 @@ async function szRenderTeam() {
         }).join('')}
       </tbody>
     </table>`;
+}
+
+function szFilterTeam(query) {
+  const q = query.trim().toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.sz-team-row').forEach(row => {
+    const match = !q
+      || row.getAttribute('data-name').includes(q)
+      || row.getAttribute('data-email').includes(q)
+      || row.getAttribute('data-role').includes(q);
+    row.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  // Show/hide empty state
+  const tableEl = document.getElementById('sz-team-table');
+  let emptyMsg = tableEl?.querySelector('.sz-team-empty-search');
+  if (visible === 0 && q) {
+    if (!emptyMsg) {
+      emptyMsg = document.createElement('div');
+      emptyMsg.className = 'sz-team-empty-search';
+      emptyMsg.style.cssText = 'padding:20px;text-align:center;color:var(--text-faint);font-size:13px';
+      emptyMsg.textContent = 'Sin resultados para "' + query + '"';
+      tableEl.appendChild(emptyMsg);
+    } else {
+      emptyMsg.textContent = 'Sin resultados para "' + query + '"';
+      emptyMsg.style.display = 'block';
+    }
+  } else if (emptyMsg) {
+    emptyMsg.style.display = 'none';
+  }
 }
 
 function szRenderTeamClientChecklist(containerId, selectedIds) {
@@ -8650,14 +8708,19 @@ async function szCreateTeamMember() {
 
   btn.disabled = true; btn.textContent = 'Creando…';
 
-  const { data, error } = await _supabase.functions.invoke('create-sz-team-user', {
-    body: { name, email, role, assigned_clients }
+  const { data: { session } } = await _supabase.auth.getSession();
+  const res = await fetch('https://vdporqqrycwclpihyeul.supabase.co/functions/v1/create-sz-team-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+    body: JSON.stringify({ name, email, role, assigned_clients })
   });
+  const result = await res.json();
 
-  if (error || data?.error) {
-    errEl.textContent = 'Error: ' + (data?.error || error.message);
+  btn.disabled = false; btn.textContent = 'Crear Usuario';
+
+  if (result.error) {
+    errEl.textContent = 'Error: ' + result.error;
     errEl.style.display = 'block';
-    btn.disabled = false; btn.textContent = 'Crear Usuario';
     return;
   }
 
@@ -8692,8 +8755,11 @@ async function szSaveTeamMember() {
   if (error) { showToast('❌ Error: ' + error.message); return; }
 
   // Update role in app_metadata via Edge Function
-  await _supabase.functions.invoke('create-sz-team-user', {
-    body: { action: 'update_role', team_member_id: id, role }
+  const { data: { session: sess2 } } = await _supabase.auth.getSession();
+  await fetch('https://vdporqqrycwclpihyeul.supabase.co/functions/v1/create-sz-team-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sess2.access_token}` },
+    body: JSON.stringify({ action: 'update_role', team_member_id: id, role })
   });
 
   closeModal('sz-edit-team-modal');
@@ -8712,8 +8778,11 @@ async function szToggleTeamActive(id, currentActive, name) {
 
 async function szDeleteTeamMember(id, name) {
   if (!confirm(`¿Eliminar al usuario "${name}"?\nPerdará acceso al portal inmediatamente.`)) return;
-  await _supabase.functions.invoke('create-sz-team-user', {
-    body: { action: 'delete', team_member_id: id }
+  const { data: { session: sess3 } } = await _supabase.auth.getSession();
+  await fetch('https://vdporqqrycwclpihyeul.supabase.co/functions/v1/create-sz-team-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sess3.access_token}` },
+    body: JSON.stringify({ action: 'delete', team_member_id: id })
   });
   await _supabase.from('sz_team_members').delete().eq('id', id);
   await _auditLog('team_member_deleted', null, name, {});
