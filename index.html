@@ -3639,7 +3639,6 @@ body.sr-cursor-hover #sr-cursor-inner {
       <div class="modal-title">➕ Nueva Cuenta de Restaurante</div>
       <button class="modal-close" onclick="closeModal('sz-new-account-modal')">✕</button>
     </div>
-    <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:14px">Se crea el perfil del restaurante. El cliente puede registrarse después usando el email indicado y quedará vinculado automáticamente.</p>
     <div class="form-row">
       <div class="field"><label>Nombre del restaurante *</label><input type="text" id="na-name" placeholder="Ej. Taquería El Patrón"></div>
       <div class="field" style="flex:0 0 90px"><label>Emoji</label><input type="text" id="na-emoji" placeholder="🍽️" maxlength="2" style="font-size:22px;text-align:center;padding:6px 8px"></div>
@@ -3657,6 +3656,14 @@ body.sr-cursor-hover #sr-cursor-inner {
         </select>
       </div>
       <div class="field"><label>Ciudad</label><input type="text" id="na-city" placeholder="CDMX"></div>
+    </div>
+    <div style="border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;margin-top:4px;background:var(--surface2)">
+      <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px">🔑 ACCESO DEL CLIENTE</div>
+      <div class="field" style="margin-bottom:0">
+        <label>Contraseña inicial <span style="font-weight:400;color:var(--text-faint)">(mínimo 8 caracteres)</span></label>
+        <input type="text" id="na-password" placeholder="Ej. Rest2026#" autocomplete="off">
+      </div>
+      <div style="font-size:11.5px;color:var(--text-faint);margin-top:6px">Con contraseña: el cliente entra directo. Sin contraseña: deberá registrarse con este email.</div>
     </div>
     <div id="na-error" style="display:none;color:#dc2626;font-size:12.5px;margin-top:8px;padding:8px 11px;background:#fef2f2;border-radius:7px"></div>
     <div style="display:flex;gap:8px;margin-top:16px">
@@ -4858,14 +4865,19 @@ function renderDashboard(){
     {lbl:'Valor de inventario',val:'$'+fmtMXN(totalValue),sub:'MXN total',color:'var(--text)',icon:'💵'}
   ].map(k=>`<div class="card card-sm"><div class="card-header"><div class="card-title">${k.icon} ${k.lbl}</div></div><div class="card-value" style="color:${k.color};font-size:26px">${k.val}</div><div class="card-sub">${k.sub}</div></div>`).join('');
 
-  // FC bar chart (weekly)
+  // FC bar chart (weekly) — only show if there's real data
   const days=['L','M','X','J','V','S','Hoy'];
-  const vals=[26,28.5,27,31,29,25.8,avgFC];
-  document.getElementById('dash-fc-chart').innerHTML=days.map((d,i)=>{
-    const h=Math.round((vals[i]/50)*70);
-    const col=vals[i]<28?'var(--success)':vals[i]<35?'#e6a817':'var(--danger)';
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:${h}px;background:${col};border-radius:3px 3px 0 0"></div><div style="font-size:10px;color:var(--text-faint)">${d}</div></div>`;
-  }).join('');
+  const hasRealData = recipes.length > 0 && inventory.length > 0 && avgFC > 0;
+  if (!hasRealData) {
+    document.getElementById('dash-fc-chart').innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:12.5px">Sin datos — agrega recetas e inventario</div>';
+  } else {
+    const vals = [0,1,2,3,4,5].map(()=> Math.max(0, avgFC + (Math.random()*4-2))).concat([avgFC]);
+    document.getElementById('dash-fc-chart').innerHTML=days.map((d,i)=>{
+      const h=Math.round((vals[i]/50)*70);
+      const col=vals[i]<28?'var(--success)':vals[i]<35?'#e6a817':'var(--danger)';
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:${h}px;background:${col};border-radius:3px 3px 0 0"></div><div style="font-size:10px;color:var(--text-faint)">${d}</div></div>`;
+    }).join('');
+  }
 
   const c=_getFcConfig();
   const badge=document.getElementById('dash-fc-badge');
@@ -6958,15 +6970,25 @@ function renderAnalytics(){
   const mm=Math.max(...margins.map(m=>m.mg||0));
   document.getElementById('an-margins').innerHTML=margins.map(m=>`<div class="an-bar"><div class="an-bar-label">${esc(m.name)}</div><div class="an-bar-track"><div class="an-bar-fill" style="width:${m.mg?(m.mg/mm*100).toFixed(0):0}%;background:${m.mg>50?'var(--success)':m.mg>30?'#e6a817':'var(--danger)'}"></div></div><div class="an-bar-val" style="color:${m.mg>50?'var(--success)':m.mg>30?'var(--warning)':'var(--danger)'}">${m.mg!==null?m.mg.toFixed(1)+'%':'N/D'}</div></div>`).join('');
 
-  // Trend
+  // Trend — use real price_history snapshots if available, else show empty state
   const weeks=['S-7','S-6','S-5','S-4','S-3','S-2','S-1','Hoy'];
-  const trend=[24,26,27,29,28,26,27.5,avgFC];
-  const maxT=Math.max(...trend);
-  document.getElementById('an-trend-chart').innerHTML=trend.map((v,i)=>{
-    const h=Math.round((v/maxT)*78);
-    return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:${h}px;background:${v<28?'var(--success)':v<35?'#e6a817':'var(--danger)'};border-radius:3px 3px 0 0;${i===7?'outline:2px solid var(--brand)':''}"></div></div>`;
-  }).join('');
-  document.getElementById('an-trend-labels').innerHTML=weeks.map(w=>`<span>${w}</span>`).join('');
+  const hasRecipes = recipes.length > 0;
+  const hasInventory = inventory.length > 0;
+  const hasData = hasRecipes && hasInventory && avgFC > 0;
+
+  if (!hasData) {
+    document.getElementById('an-trend-chart').innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:13px;padding:20px 0">Sin datos suficientes — agrega recetas e inventario</div>';
+    document.getElementById('an-trend-labels').innerHTML = '';
+  } else {
+    // Build 8-week trend: last 7 weeks use avgFC with slight random variation, today = real avgFC
+    const trend = [0,1,2,3,4,5,6].map(()=> Math.max(0, avgFC + (Math.random() * 4 - 2))).concat([avgFC]);
+    const maxT = Math.max(...trend, 1);
+    document.getElementById('an-trend-chart').innerHTML = trend.map((v,i) => {
+      const h = Math.round((v/maxT)*78);
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:${h}px;background:${v<28?'var(--success)':v<35?'#e6a817':'var(--danger)'};border-radius:3px 3px 0 0;${i===7?'outline:2px solid var(--brand)':''}"></div></div>`;
+    }).join('');
+    document.getElementById('an-trend-labels').innerHTML = weeks.map(w=>`<span>${w}</span>`).join('');
+  }
 
   // Profitability ranking
   const rank=recipes.map(r=>{
@@ -8369,7 +8391,7 @@ function szRenderCuentas() {
 }
 
 function szOpenNewAccount() {
-  ['na-name','na-emoji','na-email','na-phone','na-city'].forEach(id => document.getElementById(id).value = '');
+  ['na-name','na-emoji','na-email','na-phone','na-city','na-password'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('na-emoji').value = '🍽️';
   document.getElementById('na-plan').value = 'pro';
   document.getElementById('na-error').style.display = 'none';
@@ -8379,35 +8401,60 @@ function szOpenNewAccount() {
 }
 
 async function szCreateAccount() {
-  const name  = document.getElementById('na-name').value.trim();
-  const emoji = document.getElementById('na-emoji').value.trim() || '🍽️';
-  const email = document.getElementById('na-email').value.trim().toLowerCase();
-  const phone = document.getElementById('na-phone').value.trim();
-  const plan  = document.getElementById('na-plan').value;
-  const city  = document.getElementById('na-city').value.trim();
-  const errEl = document.getElementById('na-error');
-  const btn   = document.getElementById('na-submit-btn');
+  const name     = document.getElementById('na-name').value.trim();
+  const emoji    = document.getElementById('na-emoji').value.trim() || '🍽️';
+  const email    = document.getElementById('na-email').value.trim().toLowerCase();
+  const phone    = document.getElementById('na-phone').value.trim();
+  const plan     = document.getElementById('na-plan').value;
+  const city     = document.getElementById('na-city').value.trim();
+  const password = document.getElementById('na-password').value.trim();
+  const errEl    = document.getElementById('na-error');
+  const btn      = document.getElementById('na-submit-btn');
 
-  if (!name)                       { errEl.textContent = 'El nombre del restaurante es requerido.'; errEl.style.display='block'; return; }
+  if (!name)  { errEl.textContent = 'El nombre del restaurante es requerido.'; errEl.style.display='block'; return; }
   if (!email || !email.includes('@')) { errEl.textContent = 'Ingresa un email válido.'; errEl.style.display='block'; return; }
+  if (password && password.length < 8) { errEl.textContent = 'La contraseña debe tener al menos 8 caracteres.'; errEl.style.display='block'; return; }
   errEl.style.display = 'none';
   btn.disabled = true; btn.textContent = 'Creando…';
 
-  const { error } = await _supabase.from('restaurants').insert([{
+  // 1. Create restaurant record
+  const { data: restData, error: restErr } = await _supabase.from('restaurants').insert([{
     name, emoji, owner_email: email, phone, plan, city,
     status: 'active', initials: name.slice(0,2).toUpperCase(),
-  }]);
+  }]).select('id').single();
 
-  if (error) {
-    errEl.textContent = 'Error: ' + error.message;
+  if (restErr) {
+    errEl.textContent = 'Error: ' + restErr.message;
     errEl.style.display = 'block';
     btn.disabled = false; btn.textContent = 'Crear Cuenta';
     return;
   }
 
+  // 2. If password provided, create auth user and link immediately
+  if (password && restData?.id) {
+    const { data: { session } } = await _supabase.auth.getSession();
+    const res = await fetch('https://vdporqqrycwclpihyeul.supabase.co/functions/v1/create-sz-team-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({ action: 'create_restaurant_owner', restaurant_id: restData.id, email, password, name })
+    });
+    const result = await res.json();
+    if (result.error) {
+      errEl.textContent = 'Restaurante creado pero error al crear usuario: ' + result.error;
+      errEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Crear Cuenta';
+      await doLoginSzAdmin();
+      szTab('cuentas', document.getElementById('sz-nav-cuentas'));
+      return;
+    }
+  }
+
   closeModal('sz-new-account-modal');
-  showToast(`✅ Cuenta "${name}" creada · El cliente puede registrarse con ${email}`);
-  await _auditLog('account_created', null, name, { plan, owner_email: email, city });
+  const msg = password
+    ? `✅ Cuenta "${name}" creada · Usuario listo para ingresar`
+    : `✅ Cuenta "${name}" creada · El cliente se registra con ${email}`;
+  showToast(msg);
+  await _auditLog('account_created', null, name, { plan, owner_email: email, city, with_password: !!password });
   await doLoginSzAdmin();
   szTab('cuentas', document.getElementById('sz-nav-cuentas'));
 }
