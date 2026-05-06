@@ -1892,6 +1892,9 @@ body.sr-cursor-hover #sr-cursor-inner {
 <!-- ═══════════════ ONBOARDING ═══════════════ -->
 <div id="onboarding-screen" style="position:relative;display:none">
   <div class="ob-card">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:4px">
+      <button onclick="doLogout()" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--text-faint);font-family:var(--font);padding:4px 0" title="Cerrar sesión">← Salir</button>
+    </div>
     <div class="lc-brand" style="margin-bottom:20px">
       <div class="lc-brand-logo" style="background:linear-gradient(135deg,#fff4ed,#ffedd5)">
         <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -4322,7 +4325,7 @@ async function doSetPassword() {
 async function doLogout() {
   _hideAllScreens();
   await _supabase.auth.signOut();
-  _showLogin();
+  showLanding();
 }
 
 // ─── Screen helpers ───
@@ -9732,7 +9735,8 @@ async function openChangePasswordForRestaurant(restaurantId, restaurantName) {
 
   if (users.length === 1) {
     _cpUserId = users[0].id;
-    document.getElementById('cp-user-label').textContent = `Usuario: ${users[0].name} (${users[0].email})`;
+    const emailStr = users[0].email && !users[0].email.startsWith('(') ? ` — ${users[0].email}` : '';
+    document.getElementById('cp-user-label').textContent = `Usuario: ${users[0].name}${emailStr}`;
     document.getElementById('cp-user-label').style.display = 'block';
     return;
   }
